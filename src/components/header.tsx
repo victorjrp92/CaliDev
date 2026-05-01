@@ -141,7 +141,7 @@ export function Header() {
           <Button
             size="sm"
             className="cursor-pointer transition-colors duration-200"
-            render={<Link href="/contact" />}
+            render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
           >
             <Calendar className="mr-1.5 h-3.5 w-3.5" />
             {t("schedule")}
@@ -190,7 +190,7 @@ export function Header() {
                 <div className="mt-4">
                   <Button
                     className="w-full cursor-pointer transition-colors duration-200"
-                    render={<Link href="/contact" />}
+                    render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
                     onClick={() => setMobileOpen(false)}
                   >
                     <Calendar className="mr-2 h-4 w-4" />

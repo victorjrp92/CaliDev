@@ -94,7 +94,7 @@ export function Hero() {
                   size="lg"
                   variant="outline"
                   className="h-12 cursor-pointer rounded-full border-2 border-white/60 bg-white/10 px-8 text-sm font-semibold uppercase tracking-[0.15em] text-white shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-white/20 hover:border-white"
-                  render={<Link href="/contact" />}
+                  render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
                 >
                   <Calendar className="mr-2 h-4 w-4" />
                   {t("cta_schedule")}
