@@ -169,7 +169,7 @@ export function Hero() {
                       src="/profile.png"
                       alt="Victor Ramos"
                       fill
-                      className="object-cover"
+                      className="object-cover object-[center_25%]"
                       sizes="112px"
                     />
                   </motion.div>
