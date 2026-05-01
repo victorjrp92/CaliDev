@@ -34,9 +34,9 @@ export default async function LocaleLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: 'Victor Ramos BE',
+    name: 'CaliDev',
     description: 'Digital agency specializing in app development, websites, automations, and digital transformation consulting.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://victorramosbe.com',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://calidev.dev',
     founder: {
       '@type': 'Person',
       name: 'Victor Ramos',

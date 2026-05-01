@@ -211,9 +211,17 @@ export function Footer() {
           <FooterLanguageSwitcher />
 
           {/* Copyright */}
-          <p className="text-xs text-background/50">
-            {t("copyright", { year: currentYear })}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs text-background/50">
+              {t("copyright", { year: currentYear })}
+            </p>
+            <a
+              href="/admin/payments"
+              className="text-xs text-background/20 transition-colors hover:text-background/50"
+            >
+              Admin
+            </a>
+          </div>
         </div>
       </div>
     </footer>
