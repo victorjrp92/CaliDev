@@ -12,13 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
 import {
   Menu,
@@ -48,37 +42,25 @@ const locales = [
 
 function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
   const pathname = usePathname();
 
-  function handleLocaleChange(newLocale: string) {
-    router.replace(pathname, { locale: newLocale });
-  }
-
-  const currentLocale = locales.find((l) => l.code === locale);
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="cursor-pointer"
-        render={
-          <Button variant="ghost" size="icon-sm" aria-label="Change language">
-            <Globe className="h-4 w-4" />
-          </Button>
-        }
-      />
-      <DropdownMenuContent align="end" sideOffset={8}>
-        {locales.map((loc) => (
-          <DropdownMenuItem
-            key={loc.code}
-            className={`cursor-pointer ${loc.code === locale ? "font-semibold text-primary" : ""}`}
-            onSelect={() => handleLocaleChange(loc.code)}
-          >
-            {loc.label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center gap-0.5">
+      {locales.map((loc) => (
+        <Link
+          key={loc.code}
+          href={pathname}
+          locale={loc.code}
+          className={`cursor-pointer rounded-md px-2 py-1 text-xs font-medium transition-colors duration-200 ${
+            loc.code === locale
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {loc.code.toUpperCase()}
+        </Link>
+      ))}
+    </div>
   );
 }
 

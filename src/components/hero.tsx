@@ -113,97 +113,105 @@ export function Hero() {
           }
         >
           {/* Portfolio content inside the iPad */}
-          <div className="h-full w-full overflow-y-auto p-4 md:p-6">
+          <div className="h-full w-full overflow-y-auto p-5 md:p-8">
             <div className="grid h-full gap-6 lg:grid-cols-2">
               {/* Left column — Info */}
               <div className="flex flex-col justify-between space-y-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/40">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-foreground/40">
                     {tp("badge")}
                   </p>
-                  <h2 className="mt-2 text-lg font-semibold tracking-tight text-foreground md:text-xl">
+                  <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground md:text-2xl">
                     {tp("title")}, {tp("role")}
                   </h2>
-                  <p className="mt-2 text-xs leading-relaxed text-foreground/70 md:text-sm">
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/70">
                     {tp("description")}
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   {highlights.map((item) => (
-                    <div
+                    <motion.div
                       key={item.title}
-                      className="rounded-xl border border-border/40 bg-background/60 p-3"
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="cursor-default rounded-xl border border-border/40 bg-background/60 p-4 transition-colors duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md"
                     >
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/40">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/40">
                         {item.title}
                       </p>
-                      <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/70">
                         {item.desc}
                       </p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
                 <Button
                   size="sm"
-                  className="h-9 w-full cursor-pointer gap-2 rounded-full text-xs uppercase tracking-[0.2em] transition-all hover:shadow-lg sm:w-auto"
+                  className="h-10 w-full cursor-pointer gap-2 rounded-full text-sm uppercase tracking-[0.2em] transition-all hover:shadow-lg sm:w-auto"
                   render={<Link href="/services" />}
                 >
                   {tp("cta")}
-                  <ArrowUpRight className="h-3.5 w-3.5" />
+                  <ArrowUpRight className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Right column — Profile card */}
-              <div className="flex flex-col items-center justify-between rounded-2xl border border-border/40 bg-background/60 p-4 text-center md:p-6">
+              <div className="flex flex-col items-center justify-between rounded-2xl border border-border/40 bg-background/60 p-5 text-center md:p-6">
                 <div className="flex flex-col items-center">
-                  <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-full border border-border/40 shadow-lg md:h-24 md:w-24">
+                  <motion.div
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className="relative mb-4 h-24 w-24 overflow-hidden rounded-full border border-border/40 shadow-lg md:h-28 md:w-28"
+                  >
                     <Image
                       src="/profile.png"
                       alt="Victor Ramos"
                       fill
                       className="object-cover"
-                      sizes="96px"
+                      sizes="112px"
                     />
-                  </div>
-                  <h3 className="text-base font-semibold tracking-tight text-foreground md:text-lg">
+                  </motion.div>
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground md:text-xl">
                     {tp("profile_name")}
                   </h3>
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-foreground/45 md:text-[10px]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/45 md:text-[11px]">
                     {tp("profile_subtitle")}
                   </p>
-                  <p className="mt-2 max-w-xs text-xs leading-relaxed text-foreground/70">
+                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-foreground/70">
                     {tp("profile_bio")}
                   </p>
                 </div>
 
-                <div className="mt-3 flex w-full flex-col gap-2">
+                <div className="mt-4 flex w-full flex-col gap-2">
                   {socialLinks.map((social) => {
                     const Icon = social.icon;
                     return (
-                      <a
+                      <motion.a
                         key={social.label}
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center justify-between rounded-xl border border-border/40 bg-background/70 px-3 py-2 text-left transition-all hover:border-border/60 hover:bg-background/80"
+                        whileHover={{ y: -2, scale: 1.03 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="group flex items-center justify-between rounded-xl border border-border/40 bg-background/70 px-3 py-2.5 text-left transition-colors duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md"
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border/40 bg-background/70 text-foreground/80">
-                            <Icon className="h-3 w-3" />
+                        <div className="flex items-center gap-2.5">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border/40 bg-background/70 text-foreground/80 transition-colors group-hover:border-primary/30 group-hover:text-primary">
+                            <Icon className="h-3.5 w-3.5" />
                           </span>
                           <div>
-                            <p className="text-xs font-semibold text-foreground">
+                            <p className="text-sm font-semibold text-foreground">
                               {social.label}
                             </p>
-                            <p className="text-[10px] text-foreground/60">
+                            <p className="text-[11px] text-foreground/60">
                               {social.handle}
                             </p>
                           </div>
                         </div>
-                        <ArrowUpRight className="h-3 w-3 text-foreground/40 transition-all group-hover:text-foreground/70" />
-                      </a>
+                        <ArrowUpRight className="h-3.5 w-3.5 text-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
+                      </motion.a>
                     );
                   })}
                 </div>

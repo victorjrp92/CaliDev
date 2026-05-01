@@ -3,16 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { Separator } from "@/components/ui/separator";
-import { Globe } from "lucide-react";
 import { InstagramIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
 
 const locales = [
@@ -29,42 +21,25 @@ const socialLinks = [
 
 function FooterLanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
   const pathname = usePathname();
 
-  function handleLocaleChange(newLocale: string) {
-    router.replace(pathname, { locale: newLocale });
-  }
-
-  const currentLocale = locales.find((l) => l.code === locale);
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="cursor-pointer"
-        render={
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-background/70 hover:text-background"
-          >
-            <Globe className="mr-1.5 h-4 w-4" />
-            {currentLocale?.label ?? "Language"}
-          </Button>
-        }
-      />
-      <DropdownMenuContent align="end" sideOffset={8}>
-        {locales.map((loc) => (
-          <DropdownMenuItem
-            key={loc.code}
-            className={`cursor-pointer ${loc.code === locale ? "font-semibold text-primary" : ""}`}
-            onSelect={() => handleLocaleChange(loc.code)}
-          >
-            {loc.label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center gap-1">
+      {locales.map((loc) => (
+        <Link
+          key={loc.code}
+          href={pathname}
+          locale={loc.code}
+          className={`cursor-pointer rounded-md px-2 py-1 text-xs font-medium transition-colors duration-200 ${
+            loc.code === locale
+              ? "text-background"
+              : "text-background/40 hover:text-background/70"
+          }`}
+        >
+          {loc.code.toUpperCase()}
+        </Link>
+      ))}
+    </div>
   );
 }
 
