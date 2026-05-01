@@ -1,0 +1,217 @@
+"use client";
+
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { ArrowDown, Calendar, ArrowUpRight } from "lucide-react";
+import { Link } from "@/i18n/routing";
+import { SilkBackground } from "@/components/ui/silk-background";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { AnimatedHeroTitle } from "@/components/animated-hero-title";
+import { XIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
+
+const socialLinks = [
+  { label: "X (Twitter)", handle: "@victorramosbe", href: "https://twitter.com", icon: XIcon },
+  { label: "LinkedIn", handle: "Victor Ramos", href: "https://linkedin.com", icon: LinkedInIcon },
+  { label: "GitHub", handle: "victorramosbe", href: "https://github.com", icon: GitHubIcon },
+];
+
+export function Hero() {
+  const t = useTranslations("hero");
+  const tp = useTranslations("portfolio");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const highlights = [
+    { title: tp("highlight1_title"), desc: tp("highlight1_desc") },
+    { title: tp("highlight2_title"), desc: tp("highlight2_desc") },
+    { title: tp("highlight3_title"), desc: tp("highlight3_desc") },
+  ];
+
+  return (
+    <div className="relative bg-[#0A3C30]" style={{ clipPath: "inset(0)" }}>
+      {/* Fixed silk background, clipped to this container */}
+      <div className="fixed inset-0">
+        <SilkBackground />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#0A3C30]/40 via-[#0A3C30]/20 to-[#0A3C30]/60" />
+      </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="fixed bottom-8 left-1/2 z-20 -translate-x-1/2"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+      >
+        <ArrowDown className="h-5 w-5 text-white/60" />
+      </motion.div>
+
+      {/* ContainerScroll with hero title + portfolio in iPad */}
+      <div className="relative z-10">
+        <ContainerScroll
+          titleComponent={
+            <div className="flex flex-col items-center">
+              <AnimatedHeroTitle />
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+                className="mt-2 text-base font-light tracking-[0.25em] uppercase text-white/70 md:text-lg"
+              >
+                Business Efficiency
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+                className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white md:text-xl"
+                style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
+              >
+                {t("headline")}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
+                className="mt-8 flex flex-wrap justify-center gap-4"
+              >
+                <Button
+                  size="lg"
+                  className="h-12 cursor-pointer rounded-full bg-white px-8 text-sm font-semibold uppercase tracking-[0.15em] text-[#0A3C30] shadow-lg transition-all duration-200 hover:bg-white/90 hover:shadow-xl"
+                  render={<Link href="/services" />}
+                >
+                  {t("cta_services")}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 cursor-pointer rounded-full border-2 border-white/60 bg-white/10 px-8 text-sm font-semibold uppercase tracking-[0.15em] text-white shadow-lg backdrop-blur-sm transition-all duration-200 hover:bg-white/20 hover:border-white"
+                  render={<Link href="/contact" />}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {t("cta_schedule")}
+                </Button>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={isLoaded ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 1.4 }}
+                className="mt-4 text-xs tracking-[0.2em] uppercase text-white/50"
+              >
+                {t("subtitle")}
+              </motion.p>
+            </div>
+          }
+        >
+          {/* Portfolio content inside the iPad */}
+          <div className="h-full w-full overflow-y-auto p-4 md:p-6">
+            <div className="grid h-full gap-6 lg:grid-cols-2">
+              {/* Left column — Info */}
+              <div className="flex flex-col justify-between space-y-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/40">
+                    {tp("badge")}
+                  </p>
+                  <h2 className="mt-2 text-lg font-semibold tracking-tight text-foreground md:text-xl">
+                    {tp("title")}, {tp("role")}
+                  </h2>
+                  <p className="mt-2 text-xs leading-relaxed text-foreground/70 md:text-sm">
+                    {tp("description")}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  {highlights.map((item) => (
+                    <div
+                      key={item.title}
+                      className="rounded-xl border border-border/40 bg-background/60 p-3"
+                    >
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground/40">
+                        {item.title}
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  size="sm"
+                  className="h-9 w-full cursor-pointer gap-2 rounded-full text-xs uppercase tracking-[0.2em] transition-all hover:shadow-lg sm:w-auto"
+                  render={<Link href="/services" />}
+                >
+                  {tp("cta")}
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+
+              {/* Right column — Profile card */}
+              <div className="flex flex-col items-center justify-between rounded-2xl border border-border/40 bg-background/60 p-4 text-center md:p-6">
+                <div className="flex flex-col items-center">
+                  <div className="relative mb-3 h-20 w-20 overflow-hidden rounded-full border border-border/40 shadow-lg md:h-24 md:w-24">
+                    <Image
+                      src="/profile.png"
+                      alt="Victor Ramos"
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  </div>
+                  <h3 className="text-base font-semibold tracking-tight text-foreground md:text-lg">
+                    {tp("profile_name")}
+                  </h3>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-foreground/45 md:text-[10px]">
+                    {tp("profile_subtitle")}
+                  </p>
+                  <p className="mt-2 max-w-xs text-xs leading-relaxed text-foreground/70">
+                    {tp("profile_bio")}
+                  </p>
+                </div>
+
+                <div className="mt-3 flex w-full flex-col gap-2">
+                  {socialLinks.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                      <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between rounded-xl border border-border/40 bg-background/70 px-3 py-2 text-left transition-all hover:border-border/60 hover:bg-background/80"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border/40 bg-background/70 text-foreground/80">
+                            <Icon className="h-3 w-3" />
+                          </span>
+                          <div>
+                            <p className="text-xs font-semibold text-foreground">
+                              {social.label}
+                            </p>
+                            <p className="text-[10px] text-foreground/60">
+                              {social.handle}
+                            </p>
+                          </div>
+                        </div>
+                        <ArrowUpRight className="h-3 w-3 text-foreground/40 transition-all group-hover:text-foreground/70" />
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </ContainerScroll>
+      </div>
+    </div>
+  );
+}

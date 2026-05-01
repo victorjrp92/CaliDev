@@ -1,0 +1,123 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "blog": "Blog",
+    "contact": "Contact",
+    "schedule": "Schedule a Call"
+  },
+  "hero": {
+    "headline": "We transform your business with technology that works",
+    "subtitle": "Efficiency and digital transformation for companies that want to scale",
+    "cta_services": "View Services",
+    "cta_schedule": "Schedule a Call"
+  },
+  "portfolio": {
+    "badge": "Business Efficiency",
+    "title": "Victor Ramos",
+    "role": "CEO & Digital Strategist",
+    "description": "With years of experience leading digital transformation, product development, and business consulting, I help companies leverage technology to scale efficiently and achieve measurable results.",
+    "highlight1_title": "Expertise",
+    "highlight1_desc": "Apps, websites, automations, and consulting for companies that want to scale with technology.",
+    "highlight2_title": "Approach",
+    "highlight2_desc": "Custom solutions focused on efficiency, ROI, and measurable results.",
+    "highlight3_title": "Availability",
+    "highlight3_desc": "Available for projects and advisory. Remote, EU & US time zones.",
+    "highlight1_value": "10+",
+    "highlight2_value": "100%",
+    "highlight3_value": "24/7",
+    "cta": "View Services",
+    "profile_name": "Victor Ramos",
+    "profile_subtitle": "CEO · Digital Strategist · Business Efficiency",
+    "profile_bio": "Helping businesses become more efficient through technology and strategy."
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Everything you need to digitally transform your business",
+    "app_title": "App Development",
+    "app_desc": "Custom mobile and web applications built with modern tech stacks for maximum performance and user experience.",
+    "web_title": "Websites",
+    "web_desc": "Professional, fast, and SEO-optimized websites that convert visitors into customers.",
+    "auto_title": "Automations",
+    "auto_desc": "Streamline your workflows with intelligent automations that save time and reduce errors.",
+    "consulting_title": "Digital Consulting",
+    "consulting_desc": "Strategic guidance on digital transformation, process optimization, and technology adoption.",
+    "learn_more": "Learn More",
+    "benefits": "Key Benefits",
+    "app_benefit1": "Cross-platform (iOS & Android)",
+    "app_benefit2": "Real-time data sync",
+    "app_benefit3": "Offline-first architecture",
+    "web_benefit1": "Lightning-fast loading",
+    "web_benefit2": "SEO optimized",
+    "web_benefit3": "Mobile responsive",
+    "auto_benefit1": "Process automation",
+    "auto_benefit2": "API integrations",
+    "auto_benefit3": "Custom workflows",
+    "consulting_benefit1": "Technology roadmap",
+    "consulting_benefit2": "ROI analysis",
+    "consulting_benefit3": "Team training"
+  },
+  "blog": {
+    "title": "Latest Insights",
+    "subtitle": "Thoughts on technology, business, and digital transformation",
+    "read_more": "Read More",
+    "view_all": "View All Articles",
+    "min_read": "min read",
+    "filter_all": "All",
+    "share": "Share",
+    "toc": "Table of Contents",
+    "related": "Related Articles",
+    "published": "Published",
+    "author": "Author"
+  },
+  "testimonials": {
+    "title": "What Our Clients Say",
+    "subtitle": "Real results from real partnerships",
+    "t1_name": "Maria Garcia",
+    "t1_company": "TechStart Solutions",
+    "t1_text": "Victor transformed our entire digital infrastructure. The custom app he built reduced our operational costs by 40%.",
+    "t2_name": "Thomas Mueller",
+    "t2_company": "Innovate GmbH",
+    "t2_text": "The automation solutions implemented by Victor Ramos BE saved us 20 hours per week. Exceptional ROI.",
+    "t3_name": "Laura Martinez",
+    "t3_company": "Global Commerce Co",
+    "t3_text": "Professional, strategic, and results-driven. Our e-commerce platform saw a 65% increase in conversions."
+  },
+  "cta": {
+    "title": "Ready to Transform Your Business?",
+    "subtitle": "Let's discuss how technology can drive your growth",
+    "button": "Schedule a Call"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Tell us about your project and we'll get back to you within 24 hours",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Message sent successfully!",
+    "error": "Something went wrong. Please try again.",
+    "name_placeholder": "Your name",
+    "email_placeholder": "your@email.com",
+    "message_placeholder": "Tell us about your project..."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "tagline": "Transforming businesses with technology that works.",
+    "service_mobile": "App Development",
+    "service_web": "Websites",
+    "service_automation": "Automations",
+    "service_analytics": "Digital Consulting",
+    "company": "Company",
+    "about": "About",
+    "legal": "Legal",
+    "copyright": "© {year} Victor Ramos BE. All rights reserved."
+  },
+  "common": {
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Error"
+  }
+}

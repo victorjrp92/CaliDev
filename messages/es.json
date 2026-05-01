@@ -1,0 +1,123 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "schedule": "Agendar una Llamada"
+  },
+  "hero": {
+    "headline": "Transformamos tu negocio con tecnología que funciona",
+    "subtitle": "Eficiencia y transformación digital para empresas que quieren escalar",
+    "cta_services": "Ver Servicios",
+    "cta_schedule": "Agendar una Llamada"
+  },
+  "portfolio": {
+    "badge": "Eficiencia Empresarial",
+    "title": "Victor Ramos",
+    "role": "CEO y Estratega Digital",
+    "description": "Con años de experiencia liderando transformación digital, desarrollo de productos y consultoría empresarial, ayudo a las empresas a aprovechar la tecnología para escalar eficientemente y lograr resultados medibles.",
+    "highlight1_title": "Experiencia",
+    "highlight1_desc": "Apps, sitios web, automatizaciones y consultoría para empresas que quieren escalar con tecnología.",
+    "highlight2_title": "Enfoque",
+    "highlight2_desc": "Soluciones personalizadas enfocadas en eficiencia, ROI y resultados medibles.",
+    "highlight3_title": "Disponibilidad",
+    "highlight3_desc": "Disponible para proyectos y asesoría. Remoto, zonas horarias de UE y EE.UU.",
+    "highlight1_value": "10+",
+    "highlight2_value": "100%",
+    "highlight3_value": "24/7",
+    "cta": "Ver Servicios",
+    "profile_name": "Victor Ramos",
+    "profile_subtitle": "CEO · Estratega Digital · Eficiencia Empresarial",
+    "profile_bio": "Ayudando a las empresas a ser más eficientes a través de la tecnología y la estrategia."
+  },
+  "services": {
+    "title": "Nuestros Servicios",
+    "subtitle": "Todo lo que necesitas para transformar digitalmente tu negocio",
+    "app_title": "Desarrollo de Apps",
+    "app_desc": "Aplicaciones móviles y web personalizadas construidas con tecnologías modernas para máximo rendimiento y experiencia de usuario.",
+    "web_title": "Sitios Web",
+    "web_desc": "Sitios web profesionales, rápidos y optimizados para SEO que convierten visitantes en clientes.",
+    "auto_title": "Automatizaciones",
+    "auto_desc": "Optimiza tus flujos de trabajo con automatizaciones inteligentes que ahorran tiempo y reducen errores.",
+    "consulting_title": "Consultoría Digital",
+    "consulting_desc": "Orientación estratégica en transformación digital, optimización de procesos y adopción de tecnología.",
+    "learn_more": "Más Información",
+    "benefits": "Beneficios Clave",
+    "app_benefit1": "Multiplataforma (iOS y Android)",
+    "app_benefit2": "Sincronización de datos en tiempo real",
+    "app_benefit3": "Arquitectura offline-first",
+    "web_benefit1": "Carga ultrarrápida",
+    "web_benefit2": "Optimizado para SEO",
+    "web_benefit3": "Responsive para móviles",
+    "auto_benefit1": "Automatización de procesos",
+    "auto_benefit2": "Integraciones API",
+    "auto_benefit3": "Flujos de trabajo personalizados",
+    "consulting_benefit1": "Hoja de ruta tecnológica",
+    "consulting_benefit2": "Análisis de ROI",
+    "consulting_benefit3": "Capacitación de equipos"
+  },
+  "blog": {
+    "title": "Últimos Artículos",
+    "subtitle": "Reflexiones sobre tecnología, negocios y transformación digital",
+    "read_more": "Leer Más",
+    "view_all": "Ver Todos los Artículos",
+    "min_read": "min de lectura",
+    "filter_all": "Todos",
+    "share": "Compartir",
+    "toc": "Tabla de Contenidos",
+    "related": "Artículos Relacionados",
+    "published": "Publicado",
+    "author": "Autor"
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen Nuestros Clientes",
+    "subtitle": "Resultados reales de alianzas reales",
+    "t1_name": "Maria Garcia",
+    "t1_company": "TechStart Solutions",
+    "t1_text": "Victor transformó toda nuestra infraestructura digital. La app personalizada que construyó redujo nuestros costos operativos en un 40%.",
+    "t2_name": "Thomas Mueller",
+    "t2_company": "Innovate GmbH",
+    "t2_text": "Las soluciones de automatización implementadas por Victor Ramos BE nos ahorraron 20 horas por semana. ROI excepcional.",
+    "t3_name": "Laura Martinez",
+    "t3_company": "Global Commerce Co",
+    "t3_text": "Profesional, estratégico y orientado a resultados. Nuestra plataforma de e-commerce vio un aumento del 65% en conversiones."
+  },
+  "cta": {
+    "title": "¿Listo para Transformar tu Negocio?",
+    "subtitle": "Hablemos de cómo la tecnología puede impulsar tu crecimiento",
+    "button": "Agendar una Llamada"
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "Cuéntanos sobre tu proyecto y te responderemos en 24 horas",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "message": "Mensaje",
+    "send": "Enviar Mensaje",
+    "success": "¡Mensaje enviado con éxito!",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "name_placeholder": "Tu nombre",
+    "email_placeholder": "tu@correo.com",
+    "message_placeholder": "Cuéntanos sobre tu proyecto..."
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "tagline": "Transformando negocios con tecnología que funciona.",
+    "service_mobile": "Desarrollo de Apps",
+    "service_web": "Sitios Web",
+    "service_automation": "Automatizaciones",
+    "service_analytics": "Consultoría Digital",
+    "company": "Empresa",
+    "about": "Acerca de",
+    "legal": "Legal",
+    "copyright": "© {year} Victor Ramos BE. Todos los derechos reservados."
+  },
+  "common": {
+    "back": "Volver",
+    "loading": "Cargando...",
+    "error": "Error"
+  }
+}
