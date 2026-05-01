@@ -13,7 +13,7 @@ import {
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Separator } from "@/components/ui/separator";
 import { Globe } from "lucide-react";
-import { XIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
+import { InstagramIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
 
 const locales = [
   { code: "en", label: "English" },
@@ -22,9 +22,9 @@ const locales = [
 ];
 
 const socialLinks = [
-  { label: "X (Twitter)", href: "https://twitter.com", icon: XIcon },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedInIcon },
-  { label: "GitHub", href: "https://github.com", icon: GitHubIcon },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/victorjrp9/", icon: LinkedInIcon },
+  { label: "Instagram", href: "https://instagram.com/calidevdev", icon: InstagramIcon },
+  { label: "GitHub", href: "https://github.com/victorjrp92", icon: GitHubIcon },
 ];
 
 function FooterLanguageSwitcher() {

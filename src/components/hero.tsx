@@ -10,12 +10,12 @@ import { Link } from "@/i18n/routing";
 import { SilkBackground } from "@/components/ui/silk-background";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
-import { XIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
+import { InstagramIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
 
 const socialLinks = [
-  { label: "X (Twitter)", handle: "@victorramosbe", href: "https://twitter.com", icon: XIcon },
-  { label: "LinkedIn", handle: "Victor Ramos", href: "https://linkedin.com", icon: LinkedInIcon },
-  { label: "GitHub", handle: "victorramosbe", href: "https://github.com", icon: GitHubIcon },
+  { label: "LinkedIn", handle: "victorjrp9", href: "https://www.linkedin.com/in/victorjrp9/", icon: LinkedInIcon },
+  { label: "Instagram", handle: "@calidevdev", href: "https://instagram.com/calidevdev", icon: InstagramIcon },
+  { label: "GitHub", handle: "victorjrp92", href: "https://github.com/victorjrp92", icon: GitHubIcon },
 ];
 
 export function Hero() {
