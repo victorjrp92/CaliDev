@@ -3,14 +3,34 @@ import { ServicesSection } from '@/components/services-section';
 import { BlogSection } from '@/components/blog-section';
 import { TestimonialsSection } from '@/components/testimonials-section';
 import { CtaSection } from '@/components/cta-section';
+import {
+  getHeroContent,
+  getPortfolioContent,
+  getSocialLinks,
+  getTestimonials,
+} from '@/lib/content';
+import { getLocale } from 'next-intl/server';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const locale = await getLocale();
+
+  const [heroContent, portfolioContent, socialLinks, testimonials] = await Promise.all([
+    getHeroContent(locale),
+    getPortfolioContent(locale),
+    getSocialLinks(),
+    getTestimonials(locale),
+  ]);
+
   return (
     <main>
-      <Hero />
+      <Hero
+        dbHero={heroContent}
+        dbPortfolio={portfolioContent}
+        dbSocialLinks={socialLinks}
+      />
       <ServicesSection />
       <BlogSection />
-      <TestimonialsSection />
+      <TestimonialsSection dbTestimonials={testimonials} />
       <CtaSection />
     </main>
   );

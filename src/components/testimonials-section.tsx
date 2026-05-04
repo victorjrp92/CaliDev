@@ -33,14 +33,21 @@ interface TestimonialData {
   initials: string;
 }
 
-const testimonials: TestimonialData[] = [
+const defaultTestimonials: TestimonialData[] = [
   { key: "t1", initials: "MG" },
   { key: "t2", initials: "TM" },
   { key: "t3", initials: "LM" },
 ];
 
-export function TestimonialsSection() {
+import type { DbTestimonial } from "@/lib/content";
+
+interface TestimonialsSectionProps {
+  dbTestimonials?: DbTestimonial[] | null;
+}
+
+export function TestimonialsSection({ dbTestimonials }: TestimonialsSectionProps) {
   const t = useTranslations("testimonials");
+  const useDb = dbTestimonials && dbTestimonials.length > 0;
 
   return (
     <section className="py-20 px-4 md:px-8 lg:px-16">
@@ -67,33 +74,57 @@ export function TestimonialsSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.key}
-              variants={cardVariants}
-              className="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-md dark:bg-white/5"
-            >
-              <Quote className="mb-4 h-8 w-8 text-primary/40" />
-              <blockquote className="text-base leading-relaxed text-foreground">
-                &ldquo;{t(`${testimonial.key}_text`)}&rdquo;
-              </blockquote>
-              <div className="mt-6 flex items-center gap-3">
-                <div
-                  className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold ${avatarColors[index % avatarColors.length]}`}
+          {useDb
+            ? dbTestimonials.map((item, index) => (
+                <motion.div
+                  key={item.author}
+                  variants={cardVariants}
+                  className="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-md dark:bg-white/5"
                 >
-                  {testimonial.initials}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">
-                    {t(`${testimonial.key}_name`)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {t(`${testimonial.key}_company`)}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                  <Quote className="mb-4 h-8 w-8 text-primary/40" />
+                  <blockquote className="text-base leading-relaxed text-foreground">
+                    &ldquo;{item.quote}&rdquo;
+                  </blockquote>
+                  <div className="mt-6 flex items-center gap-3">
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold ${avatarColors[index % avatarColors.length]}`}
+                    >
+                      {item.author.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{item.author}</p>
+                      <p className="text-xs text-muted-foreground">{item.role}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            : defaultTestimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.key}
+                  variants={cardVariants}
+                  className="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-md dark:bg-white/5"
+                >
+                  <Quote className="mb-4 h-8 w-8 text-primary/40" />
+                  <blockquote className="text-base leading-relaxed text-foreground">
+                    &ldquo;{t(`${testimonial.key}_text`)}&rdquo;
+                  </blockquote>
+                  <div className="mt-6 flex items-center gap-3">
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold ${avatarColors[index % avatarColors.length]}`}
+                    >
+                      {testimonial.initials}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">
+                        {t(`${testimonial.key}_name`)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t(`${testimonial.key}_company`)}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
         </motion.div>
       </div>
     </section>

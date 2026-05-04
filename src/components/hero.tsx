@@ -12,15 +12,39 @@ import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { InstagramIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
 
-const socialLinks = [
-  { label: "LinkedIn", handle: "victorjrp9", href: "https://www.linkedin.com/in/victorjrp9/", icon: LinkedInIcon },
-  { label: "Instagram", handle: "@calidevdev", href: "https://instagram.com/calidevdev", icon: InstagramIcon },
-  { label: "GitHub", handle: "victorjrp92", href: "https://github.com/victorjrp92", icon: GitHubIcon },
+const defaultSocialLinks = [
+  { label: "LinkedIn", handle: "victorjrp9", href: "https://www.linkedin.com/in/victorjrp9/", icon: "linkedin" },
+  { label: "Instagram", handle: "@calidevdev", href: "https://instagram.com/calidevdev", icon: "instagram" },
+  { label: "GitHub", handle: "victorjrp92", href: "https://github.com/victorjrp92", icon: "github" },
 ];
 
-export function Hero() {
+const iconMap: Record<string, typeof LinkedInIcon> = {
+  linkedin: LinkedInIcon,
+  instagram: InstagramIcon,
+  github: GitHubIcon,
+};
+
+interface HeroProps {
+  dbHero?: Record<string, unknown> | null;
+  dbPortfolio?: Record<string, unknown> | null;
+  dbSocialLinks?: Record<string, unknown>[] | null;
+}
+
+export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
   const t = useTranslations("hero");
   const tp = useTranslations("portfolio");
+
+  const h = (key: string) => (dbHero?.[key] as string) || t(key);
+  const p = (key: string) => (dbPortfolio?.[key] as string) || tp(key);
+
+  const socialLinks = (dbSocialLinks || defaultSocialLinks).map((s) => ({
+    label: s.label as string,
+    handle: s.handle as string,
+    href: s.href as string,
+    icon: iconMap[(s.icon as string) || "linkedin"] || LinkedInIcon,
+  }));
+
+  const photoUrl = (dbHero?.photo_url as string) || "/profile.png";
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -29,9 +53,9 @@ export function Hero() {
   }, []);
 
   const highlights = [
-    { title: tp("highlight1_title"), desc: tp("highlight1_desc") },
-    { title: tp("highlight2_title"), desc: tp("highlight2_desc") },
-    { title: tp("highlight3_title"), desc: tp("highlight3_desc") },
+    { title: p("highlight1_title"), desc: p("highlight1_desc") },
+    { title: p("highlight2_title"), desc: p("highlight2_desc") },
+    { title: p("highlight3_title"), desc: p("highlight3_desc") },
   ];
 
   return (
@@ -74,7 +98,7 @@ export function Hero() {
                 className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white md:text-xl"
                 style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
               >
-                {t("headline")}
+                {h("headline")}
               </motion.p>
 
               <motion.div
@@ -88,7 +112,7 @@ export function Hero() {
                   className="h-12 cursor-pointer rounded-full bg-white px-8 text-sm font-semibold uppercase tracking-[0.15em] text-[#0A3C30] shadow-lg transition-all duration-200 hover:bg-white/90 hover:shadow-xl"
                   render={<Link href="/services" />}
                 >
-                  {t("cta_services")}
+                  {h("cta_services")}
                 </Button>
                 <Button
                   size="lg"
@@ -97,7 +121,7 @@ export function Hero() {
                   render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
                 >
                   <Calendar className="mr-2 h-4 w-4" />
-                  {t("cta_schedule")}
+                  {h("cta_schedule")}
                 </Button>
               </motion.div>
 
@@ -107,7 +131,7 @@ export function Hero() {
                 transition={{ duration: 1, delay: 1.4 }}
                 className="mt-4 text-xs tracking-[0.2em] uppercase text-white/50"
               >
-                {t("subtitle")}
+                {h("subtitle")}
               </motion.p>
             </div>
           }
@@ -119,13 +143,13 @@ export function Hero() {
               <div className="flex flex-col justify-between space-y-4">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-foreground/40">
-                    {tp("badge")}
+                    {p("badge")}
                   </p>
                   <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground md:text-2xl">
-                    {tp("title")}, {tp("role")}
+                    {p("title")}, {p("role")}
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-foreground/70">
-                    {tp("description")}
+                    {p("description")}
                   </p>
                 </div>
 
@@ -152,7 +176,7 @@ export function Hero() {
                   className="h-10 w-full cursor-pointer gap-2 rounded-full text-sm uppercase tracking-[0.2em] transition-all hover:shadow-lg sm:w-auto"
                   render={<Link href="/services" />}
                 >
-                  {tp("cta")}
+                  {p("cta")}
                   <ArrowUpRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -166,7 +190,7 @@ export function Hero() {
                     className="relative mb-4 h-24 w-24 overflow-hidden rounded-full border border-border/40 shadow-lg md:h-28 md:w-28"
                   >
                     <Image
-                      src="/profile.png"
+                      src={photoUrl}
                       alt="Victor Ramos"
                       fill
                       className="object-cover object-[center_25%]"
@@ -174,13 +198,13 @@ export function Hero() {
                     />
                   </motion.div>
                   <h3 className="text-lg font-semibold tracking-tight text-foreground md:text-xl">
-                    {tp("profile_name")}
+                    {p("profile_name")}
                   </h3>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/45 md:text-[11px]">
-                    {tp("profile_subtitle")}
+                    {p("profile_subtitle")}
                   </p>
                   <p className="mt-2 max-w-xs text-sm leading-relaxed text-foreground/70">
-                    {tp("profile_bio")}
+                    {p("profile_bio")}
                   </p>
                 </div>
 
