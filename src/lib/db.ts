@@ -79,6 +79,36 @@ export async function initDatabase() {
   `;
 
   await sql`
+    CREATE TABLE IF NOT EXISTS payment_links (
+      id TEXT PRIMARY KEY,
+      client_name TEXT NOT NULL,
+      client_email TEXT,
+      client_address TEXT,
+      description TEXT NOT NULL,
+      amount NUMERIC(10,2) NOT NULL,
+      currency TEXT DEFAULT 'EUR',
+      status TEXT DEFAULT 'pending',
+      stripe_session_id TEXT,
+      receipt_number TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      paid_at TIMESTAMPTZ
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS business_info (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      address TEXT,
+      email TEXT,
+      phone TEXT,
+      tax_id TEXT,
+      tax_note TEXT,
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
+  await sql`
     CREATE TABLE IF NOT EXISTS portfolio_content (
       id SERIAL PRIMARY KEY,
       locale TEXT NOT NULL,

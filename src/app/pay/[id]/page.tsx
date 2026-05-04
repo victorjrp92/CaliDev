@@ -8,7 +8,7 @@ export default async function PaymentPage({ params, searchParams }: {
 }) {
   const { id } = await params;
   const { status: paymentStatus } = await searchParams;
-  const link = getPaymentLink(id);
+  const link = await getPaymentLink(id);
 
   if (!link) notFound();
 

@@ -12,7 +12,7 @@ export function PaymentClient({ link, queryStatus }: { link: PaymentLink; queryS
       <div className="max-w-md w-full text-center space-y-4 p-8 bg-card rounded-2xl border border-border shadow-lg">
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
         <h1 className="text-2xl font-bold">Payment Successful</h1>
-        <p className="text-muted-foreground">Thank you, {link.clientName}. Your payment has been received.</p>
+        <p className="text-muted-foreground">Thank you, {link.client_name}. Your payment has been received.</p>
       </div>
     );
   }
@@ -57,7 +57,7 @@ export function PaymentClient({ link, queryStatus }: { link: PaymentLink; queryS
       <div className="space-y-3 p-4 rounded-xl bg-muted">
         <div className="flex justify-between">
           <span className="text-muted-foreground">Client</span>
-          <span className="font-medium">{link.clientName}</span>
+          <span className="font-medium">{link.client_name}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Description</span>

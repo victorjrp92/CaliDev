@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: Request) {
   const { paymentId } = await request.json();
-  const link = getPaymentLink(paymentId);
+  const link = await getPaymentLink(paymentId);
 
   if (!link) {
     return NextResponse.json({ error: 'Payment link not found' }, { status: 404 });
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Already paid' }, { status: 400 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://calidev.dev';
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         currency: link.currency.toLowerCase(),
         product_data: {
           name: link.description,
-          description: `Payment for ${link.clientName}`,
+          description: `Payment for ${link.client_name}`,
         },
         unit_amount: Math.round(link.amount * 100),
       },

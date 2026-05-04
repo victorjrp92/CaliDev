@@ -19,12 +19,12 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const paymentId = session.metadata?.paymentId;
     if (paymentId) {
-      const link = getPaymentLink(paymentId);
+      const link = await getPaymentLink(paymentId);
       if (link) {
         link.status = 'paid';
-        link.stripeSessionId = session.id;
-        link.paidAt = new Date().toISOString();
-        savePaymentLink(link);
+        link.stripe_session_id = session.id;
+        link.paid_at = new Date().toISOString();
+        await savePaymentLink(link);
       }
     }
   }

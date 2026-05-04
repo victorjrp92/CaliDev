@@ -30,6 +30,9 @@ export function ImageUpload({ value, onChange, folder, className = "" }: ImageUp
     if (res.ok) {
       const { url } = await res.json();
       onChange(url);
+    } else {
+      const data = await res.json().catch(() => ({ error: "Upload failed" }));
+      alert(data.error || "Upload failed");
     }
     setUploading(false);
     if (inputRef.current) inputRef.current.value = "";
