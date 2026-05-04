@@ -15,17 +15,18 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     await requireAuth();
-    const { locale, headline, subtitle, cta_services, cta_schedule, photo_url } = await request.json();
+    const { locale, headline, subtitle, cta_services, cta_schedule, photo_url, photo_position } = await request.json();
 
     await sql`
-      INSERT INTO hero_content (locale, headline, subtitle, cta_services, cta_schedule, photo_url)
-      VALUES (${locale}, ${headline}, ${subtitle}, ${cta_services}, ${cta_schedule}, ${photo_url})
+      INSERT INTO hero_content (locale, headline, subtitle, cta_services, cta_schedule, photo_url, photo_position)
+      VALUES (${locale}, ${headline}, ${subtitle}, ${cta_services}, ${cta_schedule}, ${photo_url}, ${photo_position || '50% 25%'})
       ON CONFLICT (locale) DO UPDATE SET
         headline = ${headline},
         subtitle = ${subtitle},
         cta_services = ${cta_services},
         cta_schedule = ${cta_schedule},
         photo_url = COALESCE(${photo_url}, hero_content.photo_url),
+        photo_position = COALESCE(${photo_position}, hero_content.photo_position),
         updated_at = NOW()
     `;
 

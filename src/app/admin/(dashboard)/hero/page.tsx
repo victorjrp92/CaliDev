@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { LocaleTabs } from "@/components/admin/locale-tabs";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { PhotoPositionAdjuster } from "@/components/admin/photo-position-adjuster";
 
 interface HeroRow {
   locale: string;
@@ -16,6 +17,7 @@ interface HeroRow {
   cta_services: string;
   cta_schedule: string;
   photo_url: string | null;
+  photo_position: string;
 }
 
 interface PortfolioRow {
@@ -119,16 +121,29 @@ export default function HeroEditorPage() {
       {/* Profile Photo */}
       <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 text-lg font-semibold">Profile Photo</h2>
-        <div className="w-32">
-          <ImageUpload
-            value={heroData.en?.photo_url || null}
-            onChange={(url) => {
-              for (const locale of ["en", "es", "de"]) {
-                updateHero(locale, "photo_url", url);
-              }
-            }}
-            folder="hero"
-          />
+        <div className="flex flex-col gap-6">
+          <div className="w-32">
+            <ImageUpload
+              value={heroData.en?.photo_url || null}
+              onChange={(url) => {
+                for (const locale of ["en", "es", "de"]) {
+                  updateHero(locale, "photo_url", url);
+                }
+              }}
+              folder="hero"
+            />
+          </div>
+          {heroData.en?.photo_url && (
+            <PhotoPositionAdjuster
+              src={heroData.en.photo_url}
+              position={heroData.en?.photo_position || "50% 25%"}
+              onChange={(pos) => {
+                for (const locale of ["en", "es", "de"]) {
+                  updateHero(locale, "photo_position", pos);
+                }
+              }}
+            />
+          )}
         </div>
       </div>
 

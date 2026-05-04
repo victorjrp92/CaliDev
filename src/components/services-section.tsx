@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
+import Image from "next/image";
 import {
   Smartphone,
   Globe,
@@ -31,21 +32,35 @@ const cardVariants = {
   },
 };
 
+const iconMap: Record<string, LucideIcon> = {
+  Smartphone,
+  Globe,
+  Zap,
+  BarChart3,
+};
+
 interface ServiceCardData {
   key: string;
   icon: LucideIcon;
   href: string;
 }
 
-const services: ServiceCardData[] = [
+const defaultServices: ServiceCardData[] = [
   { key: "app", icon: Smartphone, href: "/services#app-development" },
   { key: "web", icon: Globe, href: "/services#websites" },
   { key: "auto", icon: Zap, href: "/services#automations" },
   { key: "consulting", icon: BarChart3, href: "/services#consulting" },
 ];
 
-export function ServicesSection() {
+import type { DbService } from "@/lib/content";
+
+interface ServicesSectionProps {
+  dbServices?: DbService[] | null;
+}
+
+export function ServicesSection({ dbServices }: ServicesSectionProps) {
   const t = useTranslations("services");
+  const useDb = dbServices && dbServices.length > 0;
 
   return (
     <section className="py-20 px-4 md:px-8 lg:px-16">
@@ -72,32 +87,64 @@ export function ServicesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {services.map((service) => (
-            <motion.div
-              key={service.key}
-              variants={cardVariants}
-              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-              className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg"
-            >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <service.icon className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold">
-                {t(`${service.key}_title`)}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {t(`${service.key}_desc`)}
-              </p>
-              <Button
-                variant="link"
-                className="mt-4 h-auto cursor-pointer p-0 text-primary transition-colors duration-200"
-                render={<Link href={service.href} />}
-              >
-                {t("learn_more")}
-                <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Button>
-            </motion.div>
-          ))}
+          {useDb
+            ? dbServices.map((svc) => {
+                const Icon = iconMap[svc.icon] || BarChart3;
+                return (
+                  <motion.div
+                    key={svc.slug}
+                    variants={cardVariants}
+                    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                    className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg"
+                  >
+                    {svc.image_url ? (
+                      <div className="relative mb-4 h-12 w-12 overflow-hidden rounded-lg">
+                        <Image src={svc.image_url} alt={svc.title} fill className="object-cover" sizes="48px" />
+                      </div>
+                    ) : (
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                    )}
+                    <h3 className="text-lg font-semibold">{svc.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{svc.description}</p>
+                    <Button
+                      variant="link"
+                      className="mt-4 h-auto cursor-pointer p-0 text-primary transition-colors duration-200"
+                      render={<Link href={`/services#${svc.slug}`} />}
+                    >
+                      {t("learn_more")}
+                      <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                    </Button>
+                  </motion.div>
+                );
+              })
+            : defaultServices.map((service) => (
+                <motion.div
+                  key={service.key}
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                  className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg"
+                >
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                    <service.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">
+                    {t(`${service.key}_title`)}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {t(`${service.key}_desc`)}
+                  </p>
+                  <Button
+                    variant="link"
+                    className="mt-4 h-auto cursor-pointer p-0 text-primary transition-colors duration-200"
+                    render={<Link href={service.href} />}
+                  >
+                    {t("learn_more")}
+                    <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Button>
+                </motion.div>
+              ))}
         </motion.div>
       </div>
     </section>

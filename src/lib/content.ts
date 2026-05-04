@@ -8,6 +8,14 @@ export interface DbTestimonial {
   rating?: number;
 }
 
+export interface DbService {
+  slug: string;
+  icon: string;
+  image_url?: string | null;
+  title: string;
+  description: string;
+}
+
 export async function getHeroContent(locale: string) {
   try {
     const result = await sql`SELECT * FROM hero_content WHERE locale = ${locale}`;
@@ -38,15 +46,15 @@ export async function getSocialLinks() {
   return null;
 }
 
-export async function getServices(locale: string) {
+export async function getServices(locale: string): Promise<DbService[] | null> {
   try {
     const result = await sql`
-      SELECT s.slug, s.icon, si.title, si.description
+      SELECT s.slug, s.icon, s.image_url, si.title, si.description
       FROM services s
       JOIN services_i18n si ON s.id = si.service_id AND si.locale = ${locale}
       ORDER BY s.sort_order
     `;
-    if (result.rows.length > 0) return result.rows;
+    if (result.rows.length > 0) return result.rows as DbService[];
   } catch {
     // DB not available
   }

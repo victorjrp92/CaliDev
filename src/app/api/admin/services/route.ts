@@ -21,9 +21,9 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     await requireAuth();
-    const { id, slug, icon, translations } = await request.json();
+    const { id, slug, icon, image_url, translations } = await request.json();
 
-    await sql`UPDATE services SET slug = ${slug}, icon = ${icon} WHERE id = ${id}`;
+    await sql`UPDATE services SET slug = ${slug}, icon = ${icon}, image_url = ${image_url || null} WHERE id = ${id}`;
 
     for (const t of translations) {
       await sql`

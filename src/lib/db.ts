@@ -108,6 +108,10 @@ export async function initDatabase() {
     )
   `;
 
+  // Add columns that may not exist yet
+  await sql`ALTER TABLE hero_content ADD COLUMN IF NOT EXISTS photo_position TEXT DEFAULT '50% 25%'`;
+  await sql`ALTER TABLE services ADD COLUMN IF NOT EXISTS image_url TEXT`;
+
   await sql`
     CREATE TABLE IF NOT EXISTS portfolio_content (
       id SERIAL PRIMARY KEY,

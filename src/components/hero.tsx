@@ -45,6 +45,7 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
   }));
 
   const photoUrl = (dbHero?.photo_url as string) || "/profile.png";
+  const photoPosition = (dbHero?.photo_position as string) || "center 25%";
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -193,7 +194,8 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                       src={photoUrl}
                       alt="Victor Ramos"
                       fill
-                      className="object-cover object-[center_25%]"
+                      className="object-cover"
+                      style={{ objectPosition: photoPosition }}
                       sizes="112px"
                     />
                   </motion.div>

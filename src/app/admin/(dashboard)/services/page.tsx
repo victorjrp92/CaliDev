@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { LocaleTabs } from "@/components/admin/locale-tabs";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 interface ServiceRow {
   id: number;
   slug: string;
   icon: string;
+  image_url: string | null;
   translations: { locale: string; title: string; description: string }[];
 }
 
@@ -76,9 +78,25 @@ export default function ServicesEditorPage() {
 
       {services.map((svc, idx) => (
         <div key={svc.id} className="rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <h2 className="text-lg font-semibold capitalize">{svc.slug}</h2>
-            <span className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">{svc.icon}</span>
+          <div className="mb-4 flex items-start gap-4">
+            <div className="w-20">
+              <ImageUpload
+                value={svc.image_url}
+                onChange={(url) => {
+                  setServices((prev) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], image_url: url };
+                    return updated;
+                  });
+                }}
+                folder="services"
+              />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold capitalize">{svc.slug}</h2>
+              <span className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">{svc.icon}</span>
+              <p className="mt-1 text-xs text-muted-foreground">Image replaces the icon on the public site</p>
+            </div>
           </div>
           <LocaleTabs>
             {(locale) => {
