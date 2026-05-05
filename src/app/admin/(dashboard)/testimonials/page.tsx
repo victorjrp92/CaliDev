@@ -163,7 +163,16 @@ export default function TestimonialsEditorPage() {
               <div className="w-20">
                 <ImageUpload
                   value={t.avatar_url}
-                  onChange={(url) => updateField(idx, "avatar_url", url)}
+                  onChange={(url) => {
+                    updateField(idx, "avatar_url", url);
+                    if (t.id > 0) {
+                      fetch("/api/admin/testimonials", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ ...t, avatar_url: url }),
+                      });
+                    }
+                  }}
                   folder="testimonials"
                 />
               </div>

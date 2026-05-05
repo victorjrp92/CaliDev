@@ -108,10 +108,29 @@ export default function ServicesEditorPage() {
               <ImageUpload
                 value={svc.image_url}
                 onChange={(url) => {
+                  const updated = { ...svc, image_url: url };
                   setServices((prev) => {
-                    const updated = [...prev];
-                    updated[idx] = { ...updated[idx], image_url: url };
-                    return updated;
+                    const copy = [...prev];
+                    copy[idx] = updated;
+                    return copy;
+                  });
+                  fetch("/api/admin/services", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updated),
+                  });
+                }}
+                onRemove={() => {
+                  const updated = { ...svc, image_url: null };
+                  setServices((prev) => {
+                    const copy = [...prev];
+                    copy[idx] = updated;
+                    return copy;
+                  });
+                  fetch("/api/admin/services", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updated),
                   });
                 }}
                 folder="services"

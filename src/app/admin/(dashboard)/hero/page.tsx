@@ -156,6 +156,13 @@ export default function HeroEditorPage() {
               onChange={(url) => {
                 for (const locale of ["en", "es", "de"]) {
                   updateHero(locale, "photo_url", url);
+                  if (heroData[locale]) {
+                    fetch("/api/admin/hero", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ ...heroData[locale], photo_url: url }),
+                    });
+                  }
                 }
               }}
               folder="hero"
