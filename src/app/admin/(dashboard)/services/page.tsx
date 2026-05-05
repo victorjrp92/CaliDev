@@ -21,11 +21,25 @@ export default function ServicesEditorPage() {
   const [services, setServices] = useState<ServiceRow[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/services")
-      .then((r) => r.json())
-      .then(setServices);
+    async function load() {
+      try {
+        const res = await fetch("/api/admin/services");
+        if (!res.ok) {
+          setError("Failed to load services");
+          return;
+        }
+        setServices(await res.json());
+      } catch {
+        setError("Failed to load services");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   function updateTranslation(serviceIdx: number, locale: string, field: string, value: string) {
@@ -53,6 +67,17 @@ export default function ServicesEditorPage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+  if (error) return (
+    <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-6 text-center">
+      <p className="text-destructive">{error}</p>
+    </div>
+  );
 
   return (
     <div className="space-y-8">

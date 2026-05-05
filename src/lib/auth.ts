@@ -2,9 +2,11 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 
-const SECRET = new TextEncoder().encode(
-  process.env.ADMIN_JWT_SECRET || "fallback-dev-secret-change-me"
-);
+function getSecret() {
+  const secret = process.env.ADMIN_JWT_SECRET;
+  if (!secret) throw new Error("ADMIN_JWT_SECRET environment variable must be set");
+  return new TextEncoder().encode(secret);
+}
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 12);
@@ -18,12 +20,12 @@ export async function createToken(email: string) {
   return new SignJWT({ email })
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getSecret());
 }
 
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, SECRET);
+    const { payload } = await jwtVerify(token, getSecret());
     return payload as { email: string };
   } catch {
     return null;

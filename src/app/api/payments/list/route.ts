@@ -7,7 +7,11 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const links = await getPaymentLinks();
-  return NextResponse.json({ links });
+  try {
+    const links = await getPaymentLinks();
+    return NextResponse.json({ links });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

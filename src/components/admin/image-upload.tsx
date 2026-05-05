@@ -2,17 +2,18 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Upload, X } from "lucide-react";
+import { Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ImageUploadProps {
   value: string | null;
   onChange: (url: string) => void;
+  onRemove?: () => void;
   folder: string;
   className?: string;
 }
 
-export function ImageUpload({ value, onChange, folder, className = "" }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, onRemove, folder, className = "" }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +55,18 @@ export function ImageUpload({ value, onChange, folder, className = "" }: ImageUp
               <Upload className="mr-1 h-3 w-3" />
               Replace
             </Button>
+            {onRemove && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="cursor-pointer bg-red-500/90 text-white hover:bg-red-600"
+                onClick={onRemove}
+              >
+                <Trash2 className="mr-1 h-3 w-3" />
+                Remove
+              </Button>
+            )}
           </div>
         </div>
       ) : (

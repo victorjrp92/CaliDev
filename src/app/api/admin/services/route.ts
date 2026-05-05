@@ -1,26 +1,33 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const result = await sql`
-      SELECT s.*, json_agg(json_build_object('locale', si.locale, 'title', si.title, 'description', si.description)) as translations
+      SELECT s.*, COALESCE(json_agg(json_build_object('locale', si.locale, 'title', si.title, 'description', si.description)) FILTER (WHERE si.locale IS NOT NULL), '[]'::json) as translations
       FROM services s
       LEFT JOIN services_i18n si ON s.id = si.service_id
       GROUP BY s.id
       ORDER BY s.sort_order
     `;
     return NextResponse.json(result.rows);
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const { id, slug, icon, image_url, translations } = await request.json();
 
     await sql`UPDATE services SET slug = ${slug}, icon = ${icon}, image_url = ${image_url || null} WHERE id = ${id}`;
@@ -35,7 +42,8 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

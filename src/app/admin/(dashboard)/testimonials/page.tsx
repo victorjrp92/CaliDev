@@ -22,11 +22,25 @@ export default function TestimonialsEditorPage() {
   const [testimonials, setTestimonials] = useState<TestimonialRow[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/testimonials")
-      .then((r) => r.json())
-      .then(setTestimonials);
+    async function load() {
+      try {
+        const res = await fetch("/api/admin/testimonials");
+        if (!res.ok) {
+          setError("Failed to load testimonials");
+          return;
+        }
+        setTestimonials(await res.json());
+      } catch {
+        setError("Failed to load testimonials");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   function updateField(idx: number, field: string, value: string | number) {
@@ -102,6 +116,17 @@ export default function TestimonialsEditorPage() {
     }
     setTestimonials((prev) => prev.filter((_, i) => i !== idx));
   }
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+  if (error) return (
+    <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-6 text-center">
+      <p className="text-destructive">{error}</p>
+    </div>
+  );
 
   return (
     <div className="space-y-8">

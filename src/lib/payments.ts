@@ -51,15 +51,16 @@ export async function savePaymentLink(link: PaymentLink) {
 }
 
 export async function getNextReceiptNumber(): Promise<string> {
+  const year = new Date().getFullYear();
+  const prefix = `CD-${year}-%`;
   const result = await sql`
     SELECT receipt_number FROM payment_links
-    WHERE receipt_number IS NOT NULL
+    WHERE receipt_number IS NOT NULL AND receipt_number LIKE ${prefix}
     ORDER BY receipt_number DESC LIMIT 1
   `;
   const last = result.rows[0]?.receipt_number;
-  if (!last) return "CD-2026-001";
+  if (!last) return `CD-${year}-001`;
   const num = parseInt(last.split("-").pop() || "0") + 1;
-  const year = new Date().getFullYear();
   return `CD-${year}-${num.toString().padStart(3, "0")}`;
 }
 

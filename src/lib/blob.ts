@@ -4,7 +4,8 @@ export async function uploadImage(
   file: File,
   folder: string
 ): Promise<string> {
-  const filename = `${folder}/${Date.now()}-${file.name}`;
+  const sanitizedName = file.name.replace(/[\/\\]/g, "").replace(/[^a-zA-Z0-9.\-]/g, "_");
+  const filename = `${folder}/${Date.now()}-${sanitizedName}`;
   const blob = await put(filename, file, {
     access: "public",
     addRandomSuffix: false,
@@ -13,6 +14,9 @@ export async function uploadImage(
 }
 
 export async function deleteImage(url: string) {
+  if (!url.includes(".public.blob.vercel-storage.com")) {
+    return;
+  }
   try {
     await del(url);
   } catch {

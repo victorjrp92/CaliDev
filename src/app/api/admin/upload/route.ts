@@ -18,6 +18,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    // File size validation (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "File too large (max 5MB)" }, { status: 400 });
+    }
+
+    // File type allowlist
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      return NextResponse.json({ error: `Invalid file type. Allowed: ${allowedTypes.join(", ")}` }, { status: 400 });
+    }
+
+    // Folder allowlist
+    const allowedFolders = ["hero", "services", "testimonials", "uploads"];
+    if (!allowedFolders.includes(folder)) {
+      return NextResponse.json({ error: `Invalid folder. Allowed: ${allowedFolders.join(", ")}` }, { status: 400 });
+    }
+
     const url = await replaceImage(file, oldUrl, folder);
     return NextResponse.json({ url });
   } catch (err) {

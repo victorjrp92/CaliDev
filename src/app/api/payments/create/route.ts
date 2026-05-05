@@ -11,7 +11,22 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { clientName, clientEmail, clientAddress, description, amount, currency } = body;
 
-  const id = `pay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  // Input validation
+  if (!clientName || typeof clientName !== "string" || clientName.trim() === "") {
+    return NextResponse.json({ error: "clientName is required and must be a non-empty string" }, { status: 400 });
+  }
+  if (!description || typeof description !== "string" || description.trim() === "") {
+    return NextResponse.json({ error: "description is required and must be a non-empty string" }, { status: 400 });
+  }
+  if (typeof amount !== "number" || amount <= 0) {
+    return NextResponse.json({ error: "amount must be a number greater than 0" }, { status: 400 });
+  }
+  const allowedCurrencies = ["EUR", "USD", "AUD"];
+  if (currency && !allowedCurrencies.includes(currency)) {
+    return NextResponse.json({ error: `currency must be one of: ${allowedCurrencies.join(", ")}` }, { status: 400 });
+  }
+
+  const id = `pay_${crypto.randomUUID()}`;
 
   const link: PaymentLink = {
     id,

@@ -21,6 +21,13 @@ const iconMap: Record<string, LucideIcon> = {
   BarChart3,
 };
 
+const slugToKey: Record<string, string> = {
+  mobile: "app",
+  web: "web",
+  automation: "auto",
+  analytics: "consulting",
+};
+
 const defaultServices = [
   { id: "app-development", icon: Smartphone, key: "app" },
   { id: "websites", icon: Globe, key: "web" },
@@ -40,7 +47,7 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
     ? dbServices.map((svc) => ({
         id: svc.slug,
         icon: iconMap[svc.icon] || BarChart3,
-        key: svc.slug,
+        key: slugToKey[svc.slug] || svc.slug,
         title: svc.title,
         desc: svc.description,
         imageUrl: svc.image_url,
@@ -79,9 +86,7 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
                 <h3 className="font-semibold mb-3">{t("benefits")}</h3>
                 <ul className="space-y-2">
                   {[1, 2, 3].map((n) => {
-                    const benefitKey = useDb
-                      ? `${service.key}_benefit${n}`
-                      : `${service.key}_benefit${n}`;
+                    const benefitKey = `${service.key}_benefit${n}`;
                     return (
                       <li
                         key={n}

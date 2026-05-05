@@ -10,7 +10,7 @@ import { Link } from "@/i18n/routing";
 import { SilkBackground } from "@/components/ui/silk-background";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
-import { InstagramIcon, LinkedInIcon, GitHubIcon } from "@/components/social-icons";
+import { InstagramIcon, LinkedInIcon, GitHubIcon, XIcon } from "@/components/social-icons";
 
 const defaultSocialLinks = [
   { label: "LinkedIn", handle: "victorjrp9", href: "https://www.linkedin.com/in/victorjrp9/", icon: "linkedin" },
@@ -22,6 +22,7 @@ const iconMap: Record<string, typeof LinkedInIcon> = {
   linkedin: LinkedInIcon,
   instagram: InstagramIcon,
   github: GitHubIcon,
+  x: XIcon,
 };
 
 interface HeroProps {

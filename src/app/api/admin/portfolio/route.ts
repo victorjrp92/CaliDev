@@ -1,20 +1,27 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const result = await sql`SELECT * FROM portfolio_content ORDER BY locale`;
     return NextResponse.json(result.rows);
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const data = await request.json();
     const { locale } = data;
 
@@ -32,7 +39,8 @@ export async function PUT(request: Request) {
     `;
 
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

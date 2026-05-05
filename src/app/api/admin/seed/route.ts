@@ -4,6 +4,10 @@ import { initDatabase } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_SEED !== "true") {
+    return NextResponse.json({ error: "Seed route disabled in production" }, { status: 403 });
+  }
+
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 

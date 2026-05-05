@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Quote } from "lucide-react";
+import Image from "next/image";
 
 const containerVariants = {
   hidden: {},
@@ -87,9 +88,15 @@ export function TestimonialsSection({ dbTestimonials }: TestimonialsSectionProps
                   </blockquote>
                   <div className="mt-6 flex items-center gap-3">
                     <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold ${avatarColors[index % avatarColors.length]}`}
+                      className={`relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full text-sm font-bold ${avatarColors[index % avatarColors.length]}`}
                     >
-                      {item.author.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+                      {item.avatar_url ? (
+                        <Image src={item.avatar_url} alt={item.author} fill className="object-cover" sizes="44px" />
+                      ) : (
+                        <span className="text-xs font-medium text-primary">
+                          {item.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{item.author}</p>

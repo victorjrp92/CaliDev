@@ -7,23 +7,27 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
 
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Payment ID required" }, { status: 400 });
+    }
 
-  if (!id) {
-    return NextResponse.json({ error: "Payment ID required" }, { status: 400 });
+    const link = await getPaymentLink(id);
+    if (!link) {
+      return NextResponse.json({ error: "Payment not found" }, { status: 404 });
+    }
+
+    if (!link.receipt_number) {
+      link.receipt_number = await getNextReceiptNumber();
+      await savePaymentLink(link);
+    }
+
+    return NextResponse.json({ success: true, receipt_number: link.receipt_number });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  const link = await getPaymentLink(id);
-  if (!link) {
-    return NextResponse.json({ error: "Payment not found" }, { status: 404 });
-  }
-
-  if (!link.receipt_number) {
-    link.receipt_number = await getNextReceiptNumber();
-    await savePaymentLink(link);
-  }
-
-  return NextResponse.json({ success: true, receipt_number: link.receipt_number });
 }

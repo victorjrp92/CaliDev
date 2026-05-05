@@ -144,18 +144,10 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/privacy"
+                  href="/contact"
                   className="cursor-pointer text-sm text-background/70 transition-colors duration-200 hover:text-background"
                 >
-                  {t("privacy")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="cursor-pointer text-sm text-background/70 transition-colors duration-200 hover:text-background"
-                >
-                  {t("terms")}
+                  {nav("contact")}
                 </Link>
               </li>
             </ul>

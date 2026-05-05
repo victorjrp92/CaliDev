@@ -1,27 +1,34 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { deleteImage } from "@/lib/blob";
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const result = await sql`
-      SELECT t.*, json_agg(json_build_object('locale', ti.locale, 'quote', ti.quote)) as translations
+      SELECT t.*, COALESCE(json_agg(json_build_object('locale', ti.locale, 'quote', ti.quote)) FILTER (WHERE ti.locale IS NOT NULL), '[]'::json) as translations
       FROM testimonials t
       LEFT JOIN testimonials_i18n ti ON t.id = ti.testimonial_id
       GROUP BY t.id
       ORDER BY t.sort_order
     `;
     return NextResponse.json(result.rows);
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const { author, role, rating, translations, avatar_url } = await request.json();
 
     const result = await sql`
@@ -39,14 +46,18 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true, id: tid });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const { id, author, role, rating, translations, avatar_url } = await request.json();
 
     if (avatar_url !== undefined) {
@@ -71,14 +82,18 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    await requireAuth();
     const { id } = await request.json();
 
     const old = await sql`SELECT avatar_url FROM testimonials WHERE id = ${id}`;
@@ -88,7 +103,8 @@ export async function DELETE(request: Request) {
 
     await sql`DELETE FROM testimonials WHERE id = ${id}`;
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (err) {
+    console.error("API error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

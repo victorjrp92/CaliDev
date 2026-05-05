@@ -43,20 +43,37 @@ export default function HeroEditorPage() {
   const [portfolioData, setPortfolioData] = useState<Record<string, PortfolioRow>>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/admin/hero").then((r) => r.json()),
-      fetch("/api/admin/portfolio").then((r) => r.json()),
-    ]).then(([hero, portfolio]) => {
-      const hMap: Record<string, HeroRow> = {};
-      for (const h of hero) hMap[h.locale] = h;
-      setHeroData(hMap);
+    async function load() {
+      try {
+        const [heroRes, portfolioRes] = await Promise.all([
+          fetch("/api/admin/hero"),
+          fetch("/api/admin/portfolio"),
+        ]);
+        if (!heroRes.ok || !portfolioRes.ok) {
+          setError("Failed to load hero data");
+          return;
+        }
+        const hero = await heroRes.json();
+        const portfolio = await portfolioRes.json();
 
-      const pMap: Record<string, PortfolioRow> = {};
-      for (const p of portfolio) pMap[p.locale] = p;
-      setPortfolioData(pMap);
-    });
+        const hMap: Record<string, HeroRow> = {};
+        for (const h of hero) hMap[h.locale] = h;
+        setHeroData(hMap);
+
+        const pMap: Record<string, PortfolioRow> = {};
+        for (const p of portfolio) pMap[p.locale] = p;
+        setPortfolioData(pMap);
+      } catch {
+        setError("Failed to load hero data");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   function updateHero(locale: string, field: string, value: string) {
@@ -95,6 +112,17 @@ export default function HeroEditorPage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+  if (error) return (
+    <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-6 text-center">
+      <p className="text-destructive">{error}</p>
+    </div>
+  );
 
   return (
     <div className="space-y-8">
