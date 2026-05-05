@@ -51,6 +51,7 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
         title: svc.title,
         desc: svc.description,
         imageUrl: svc.image_url,
+        benefits: [svc.benefit1, svc.benefit2, svc.benefit3],
       }))
     : defaultServices.map((s) => ({
         id: s.id,
@@ -59,6 +60,7 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
         title: t(`${s.key}_title`),
         desc: t(`${s.key}_desc`),
         imageUrl: null as string | null,
+        benefits: [null, null, null] as (string | null)[],
       }));
 
   return (
@@ -85,15 +87,15 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
               <div>
                 <h3 className="font-semibold mb-3">{t("benefits")}</h3>
                 <ul className="space-y-2">
-                  {[1, 2, 3].map((n) => {
-                    const benefitKey = `${service.key}_benefit${n}`;
+                  {[0, 1, 2].map((n) => {
+                    const text = service.benefits[n] || t(`${service.key}_benefit${n + 1}`);
                     return (
                       <li
                         key={n}
                         className="flex items-center gap-2 text-muted-foreground"
                       >
                         <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        {t(benefitKey)}
+                        {text}
                       </li>
                     );
                   })}

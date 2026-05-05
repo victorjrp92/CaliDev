@@ -111,6 +111,9 @@ export async function initDatabase() {
   // Add columns that may not exist yet
   await sql`ALTER TABLE hero_content ADD COLUMN IF NOT EXISTS photo_position TEXT DEFAULT '50% 25%'`;
   await sql`ALTER TABLE services ADD COLUMN IF NOT EXISTS image_url TEXT`;
+  await sql`ALTER TABLE services_i18n ADD COLUMN IF NOT EXISTS benefit1 TEXT`;
+  await sql`ALTER TABLE services_i18n ADD COLUMN IF NOT EXISTS benefit2 TEXT`;
+  await sql`ALTER TABLE services_i18n ADD COLUMN IF NOT EXISTS benefit3 TEXT`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS portfolio_content (

@@ -14,7 +14,7 @@ interface ServiceRow {
   slug: string;
   icon: string;
   image_url: string | null;
-  translations: { locale: string; title: string; description: string }[];
+  translations: { locale: string; title: string; description: string; benefit1: string; benefit2: string; benefit3: string }[];
 }
 
 export default function ServicesEditorPage() {
@@ -179,6 +179,12 @@ export default function ServicesEditorPage() {
                   <div className="space-y-2">
                     <Label>Description</Label>
                     <Textarea value={t.description} onChange={(e) => updateTranslation(idx, locale, "description", e.target.value)} rows={3} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Key Benefits</Label>
+                    <Input value={t.benefit1 || ""} onChange={(e) => updateTranslation(idx, locale, "benefit1", e.target.value)} placeholder="Benefit 1" />
+                    <Input value={t.benefit2 || ""} onChange={(e) => updateTranslation(idx, locale, "benefit2", e.target.value)} placeholder="Benefit 2" />
+                    <Input value={t.benefit3 || ""} onChange={(e) => updateTranslation(idx, locale, "benefit3", e.target.value)} placeholder="Benefit 3" />
                   </div>
                 </div>
               );

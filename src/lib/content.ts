@@ -14,6 +14,9 @@ export interface DbService {
   image_url?: string | null;
   title: string;
   description: string;
+  benefit1?: string | null;
+  benefit2?: string | null;
+  benefit3?: string | null;
 }
 
 export async function getHeroContent(locale: string) {
@@ -49,7 +52,7 @@ export async function getSocialLinks() {
 export async function getServices(locale: string): Promise<DbService[] | null> {
   try {
     const result = await sql`
-      SELECT s.slug, s.icon, s.image_url, si.title, si.description
+      SELECT s.slug, s.icon, s.image_url, si.title, si.description, si.benefit1, si.benefit2, si.benefit3
       FROM services s
       JOIN services_i18n si ON s.id = si.service_id AND si.locale = ${locale}
       ORDER BY s.sort_order
