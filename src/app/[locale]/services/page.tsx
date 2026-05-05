@@ -1,5 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { ServicesContent } from '@/components/services-content';
+import { getServices } from '@/lib/content';
+
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -13,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'services' });
+  const dbServices = await getServices(locale);
 
   return (
     <main className="container mx-auto px-4 py-24 max-w-6xl">
@@ -20,7 +24,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('title')}</h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{t('subtitle')}</p>
       </div>
-      <ServicesContent />
+      <ServicesContent dbServices={dbServices} />
     </main>
   );
 }

@@ -12,6 +12,8 @@ import {
 } from '@/lib/content';
 import { getLocale } from 'next-intl/server';
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const locale = await getLocale();
 
