@@ -1,5 +1,5 @@
 import { Hero } from '@/components/hero';
-import { ServicesSection } from '@/components/services-section';
+import { ServicesAccordion } from '@/components/ui/interactive-image-accordion';
 import { BlogSection } from '@/components/blog-section';
 import { TestimonialsSection } from '@/components/testimonials-section';
 import { CtaSection } from '@/components/cta-section';
@@ -32,7 +32,7 @@ export default async function HomePage() {
         dbPortfolio={portfolioContent}
         dbSocialLinks={socialLinks}
       />
-      <ServicesSection dbServices={services} />
+      <ServicesAccordion dbServices={services} />
       <BlogSection />
       <TestimonialsSection dbTestimonials={testimonials} />
       <CtaSection />

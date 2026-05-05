@@ -55,7 +55,8 @@
     "auto_benefit3": "Custom workflows",
     "consulting_benefit1": "Technology roadmap",
     "consulting_benefit2": "ROI analysis",
-    "consulting_benefit3": "Team training"
+    "consulting_benefit3": "Team training",
+    "cta_schedule": "Schedule a Call"
   },
   "blog": {
     "title": "Latest Insights",
