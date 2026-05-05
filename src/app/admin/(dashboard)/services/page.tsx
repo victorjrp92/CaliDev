@@ -56,16 +56,24 @@ export default function ServicesEditorPage() {
 
   async function handleSave() {
     setSaving(true);
+    let failed = false;
     for (const svc of services) {
-      await fetch("/api/admin/services", {
+      const res = await fetch("/api/admin/services", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(svc),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(`Error saving ${svc.slug}: ${data.error || res.status}`);
+        failed = true;
+      }
     }
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    if (!failed) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }
   }
 
   if (loading) return (
@@ -107,31 +115,47 @@ export default function ServicesEditorPage() {
             <div className="w-20">
               <ImageUpload
                 value={svc.image_url}
-                onChange={(url) => {
+                onChange={async (url) => {
                   const updated = { ...svc, image_url: url };
                   setServices((prev) => {
                     const copy = [...prev];
                     copy[idx] = updated;
                     return copy;
                   });
-                  fetch("/api/admin/services", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updated),
-                  });
+                  try {
+                    const res = await fetch("/api/admin/services", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(updated),
+                    });
+                    if (!res.ok) {
+                      const data = await res.json().catch(() => ({}));
+                      alert(`Error saving image: ${data.error || res.status}`);
+                    }
+                  } catch (err) {
+                    alert(`Network error saving image: ${err}`);
+                  }
                 }}
-                onRemove={() => {
+                onRemove={async () => {
                   const updated = { ...svc, image_url: null };
                   setServices((prev) => {
                     const copy = [...prev];
                     copy[idx] = updated;
                     return copy;
                   });
-                  fetch("/api/admin/services", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updated),
-                  });
+                  try {
+                    const res = await fetch("/api/admin/services", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(updated),
+                    });
+                    if (!res.ok) {
+                      const data = await res.json().catch(() => ({}));
+                      alert(`Error removing image: ${data.error || res.status}`);
+                    }
+                  } catch (err) {
+                    alert(`Network error: ${err}`);
+                  }
                 }}
                 folder="services"
               />
