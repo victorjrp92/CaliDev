@@ -108,17 +108,17 @@ export function ServicesContent({ dbServices }: ServicesContentProps) {
             </div>
             <div className="flex-1 w-full">
               {service.imageUrl ? (
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10 flex items-center justify-center p-6">
                   <Image
                     src={service.imageUrl}
                     alt={service.title}
                     fill
-                    className="object-cover"
+                    className="object-contain p-4"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>
               ) : (
-                <div className="aspect-video rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 flex items-center justify-center">
+                <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10 flex items-center justify-center">
                   <service.icon className="h-24 w-24 text-primary/20" />
                 </div>
               )}
