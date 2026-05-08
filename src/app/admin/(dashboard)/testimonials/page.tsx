@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquareQuote, Save, CheckCircle, Plus, Trash2 } from "lucide-react";
+import { MessageSquareQuote, Save, CheckCircle, Plus, Trash2, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,7 @@ export default function TestimonialsEditorPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [translating, setTranslating] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -61,6 +62,35 @@ export default function TestimonialsEditorPage() {
       updated[idx] = t;
       return updated;
     });
+  }
+
+  async function handleTranslate(idx: number) {
+    const t = testimonials[idx];
+    const enQuote = t.translations.find((tr) => tr.locale === "en")?.quote;
+    if (!enQuote) return;
+    setTranslating(idx);
+    try {
+      const res = await fetch("/api/admin/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fields: { quote: enQuote }, targetLocales: ["es", "de"] }),
+      });
+      if (!res.ok) { alert("Translation failed"); return; }
+      const { translations } = await res.json();
+      setTestimonials((prev) => {
+        const updated = [...prev];
+        const item = { ...updated[idx] };
+        item.translations = item.translations.map((tr) => {
+          if (translations[tr.locale]?.quote) {
+            return { ...tr, quote: translations[tr.locale].quote };
+          }
+          return tr;
+        });
+        updated[idx] = item;
+        return updated;
+      });
+    } catch { alert("Translation failed"); }
+    finally { setTranslating(null); }
   }
 
   async function handleSave() {
@@ -187,14 +217,20 @@ export default function TestimonialsEditorPage() {
                 </div>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="cursor-pointer text-destructive hover:text-destructive"
-              onClick={() => removeTestimonial(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="cursor-pointer gap-2" onClick={() => handleTranslate(idx)} disabled={translating === idx}>
+                <Languages className="h-4 w-4" />
+                {translating === idx ? "..." : "EN → ES/DE"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="cursor-pointer text-destructive hover:text-destructive"
+                onClick={() => removeTestimonial(idx)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <LocaleTabs>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Briefcase, Save, CheckCircle } from "lucide-react";
+import { Briefcase, Save, CheckCircle, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +23,7 @@ export default function ServicesEditorPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [translating, setTranslating] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -52,6 +53,51 @@ export default function ServicesEditorPage() {
       updated[serviceIdx] = svc;
       return updated;
     });
+  }
+
+  async function handleTranslate(serviceIdx: number) {
+    const svc = services[serviceIdx];
+    const en = svc.translations.find((t) => t.locale === "en");
+    if (!en) return;
+
+    const fields: Record<string, string> = {};
+    if (en.title) fields.title = en.title;
+    if (en.description) fields.description = en.description;
+    if (en.benefit1) fields.benefit1 = en.benefit1;
+    if (en.benefit2) fields.benefit2 = en.benefit2;
+    if (en.benefit3) fields.benefit3 = en.benefit3;
+
+    if (Object.keys(fields).length === 0) return;
+
+    setTranslating(serviceIdx);
+    try {
+      const res = await fetch("/api/admin/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fields, targetLocales: ["es", "de"] }),
+      });
+      if (!res.ok) {
+        alert("Translation failed");
+        return;
+      }
+      const { translations } = await res.json();
+      setServices((prev) => {
+        const updated = [...prev];
+        const s = { ...updated[serviceIdx] };
+        s.translations = s.translations.map((t) => {
+          if (translations[t.locale]) {
+            return { ...t, ...translations[t.locale] };
+          }
+          return t;
+        });
+        updated[serviceIdx] = s;
+        return updated;
+      });
+    } catch {
+      alert("Translation failed");
+    } finally {
+      setTranslating(null);
+    }
   }
 
   async function handleSave() {
@@ -160,9 +206,23 @@ export default function ServicesEditorPage() {
                 folder="services"
               />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold capitalize">{svc.slug}</h2>
-              <span className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">{svc.icon}</span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold capitalize">{svc.slug}</h2>
+                  <span className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">{svc.icon}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer gap-2"
+                  onClick={() => handleTranslate(idx)}
+                  disabled={translating === idx}
+                >
+                  <Languages className="h-4 w-4" />
+                  {translating === idx ? "Translating..." : "Translate EN → ES/DE"}
+                </Button>
+              </div>
               <p className="mt-1 text-xs text-muted-foreground">Image replaces the icon on the public site</p>
             </div>
           </div>

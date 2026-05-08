@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image as ImageIcon, Save, CheckCircle } from "lucide-react";
+import { Image as ImageIcon, Save, CheckCircle, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +45,8 @@ export default function HeroEditorPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [translatingHero, setTranslatingHero] = useState(false);
+  const [translatingPortfolio, setTranslatingPortfolio] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -88,6 +90,64 @@ export default function HeroEditorPage() {
       ...prev,
       [locale]: { ...prev[locale], [field]: value },
     }));
+  }
+
+  async function translateHero() {
+    const en = heroData.en;
+    if (!en) return;
+    setTranslatingHero(true);
+    try {
+      const res = await fetch("/api/admin/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fields: { headline: en.headline, subtitle: en.subtitle, cta_services: en.cta_services, cta_schedule: en.cta_schedule },
+          targetLocales: ["es", "de"],
+        }),
+      });
+      if (!res.ok) { alert("Translation failed"); return; }
+      const { translations } = await res.json();
+      setHeroData((prev) => {
+        const updated = { ...prev };
+        for (const locale of ["es", "de"] as const) {
+          if (translations[locale] && updated[locale]) {
+            updated[locale] = { ...updated[locale], ...translations[locale] };
+          }
+        }
+        return updated;
+      });
+    } catch { alert("Translation failed"); }
+    finally { setTranslatingHero(false); }
+  }
+
+  async function translatePortfolio() {
+    const en = portfolioData.en;
+    if (!en) return;
+    setTranslatingPortfolio(true);
+    try {
+      const fields: Record<string, string> = {};
+      for (const key of ["badge", "role", "description", "profile_subtitle", "profile_bio", "cta",
+        "highlight1_title", "highlight1_desc", "highlight2_title", "highlight2_desc", "highlight3_title", "highlight3_desc"] as const) {
+        if ((en as unknown as Record<string, string>)[key]) fields[key] = (en as unknown as Record<string, string>)[key];
+      }
+      const res = await fetch("/api/admin/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fields, targetLocales: ["es", "de"] }),
+      });
+      if (!res.ok) { alert("Translation failed"); return; }
+      const { translations } = await res.json();
+      setPortfolioData((prev) => {
+        const updated = { ...prev };
+        for (const locale of ["es", "de"] as const) {
+          if (translations[locale] && updated[locale]) {
+            updated[locale] = { ...updated[locale], ...translations[locale] };
+          }
+        }
+        return updated;
+      });
+    } catch { alert("Translation failed"); }
+    finally { setTranslatingPortfolio(false); }
   }
 
   async function handleSave() {
@@ -184,7 +244,13 @@ export default function HeroEditorPage() {
 
       {/* Hero Text */}
       <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="mb-4 text-lg font-semibold">Hero Section</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Hero Section</h2>
+          <Button variant="outline" size="sm" className="cursor-pointer gap-2" onClick={translateHero} disabled={translatingHero}>
+            <Languages className="h-4 w-4" />
+            {translatingHero ? "Translating..." : "Translate EN → ES/DE"}
+          </Button>
+        </div>
         <LocaleTabs>
           {(locale) => {
             const h = heroData[locale];
@@ -217,7 +283,13 @@ export default function HeroEditorPage() {
 
       {/* Portfolio Content */}
       <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="mb-4 text-lg font-semibold">Portfolio / iPad Content</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Portfolio / iPad Content</h2>
+          <Button variant="outline" size="sm" className="cursor-pointer gap-2" onClick={translatePortfolio} disabled={translatingPortfolio}>
+            <Languages className="h-4 w-4" />
+            {translatingPortfolio ? "Translating..." : "Translate EN → ES/DE"}
+          </Button>
+        </div>
         <LocaleTabs>
           {(locale) => {
             const p = portfolioData[locale];
