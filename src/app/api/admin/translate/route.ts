@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic();
 
 const localeNames: Record<string, string> = {
   es: "Spanish",
@@ -13,6 +10,11 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: "GEMINI_API_KEY not configured" }, { status: 500 });
   }
 
   try {
@@ -35,18 +37,35 @@ export async function POST(request: Request) {
     for (const locale of targetLocales) {
       const langName = localeNames[locale] || locale;
 
-      const message = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: `Translate the following fields from English to ${langName}. Return ONLY a JSON object with the same keys and translated values. Keep brand names, technical terms, and proper nouns unchanged. Be natural and professional.\n\n${fieldsBlock}`,
-          },
-        ],
-      });
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `Translate the following fields from English to ${langName}. Return ONLY a JSON object with the same keys and translated values. Keep brand names, technical terms, and proper nouns unchanged. Be natural and professional.\n\n${fieldsBlock}`,
+                  },
+                ],
+              },
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+            },
+          }),
+        }
+      );
 
-      const text = message.content[0].type === "text" ? message.content[0].text : "";
+      if (!res.ok) {
+        console.error("Gemini API error:", await res.text());
+        continue;
+      }
+
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         results[locale] = JSON.parse(jsonMatch[0]);
