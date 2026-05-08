@@ -11,6 +11,7 @@ import type { DbService } from "@/lib/content";
 
 interface AccordionItemProps {
   title: string;
+  slug: string;
   imageUrl: string;
   isActive: boolean;
   onMouseEnter: () => void;
@@ -18,14 +19,16 @@ interface AccordionItemProps {
 
 function AccordionItem({
   title,
+  slug,
   imageUrl,
   isActive,
   onMouseEnter,
 }: AccordionItemProps) {
   return (
-    <div
+    <Link
+      href={`/services#${slug}`}
       className={`
-        relative h-[400px] md:h-[450px] rounded-2xl overflow-hidden cursor-pointer
+        relative block h-[400px] md:h-[450px] rounded-2xl overflow-hidden cursor-pointer
         transition-all duration-700 ease-in-out
         ${isActive ? "w-[300px] md:w-[400px]" : "w-[50px] md:w-[60px]"}
       `}
@@ -53,7 +56,7 @@ function AccordionItem({
       >
         {title}
       </span>
-    </div>
+    </Link>
   );
 }
 
@@ -77,13 +80,14 @@ export function ServicesAccordion({ dbServices }: ServicesAccordionProps) {
   const items = useDb
     ? dbServices.map((svc, i) => ({
         title: svc.title,
+        slug: svc.slug,
         imageUrl: svc.image_url || defaultImages[i % defaultImages.length],
       }))
     : [
-        { title: t("app_title"), imageUrl: defaultImages[0] },
-        { title: t("web_title"), imageUrl: defaultImages[1] },
-        { title: t("auto_title"), imageUrl: defaultImages[2] },
-        { title: t("consulting_title"), imageUrl: defaultImages[3] },
+        { title: t("app_title"), slug: "mobile", imageUrl: defaultImages[0] },
+        { title: t("web_title"), slug: "web", imageUrl: defaultImages[1] },
+        { title: t("auto_title"), slug: "automation", imageUrl: defaultImages[2] },
+        { title: t("consulting_title"), slug: "analytics", imageUrl: defaultImages[3] },
       ];
 
   return (
@@ -141,6 +145,7 @@ export function ServicesAccordion({ dbServices }: ServicesAccordionProps) {
                 <AccordionItem
                   key={index}
                   title={item.title}
+                  slug={item.slug}
                   imageUrl={item.imageUrl}
                   isActive={index === activeIndex}
                   onMouseEnter={() => setActiveIndex(index)}
