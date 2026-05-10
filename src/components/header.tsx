@@ -24,12 +24,13 @@ import {
 
 interface NavLink {
   key: string;
-  href: "/" | "/services" | "/blog" | "/contact";
+  href: "/" | "/services" | "/about" | "/blog" | "/contact";
 }
 
 const navLinks: NavLink[] = [
   { key: "home", href: "/" },
   { key: "services", href: "/services" },
+  { key: "about", href: "/about" },
   { key: "blog", href: "/blog" },
   { key: "contact", href: "/contact" },
 ];

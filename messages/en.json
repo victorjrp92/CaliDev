@@ -4,7 +4,8 @@
     "services": "Services",
     "blog": "Blog",
     "contact": "Contact",
-    "schedule": "Schedule a Call"
+    "schedule": "Schedule a Call",
+    "about": "About"
   },
   "hero": {
     "headline": "We transform your business with technology that works",
@@ -121,6 +122,54 @@
     "loading": "Loading...",
     "error": "Error"
   },
+  "about": {
+    "headline": "The Team Behind CaliDev",
+    "subheadline": "Business strategy and engineering under one roof. We build solutions that create real impact — without creating dependency.",
+
+    "mission_title": "Our Mission",
+    "mission_desc": "To deliver technology solutions that create real business impact — without creating dependency. We build what you need, hand it over, and only stay if it makes sense for your business.",
+    "vision_title": "Our Vision",
+    "vision_desc": "To become the go-to partner for SMBs and startups that want honest, results-driven technology consulting — where strategy and engineering work together from day one.",
+
+    "phil_title": "Solutions You Own",
+    "phil_desc": "Most agencies want to become another monthly bill. We don't. If your problem is solved with a tool that runs locally — that's what we build, and we're done. No subscriptions, no artificial dependency.",
+    "phil_lockin_title": "No Lock-in",
+    "phil_lockin_desc": "You own everything we build. Full code, full access, no proprietary traps. Walk away whenever you want — with everything in hand.",
+    "phil_pay_title": "Pay Only for What You Need",
+    "phil_pay_desc": "A simple landing page? Starting at €600 and done. Complex system that needs ongoing support? We scale together. You decide.",
+    "phil_honest_title": "Honest Advice",
+    "phil_honest_desc": "If you don't need us, we'll tell you. We'd rather earn your trust than your subscription. That's how we get referrals.",
+
+    "team_title": "Who We Are",
+    "team_sub": "A finance strategist and a systems engineer — the rare combination of business thinking and technical depth.",
+    "team_victor_name": "Victor Ramos",
+    "team_victor_role": "Strategy, AI & Business",
+    "team_victor_bio": "Finance (Universidad ICESI) · Data Analytics (Ironhack Barcelona). 3 years scaling a marketing startup across 10+ countries. 3 years as Data & AI Manager at Welcome Hotels chain. Victor leads strategy, business analysis, and AI implementation.",
+    "team_karen_name": "Karen Cortes",
+    "team_karen_role": "Engineering & Systems",
+    "team_karen_bio": "Systems Engineer. Full-stack development, technical architecture, and infrastructure. Karen turns strategy into production-ready systems that scale.",
+
+    "results_title": "Real Results from Real Clients",
+    "results_sub": "Not hypothetical case studies. These are businesses we've worked with and the outcomes they achieved.",
+    "t_limpia_name": "Deisy Moncayo",
+    "t_limpia_role": "CEO, LimpiaExpress Cali",
+    "t_limpia_text": "Before CaliDev, we managed everything in spreadsheets — payroll, bookings, client data. Victor didn't just build us an app. He analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week. Our profits grew 37%, we went from 12 to 19 employees, expanded to a second city, and we're projecting 6 cities by 2027.",
+    "t_limpia_s1_val": "+37%",
+    "t_limpia_s1_label": "Profit Increase",
+    "t_limpia_s2_val": "27 hrs",
+    "t_limpia_s2_label": "Saved per Week",
+    "t_limpia_s3_val": "12 → 19",
+    "t_limpia_s3_label": "Employees",
+    "t_limpia_s4_val": "1 → 6",
+    "t_limpia_s4_label": "Cities by 2027",
+    "t_cubiko_name": "Laura Sanchez",
+    "t_cubiko_role": "CEO, Cubiko Colombia → acquired by Dropi",
+    "t_cubiko_text": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
+
+    "cta_title": "Let's Talk About Your Business",
+    "cta_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
+    "cta_btn": "Book Your Free 30-Min Strategy Call"
+  },
   "sp": {
     "headline": "We don't just build software — we build the strategy behind it",
     "subheadline": "From business analysis to working product. Finance-driven strategy, AI-powered execution, measurable results.",
@@ -221,5 +270,22 @@
     "final_title": "Let's Talk About Your Business",
     "final_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
     "final_cta": "Book Your Free 30-Min Strategy Call"
+  },
+  "results_strip": {
+    "title": "Real Results, Real Clients",
+    "subtitle": "Numbers from businesses we've worked with",
+    "s1_val": "+37%",
+    "s1_label": "Profit Increase",
+    "s1_client": "LimpiaExpress Cali",
+    "s2_val": "27 hrs",
+    "s2_label": "Saved per Week",
+    "s2_client": "LimpiaExpress Cali",
+    "s3_val": "Acquired",
+    "s3_label": "by Dropi Conglomerate",
+    "s3_client": "Cubiko Colombia",
+    "s4_val": "€600",
+    "s4_label": "Starting Price",
+    "s4_client": "No hidden fees",
+    "cta": "See Our Client Stories"
   }
 }

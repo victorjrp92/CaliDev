@@ -111,7 +111,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/"
+                  href="/about"
                   className="cursor-pointer text-sm text-background/70 transition-colors duration-200 hover:text-background"
                 >
                   {t("about")}
