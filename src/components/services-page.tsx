@@ -190,7 +190,7 @@ export function ServicesPage() {
             { icon: Globe, key: "apps", testimonial: null },
           ].map(({ icon: Icon, key, testimonial }, i) => (
             <SectionFade key={key}>
-              <div className={`flex flex-col ${i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"} gap-10 lg:gap-16 items-center`}>
+              <div id={key} className={`scroll-mt-24 flex flex-col ${i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"} gap-10 lg:gap-16 items-center`}>
                 <div className="flex-1 space-y-6">
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10">
                     <Icon className="h-7 w-7 text-primary" />

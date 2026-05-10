@@ -61,10 +61,9 @@ function AccordionItem({
 }
 
 const defaultImages = [
-  "https://images.unsplash.com/photo-1628258334105-2a0b3d6efee1?q=80&w=600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=600&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1628258334105-2a0b3d6efee1?q=80&w=600&auto=format&fit=crop",
 ];
 
 interface ServicesAccordionProps {
@@ -75,6 +74,8 @@ export function ServicesAccordion({ dbServices }: ServicesAccordionProps) {
   const t = useTranslations("services");
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const tSp = useTranslations("sp");
+
   const useDb = dbServices && dbServices.length > 0;
 
   const items = useDb
@@ -84,10 +85,9 @@ export function ServicesAccordion({ dbServices }: ServicesAccordionProps) {
         imageUrl: svc.image_url || defaultImages[i % defaultImages.length],
       }))
     : [
-        { title: t("app_title"), slug: "mobile", imageUrl: defaultImages[0] },
-        { title: t("web_title"), slug: "web", imageUrl: defaultImages[1] },
-        { title: t("auto_title"), slug: "automation", imageUrl: defaultImages[2] },
-        { title: t("consulting_title"), slug: "analytics", imageUrl: defaultImages[3] },
+        { title: tSp("svc_consulting_title"), slug: "consulting", imageUrl: defaultImages[0] },
+        { title: tSp("svc_auto_title"), slug: "auto", imageUrl: defaultImages[1] },
+        { title: tSp("svc_apps_title"), slug: "apps", imageUrl: defaultImages[2] },
       ];
 
   return (
