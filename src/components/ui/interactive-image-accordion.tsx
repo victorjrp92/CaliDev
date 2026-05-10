@@ -7,8 +7,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { Calendar } from "lucide-react";
-import type { DbService } from "@/lib/content";
-
 interface AccordionItemProps {
   title: string;
   slug: string;
@@ -66,29 +64,16 @@ const defaultImages = [
   "https://images.unsplash.com/photo-1628258334105-2a0b3d6efee1?q=80&w=600&auto=format&fit=crop",
 ];
 
-interface ServicesAccordionProps {
-  dbServices?: DbService[] | null;
-}
-
-export function ServicesAccordion({ dbServices }: ServicesAccordionProps) {
+export function ServicesAccordion() {
   const t = useTranslations("services");
+  const tSp = useTranslations("sp");
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const tSp = useTranslations("sp");
-
-  const useDb = dbServices && dbServices.length > 0;
-
-  const items = useDb
-    ? dbServices.map((svc, i) => ({
-        title: svc.title,
-        slug: svc.slug,
-        imageUrl: svc.image_url || defaultImages[i % defaultImages.length],
-      }))
-    : [
-        { title: tSp("svc_consulting_title"), slug: "consulting", imageUrl: defaultImages[0] },
-        { title: tSp("svc_auto_title"), slug: "auto", imageUrl: defaultImages[1] },
-        { title: tSp("svc_apps_title"), slug: "apps", imageUrl: defaultImages[2] },
-      ];
+  const items = [
+    { title: tSp("svc_consulting_title"), slug: "consulting", imageUrl: defaultImages[0] },
+    { title: tSp("svc_auto_title"), slug: "auto", imageUrl: defaultImages[1] },
+    { title: tSp("svc_apps_title"), slug: "apps", imageUrl: defaultImages[2] },
+  ];
 
   return (
     <section className="py-20 px-4 md:px-8 lg:px-16">

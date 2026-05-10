@@ -7,7 +7,6 @@ import {
   getHeroContent,
   getPortfolioContent,
   getSocialLinks,
-  getServices,
 } from '@/lib/content';
 import { getLocale } from 'next-intl/server';
 
@@ -16,11 +15,10 @@ export const revalidate = 60;
 export default async function HomePage() {
   const locale = await getLocale();
 
-  const [heroContent, portfolioContent, socialLinks, services] = await Promise.all([
+  const [heroContent, portfolioContent, socialLinks] = await Promise.all([
     getHeroContent(locale),
     getPortfolioContent(locale),
     getSocialLinks(),
-    getServices(locale),
   ]);
 
   return (
@@ -30,7 +28,7 @@ export default async function HomePage() {
         dbPortfolio={portfolioContent}
         dbSocialLinks={socialLinks}
       />
-      <ServicesAccordion dbServices={services} />
+      <ServicesAccordion />
       <ResultsStrip />
       <BlogSection />
       <CtaSection />
