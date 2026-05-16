@@ -25,50 +25,14 @@ const cardVariants = {
   },
 };
 
-interface MockPost {
+interface BlogSectionPost {
   slug: string;
   title: string;
   date: string;
   tags: string[];
-  excerpt: string;
-  image: string | null;
+  description: string;
+  image?: string | null;
 }
-
-const mockPosts: MockPost[] = [
-  {
-    slug: "bienvenida",
-    title: "Welcome to Victor Ramos BE Blog",
-    date: "2026-04-30",
-    tags: ["announcement", "digital"],
-    excerpt:
-      "Discover how we help businesses transform through technology.",
-    image: null,
-  },
-  {
-    slug: "5-automation-tools",
-    title: "5 Automation Tools Every Business Needs",
-    date: "2026-04-25",
-    tags: ["automation", "tools"],
-    excerpt:
-      "Save time and reduce errors with these essential automation solutions.",
-    image: null,
-  },
-  {
-    slug: "digital-transformation-guide",
-    title: "The Complete Digital Transformation Guide",
-    date: "2026-04-20",
-    tags: ["consulting", "strategy"],
-    excerpt:
-      "A step-by-step roadmap for modernizing your business operations.",
-    image: null,
-  },
-];
-
-const gradientColors = [
-  "from-primary/60 to-accent/40",
-  "from-accent/50 to-primary/30",
-  "from-primary/40 to-accent/60",
-];
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -79,8 +43,12 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export function BlogSection() {
+export function BlogSection({ posts }: { posts?: BlogSectionPost[] }) {
   const t = useTranslations("blog");
+
+  const displayPosts = (posts || []).slice(0, 3);
+
+  if (displayPosts.length === 0) return null;
 
   return (
     <section className="py-20 px-4 md:px-8 lg:px-16">
@@ -107,52 +75,52 @@ export function BlogSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {mockPosts.map((post, index) => (
+          {displayPosts.map((post) => (
             <motion.article
               key={post.slug}
               variants={cardVariants}
               className="group overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-lg"
             >
-              {/* Image placeholder */}
-              <div
-                className={`h-48 bg-gradient-to-br ${gradientColors[index % gradientColors.length]} flex items-center justify-center`}
-              >
-                <span className="text-4xl font-bold text-white/30 select-none">
-                  CaliDev
-                </span>
-              </div>
+              <Link href={`/blog/${post.slug}`} className="cursor-pointer block">
+                {post.image ? (
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/10" />
+                )}
 
-              <div className="p-6">
-                {/* Tags */}
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                <div className="p-6">
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {post.tags.slice(0, 3).map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
 
-                {/* Title */}
-                <h3 className="text-lg font-semibold leading-snug transition-colors duration-200 group-hover:text-primary">
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="cursor-pointer"
-                  >
+                  <h3 className="text-lg font-semibold leading-snug transition-colors duration-200 group-hover:text-primary">
                     {post.title}
-                  </Link>
-                </h3>
+                  </h3>
 
-                {/* Date */}
-                <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <CalendarDays className="h-3.5 w-3.5" />
-                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <CalendarDays className="h-3.5 w-3.5" />
+                    <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  </div>
+
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                    {post.description}
+                  </p>
+
+                  <span className="inline-flex items-center gap-1 text-primary text-sm font-medium mt-3 group-hover:gap-2 transition-all duration-200">
+                    {t("read_more")} <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
                 </div>
-
-                {/* Excerpt */}
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {post.excerpt}
-                </p>
-              </div>
+              </Link>
             </motion.article>
           ))}
         </motion.div>

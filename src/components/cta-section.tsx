@@ -3,7 +3,6 @@
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
 import { Calendar } from "lucide-react";
 
 export function CtaSection() {
@@ -32,7 +31,7 @@ export function CtaSection() {
           <Button
             size="lg"
             className="h-12 cursor-pointer bg-white px-8 text-base font-semibold text-primary shadow-lg transition-colors duration-200 hover:bg-white/90"
-            render={<Link href="/contact" />}
+            render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
           >
             <Calendar className="mr-2 h-5 w-5" />
             {t("button")}

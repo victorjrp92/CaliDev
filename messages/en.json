@@ -85,6 +85,11 @@
     "t3_company": "Global Commerce Co",
     "t3_text": "Professional, strategic, and results-driven. Our e-commerce platform saw a 65% increase in conversions."
   },
+  "testimonial_quote": {
+    "quote": "CaliDev built us a custom operations app that replaced three separate tools. We went from managing everything in spreadsheets to a single platform — and expanded from 1 to 3 cities in six months.",
+    "name": "LimpiaExpress",
+    "role": "Cleaning Services Company — Colombia"
+  },
   "cta": {
     "title": "Ready to Transform Your Business?",
     "subtitle": "Let's discuss how technology can drive your growth",
@@ -115,7 +120,7 @@
     "company": "Company",
     "about": "About",
     "legal": "Legal",
-    "copyright": "© {year} Victor Ramos BE. All rights reserved."
+    "copyright": "© {year} CaliDev. All rights reserved."
   },
   "common": {
     "back": "Back",
@@ -283,9 +288,9 @@
     "s3_val": "Acquired",
     "s3_label": "by Dropi Conglomerate",
     "s3_client": "Cubiko Colombia",
-    "s4_val": "€600",
-    "s4_label": "Starting Price",
-    "s4_client": "No hidden fees",
+    "s4_val": "1 → 6",
+    "s4_label": "Cities by 2027",
+    "s4_client": "LimpiaExpress Cali",
     "cta": "See Our Client Stories"
   }
 }

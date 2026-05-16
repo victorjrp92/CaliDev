@@ -90,7 +90,7 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                 transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
                 className="mt-2 text-base font-light tracking-[0.25em] uppercase text-white/70 md:text-lg"
               >
-                Business Efficiency
+                {p("badge")}
               </motion.p>
 
               <motion.p

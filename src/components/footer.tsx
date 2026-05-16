@@ -182,12 +182,6 @@ export function Footer() {
             <p className="text-xs text-background/50">
               {t("copyright", { year: currentYear })}
             </p>
-            <a
-              href="/admin/payments"
-              className="text-xs text-background/20 transition-colors hover:text-background/50"
-            >
-              Admin
-            </a>
           </div>
         </div>
       </div>

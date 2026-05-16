@@ -2,6 +2,7 @@
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Shield,
   Coins,
@@ -49,16 +50,21 @@ export function AboutPage() {
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
           {[
-            { icon: Target, key: "mission" },
-            { icon: Eye, key: "vision" },
-          ].map(({ icon: Icon, key }, i) => (
+            { icon: Target, key: "mission", img: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" },
+            { icon: Eye, key: "vision", img: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" },
+          ].map(({ icon: Icon, key, img }, i) => (
             <SectionFade key={key} delay={i * 0.1}>
-              <div className="rounded-2xl border border-border bg-card p-8 h-full space-y-4">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                  <Icon className="h-6 w-6 text-primary" />
+              <div className="rounded-2xl border border-border bg-card overflow-hidden h-full">
+                <div className="h-48 overflow-hidden">
+                  <img src={img} alt={t(`${key}_title`)} className="w-full h-full object-cover" />
                 </div>
-                <h2 className="text-2xl font-bold">{t(`${key}_title`)}</h2>
-                <p className="text-muted-foreground leading-relaxed">{t(`${key}_desc`)}</p>
+                <div className="p-8 space-y-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h2 className="text-2xl font-bold">{t(`${key}_title`)}</h2>
+                  <p className="text-muted-foreground leading-relaxed">{t(`${key}_desc`)}</p>
+                </div>
               </div>
             </SectionFade>
           ))}
@@ -76,17 +82,22 @@ export function AboutPage() {
           </SectionFade>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Shield, key: "lockin" },
-              { icon: Coins, key: "pay" },
-              { icon: HeartHandshake, key: "honest" },
-            ].map(({ icon: Icon, key }, i) => (
+              { icon: Shield, key: "lockin", img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600&auto=format&fit=crop" },
+              { icon: Coins, key: "pay", img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600&auto=format&fit=crop" },
+              { icon: HeartHandshake, key: "honest", img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=600&auto=format&fit=crop" },
+            ].map(({ icon: Icon, key, img }, i) => (
               <SectionFade key={key} delay={i * 0.1}>
-                <div className="rounded-2xl border border-border bg-card p-8 h-full">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-4">
-                    <Icon className="h-6 w-6 text-primary" />
+                <div className="rounded-2xl border border-border bg-card overflow-hidden h-full">
+                  <div className="h-40 overflow-hidden">
+                    <img src={img} alt={t(`phil_${key}_title`)} className="w-full h-full object-cover" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2">{t(`phil_${key}_title`)}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{t(`phil_${key}_desc`)}</p>
+                  <div className="p-8">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-4">
+                      <Icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">{t(`phil_${key}_title`)}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{t(`phil_${key}_desc`)}</p>
+                  </div>
                 </div>
               </SectionFade>
             ))}
@@ -103,13 +114,19 @@ export function AboutPage() {
           </SectionFade>
           <div className="grid md:grid-cols-2 gap-8">
             {[
-              { key: "victor", initials: "VR" },
-              { key: "karen", initials: "KC" },
-            ].map(({ key, initials }, i) => (
+              { key: "victor", photo: "/victor-profile.png" },
+              { key: "karen", photo: "/karen-profile.jpeg" },
+            ].map(({ key, photo }, i) => (
               <SectionFade key={key} delay={i * 0.15}>
                 <div className="rounded-2xl border border-border bg-card p-8 text-center space-y-4">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary text-2xl font-bold mx-auto">
-                    {initials}
+                  <div className="w-24 h-24 rounded-full overflow-hidden mx-auto border-2 border-primary/20">
+                    <Image
+                      src={photo}
+                      alt={t(`team_${key}_name`)}
+                      width={96}
+                      height={96}
+                      className="w-full h-full object-cover object-top"
+                    />
                   </div>
                   <h3 className="text-xl font-bold">{t(`team_${key}_name`)}</h3>
                   <p className="text-sm font-medium text-primary">{t(`team_${key}_role`)}</p>

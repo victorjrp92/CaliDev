@@ -1,10 +1,15 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 
 export function ShareButtons({ title, slug }: { title: string; slug: string }) {
   const t = useTranslations("blog");
-  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    setUrl(window.location.href);
+  }, []);
 
   const shareLinks = [
     {

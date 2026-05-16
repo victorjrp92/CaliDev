@@ -185,10 +185,10 @@ export function ServicesPage() {
       <section id="services" className="py-20 px-4 scroll-mt-24">
         <div className="max-w-6xl mx-auto space-y-24">
           {[
-            { icon: BarChart3, key: "consulting", testimonial: "cubiko" },
-            { icon: Zap, key: "auto", testimonial: "limpia_short" },
-            { icon: Globe, key: "apps", testimonial: null },
-          ].map(({ icon: Icon, key, testimonial }, i) => (
+            { icon: BarChart3, key: "consulting", testimonial: "cubiko", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop" },
+            { icon: Zap, key: "auto", testimonial: "limpia_short", img: "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=800&auto=format&fit=crop" },
+            { icon: Globe, key: "apps", testimonial: null, img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" },
+          ].map(({ icon: Icon, key, testimonial, img }, i) => (
             <SectionFade key={key}>
               <div id={key} className={`scroll-mt-24 flex flex-col ${i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"} gap-10 lg:gap-16 items-center`}>
                 <div className="flex-1 space-y-6">
@@ -210,8 +210,11 @@ export function ServicesPage() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
-                <div className="flex-1 w-full">
-                  {testimonial ? (
+                <div className="flex-1 w-full space-y-6">
+                  <div className="rounded-2xl overflow-hidden">
+                    <img src={img} alt={t(`svc_${key}_title`)} className="w-full h-64 object-cover" />
+                  </div>
+                  {testimonial && (
                     <div className="rounded-2xl border border-border bg-card p-8 space-y-4">
                       <Quote className="h-8 w-8 text-primary/30" />
                       <p className="text-foreground italic leading-relaxed">{t(`t_${testimonial}_text`)}</p>
@@ -224,11 +227,6 @@ export function ServicesPage() {
                           <p className="text-xs text-muted-foreground">{t(`t_${testimonial}_role`)}</p>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="rounded-2xl bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10 p-12 flex flex-col items-center justify-center text-center space-y-4 aspect-square max-h-[400px]">
-                      <Icon className="h-16 w-16 text-primary/20" />
-                      <p className="text-muted-foreground text-sm max-w-xs">{t(`svc_${key}_visual`)}</p>
                     </div>
                   )}
                 </div>

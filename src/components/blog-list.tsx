@@ -51,8 +51,13 @@ export function BlogList({ posts, categories }: { posts: BlogPost[]; categories:
           >
             <Link href={`/blog/${post.slug}`} className="group block">
               <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                {/* Image placeholder */}
-                <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/10" />
+                {post.image ? (
+                  <div className="h-48 overflow-hidden">
+                    <img src={post.image} alt={post.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  </div>
+                ) : (
+                  <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/10" />
+                )}
                 <div className="p-5">
                   <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                     <span className="flex items-center gap-1">
