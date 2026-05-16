@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Calendar, ArrowUpRight } from "lucide-react";
@@ -46,7 +46,7 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
   }));
 
   const photoUrl = (dbHero?.photo_url as string) || "/profile.png";
-  const photoPosition = (dbHero?.photo_position as string) || "center 25%";
+  const photoPosition = (dbHero?.photo_position as string) || "center 15%";
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -54,10 +54,14 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const richOpts = {
+    h: (chunks: React.ReactNode) => <span className="font-semibold text-primary">{chunks}</span>,
+  };
+
   const highlights = [
-    { title: p("highlight1_title"), desc: p("highlight1_desc") },
-    { title: p("highlight2_title"), desc: p("highlight2_desc") },
-    { title: p("highlight3_title"), desc: p("highlight3_desc") },
+    { title: p("highlight1_title"), desc: tp.rich("highlight1_desc", richOpts) },
+    { title: p("highlight2_title"), desc: tp.rich("highlight2_desc", richOpts) },
+    { title: p("highlight3_title"), desc: tp.rich("highlight3_desc", richOpts) },
   ];
 
   return (
@@ -148,8 +152,11 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                     {p("badge")}
                   </p>
                   <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground md:text-2xl">
-                    {p("title")}, {p("role")}
+                    {p("title")}
                   </h2>
+                  <p className="text-sm font-medium text-primary">
+                    {p("role")}
+                  </p>
                   <p className="mt-2 text-sm leading-relaxed text-foreground/70">
                     {p("description")}
                   </p>
@@ -176,15 +183,15 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                 <Button
                   size="sm"
                   className="h-10 w-full cursor-pointer gap-2 rounded-full text-sm uppercase tracking-[0.2em] transition-all hover:shadow-lg sm:w-auto"
-                  render={<Link href="/services" />}
+                  render={<a href="https://cal.eu/victor-javier-ramos-perea-ntxfvj/30min" target="_blank" rel="noopener noreferrer" />}
                 >
+                  <Calendar className="mr-1 h-4 w-4" />
                   {p("cta")}
-                  <ArrowUpRight className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Right column — Profile card */}
-              <div className="flex flex-col items-center justify-between rounded-2xl border border-border/40 bg-background/60 p-5 text-center md:p-6">
+              <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-border/40 bg-background/60 p-5 text-center md:p-6">
                 <div className="flex flex-col items-center">
                   <motion.div
                     whileHover={{ scale: 1.08 }}
@@ -211,7 +218,7 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                   </p>
                 </div>
 
-                <div className="mt-4 flex w-full flex-col gap-2">
+                <div className="mt-4 flex items-center justify-center gap-3">
                   {socialLinks.map((social) => {
                     const Icon = social.icon;
                     return (
@@ -220,24 +227,12 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        whileHover={{ y: -2, scale: 1.03 }}
+                        aria-label={social.label}
+                        whileHover={{ scale: 1.15 }}
                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="group flex items-center justify-between rounded-xl border border-border/40 bg-background/70 px-3 py-2.5 text-left transition-colors duration-200 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md"
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-border/40 bg-background/70 text-foreground/60 transition-colors duration-200 hover:border-primary/30 hover:text-primary hover:shadow-md"
                       >
-                        <div className="flex items-center gap-2.5">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border/40 bg-background/70 text-foreground/80 transition-colors group-hover:border-primary/30 group-hover:text-primary">
-                            <Icon className="h-3.5 w-3.5" />
-                          </span>
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">
-                              {social.label}
-                            </p>
-                            <p className="text-[11px] text-foreground/60">
-                              {social.handle}
-                            </p>
-                          </div>
-                        </div>
-                        <ArrowUpRight className="h-3.5 w-3.5 text-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
+                        <Icon className="h-4 w-4" />
                       </motion.a>
                     );
                   })}

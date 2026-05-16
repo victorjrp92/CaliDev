@@ -14,23 +14,23 @@
     "cta_schedule": "Schedule a Call"
   },
   "portfolio": {
-    "badge": "Business Efficiency",
+    "badge": "CaliDev",
     "title": "Victor Ramos",
-    "role": "CEO & Digital Strategist",
-    "description": "With years of experience leading digital transformation, product development, and business consulting, I help companies leverage technology to scale efficiently and achieve measurable results.",
-    "highlight1_title": "Expertise",
-    "highlight1_desc": "Apps, websites, automations, and consulting for companies that want to scale with technology.",
-    "highlight2_title": "Approach",
-    "highlight2_desc": "Custom solutions focused on efficiency, ROI, and measurable results.",
-    "highlight3_title": "Availability",
-    "highlight3_desc": "Available for projects and advisory. Remote, EU & US time zones.",
+    "role": "Strategy & AI Consultant",
+    "description": "I don't sell subscriptions. I analyze your business, build what you need, and hand it over. You own everything.",
+    "highlight1_title": "Approach",
+    "highlight1_desc": "<h>Business analysis first</h>, technology second. No cookie-cutter solutions.",
+    "highlight2_title": "Philosophy",
+    "highlight2_desc": "<h>No lock-in</h>. No artificial dependency. You own <h>100%</h> of what we build.",
+    "highlight3_title": "Proof",
+    "highlight3_desc": "<h>+37%</h> profit growth · <h>27hrs</h> saved weekly · Real client results",
     "highlight1_value": "10+",
     "highlight2_value": "100%",
     "highlight3_value": "24/7",
-    "cta": "View Services",
+    "cta": "Book a Free Strategy Call",
     "profile_name": "Victor Ramos",
-    "profile_subtitle": "CEO · Digital Strategist · Business Efficiency",
-    "profile_bio": "Helping businesses become more efficient through technology and strategy."
+    "profile_subtitle": "Strategy & AI Consultant",
+    "profile_bio": "Finance background. AI & data experience. Building solutions that create impact — not dependency."
   },
   "services": {
     "title": "Our Services",
@@ -130,12 +130,10 @@
   "about": {
     "headline": "The Team Behind CaliDev",
     "subheadline": "Business strategy and engineering under one roof. We build solutions that create real impact — without creating dependency.",
-
     "mission_title": "Our Mission",
     "mission_desc": "To deliver technology solutions that create real business impact — without creating dependency. We build what you need, hand it over, and only stay if it makes sense for your business.",
     "vision_title": "Our Vision",
     "vision_desc": "To become the go-to partner for SMBs and startups that want honest, results-driven technology consulting — where strategy and engineering work together from day one.",
-
     "phil_title": "Solutions You Own",
     "phil_desc": "Most agencies want to become another monthly bill. We don't. If your problem is solved with a tool that runs locally — that's what we build, and we're done. No subscriptions, no artificial dependency.",
     "phil_lockin_title": "No Lock-in",
@@ -144,7 +142,6 @@
     "phil_pay_desc": "A simple landing page? Starting at €600 and done. Complex system that needs ongoing support? We scale together. You decide.",
     "phil_honest_title": "Honest Advice",
     "phil_honest_desc": "If you don't need us, we'll tell you. We'd rather earn your trust than your subscription. That's how we get referrals.",
-
     "team_title": "Who We Are",
     "team_sub": "A finance strategist and a systems engineer — the rare combination of business thinking and technical depth.",
     "team_victor_name": "Victor Ramos",
@@ -153,7 +150,6 @@
     "team_karen_name": "Karen Cortes",
     "team_karen_role": "Engineering & Systems",
     "team_karen_bio": "Systems Engineer. Full-stack development, technical architecture, and infrastructure. Karen turns strategy into production-ready systems that scale.",
-
     "results_title": "Real Results from Real Clients",
     "results_sub": "Not hypothetical case studies. These are businesses we've worked with and the outcomes they achieved.",
     "t_limpia_name": "Deisy Moncayo",
@@ -170,7 +166,6 @@
     "t_cubiko_name": "Laura Sanchez",
     "t_cubiko_role": "CEO, Cubiko Colombia → acquired by Dropi",
     "t_cubiko_text": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
-
     "cta_title": "Let's Talk About Your Business",
     "cta_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
     "cta_btn": "Book Your Free 30-Min Strategy Call"
@@ -180,7 +175,6 @@
     "subheadline": "From business analysis to working product. Finance-driven strategy, AI-powered execution, measurable results.",
     "hero_cta": "Book Free 30-Min Consultation",
     "hero_cta2": "Explore Our Services",
-
     "phil_title": "Solutions You Own",
     "phil_desc": "Most agencies want to become another monthly bill. We don't. If your problem is solved with a tool that runs locally — that's what we build, and we're done. No subscriptions, no artificial dependency.",
     "phil_lockin_title": "No Lock-in",
@@ -189,7 +183,6 @@
     "phil_pay_desc": "A simple landing page? Starting at €600 and done. Complex system that needs ongoing support? We scale together. You decide.",
     "phil_honest_title": "Honest Advice",
     "phil_honest_desc": "If you don't need us, we'll tell you. We'd rather earn your trust than your subscription. That's how we get referrals.",
-
     "star_badge": "Flagship Product",
     "star_title": "Your Website. Easy as Instagram.",
     "star_desc": "A professional, SEO-optimized website with a built-in editor so simple that if you can post a story, you can update your site. Change text, swap images, add services — all from your phone or laptop.",
@@ -205,7 +198,6 @@
     "star_demo_field1": "Your Business Name Here",
     "star_demo_field2": "Write your description and see it update live on your website...",
     "star_demo_btn": "Publish Changes",
-
     "process_title": "How We Work",
     "step1_title": "Free Discovery Call",
     "step1_desc": "30 minutes. Tell us about your business. We'll tell you honestly if and how we can help — no sales pitch.",
@@ -215,7 +207,6 @@
     "step3_desc": "We build in 1-2 week sprints. You see progress and give feedback continuously — no surprises at the end.",
     "step4_title": "Launch & Measure",
     "step4_desc": "We launch, track results, and optimize. You get real numbers, not promises.",
-
     "svc_consulting_title": "Business, AI & Tech Consulting",
     "svc_consulting_desc": "Most agencies start with code. We start with your P&L. Our team combines finance, data science, and AI strategy with deep systems engineering — so we don't just identify the opportunity, we know exactly how to build it.",
     "svc_consulting_b1": "Find your highest-ROI opportunity before writing a single line of code",
@@ -233,14 +224,12 @@
     "svc_apps_b3": "Your data, your platform, your rules",
     "svc_apps_visual": "From CRMs to client portals to internal tools — we build what your business actually needs.",
     "svc_cta": "Get Your Free Strategy Call",
-
     "t_cubiko_text": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
     "t_cubiko_name": "Laura Sanchez",
     "t_cubiko_role": "CEO, Cubiko Colombia → acquired by Dropi",
     "t_limpia_short_text": "Victor didn't just build us a tool — he analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week.",
     "t_limpia_short_name": "Deisy Moncayo",
     "t_limpia_short_role": "CEO, LimpiaExpress Cali",
-
     "results_title": "Real Results from Real Clients",
     "results_sub": "Not hypothetical case studies. These are businesses we've worked with and the outcomes they achieved.",
     "t_limpia_name": "Deisy Moncayo",
@@ -257,12 +246,10 @@
     "t_cubiko_name2": "Laura Sanchez",
     "t_cubiko_role2": "CEO, Cubiko Colombia → acquired by Dropi",
     "t_cubiko_text2": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
-
     "pricing_title": "Simple, Transparent Pricing",
     "pricing_desc": "Every engagement starts with a free 30-minute strategy call. No sales pitch — just an honest conversation about your business and whether we can help.",
     "pricing_from": "Projects start at",
     "pricing_cta": "Book Your Free Strategy Call",
-
     "team_title": "Who's Behind CaliDev",
     "team_sub": "Business strategy and engineering under one roof — so your solution is built right from day one.",
     "team_victor_name": "Victor Ramos",
@@ -271,7 +258,6 @@
     "team_karen_name": "Karen Cortes",
     "team_karen_role": "Engineering & Systems",
     "team_karen_bio": "Systems Engineer. Full-stack development, technical architecture, and infrastructure. Turning strategy into production-ready systems.",
-
     "final_title": "Let's Talk About Your Business",
     "final_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
     "final_cta": "Book Your Free 30-Min Strategy Call"
