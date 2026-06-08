@@ -36,7 +36,7 @@ export function Hero({ dbHero, dbPortfolio, dbSocialLinks }: HeroProps) {
   const tp = useTranslations("portfolio");
 
   const h = (key: string) => (dbHero?.[key] as string) || t(key);
-  const p = (key: string) => (dbPortfolio?.[key] as string) || tp(key);
+  const p = (key: string) => tp(key);
 
   const socialLinks = (dbSocialLinks || defaultSocialLinks).map((s) => ({
     label: s.label as string,
