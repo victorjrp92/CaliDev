@@ -108,6 +108,47 @@ export async function initDatabase() {
     )
   `;
 
+  await sql`
+    CREATE TABLE IF NOT EXISTS leads (
+      id SERIAL PRIMARY KEY,
+      campaign TEXT NOT NULL DEFAULT 'directo',
+
+      -- contacto
+      name TEXT NOT NULL,
+      company TEXT,
+      whatsapp TEXT NOT NULL,
+      email TEXT,
+
+      -- respuestas del filtro (claves definidas en lib/leads.ts)
+      role TEXT,
+      staff TEXT,
+      country TEXT,
+      country_other TEXT,
+      payment_model TEXT,
+      payroll_hours TEXT,
+      services_month TEXT,
+      urgency TEXT,
+
+      -- calculado en el servidor, nunca enviado por el cliente
+      score_value INT NOT NULL DEFAULT 0,
+      score_intent INT NOT NULL DEFAULT 0,
+      score_total INT NOT NULL DEFAULT 0,
+      track TEXT NOT NULL DEFAULT 'servicio',
+      qualified BOOLEAN NOT NULL DEFAULT FALSE,
+
+      -- gestión
+      status TEXT NOT NULL DEFAULT 'nuevo',
+      notes TEXT,
+      completed BOOLEAN NOT NULL DEFAULT FALSE,
+      referral_contact TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
+  await sql`CREATE INDEX IF NOT EXISTS leads_score_idx ON leads (score_total DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_campaign_idx ON leads (campaign)`;
+
   // Add columns that may not exist yet
   await sql`ALTER TABLE hero_content ADD COLUMN IF NOT EXISTS photo_position TEXT DEFAULT '50% 25%'`;
   await sql`ALTER TABLE services ADD COLUMN IF NOT EXISTS image_url TEXT`;

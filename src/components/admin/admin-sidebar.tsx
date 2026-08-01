@@ -10,12 +10,14 @@ import {
   MessageSquareQuote,
   Share2,
   CreditCard,
+  Target,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Leads", href: "/admin/leads", icon: Target },
   { label: "Hero", href: "/admin/hero", icon: ImageIcon },
   { label: "Services", href: "/admin/services", icon: Briefcase },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
