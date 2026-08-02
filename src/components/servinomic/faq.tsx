@@ -9,7 +9,7 @@ const QUESTIONS = [
   },
   {
     q: "No soy buena con la tecnología",
-    a: "Deisy tampoco lo era. Nosotros lo dejamos configurado y acompañamos al equipo hasta que esté funcionando. Si tu gente usa WhatsApp, puede usar esto.",
+    a: "La mayoría de nuestros clientes tampoco lo son. Nosotros lo dejamos configurado y acompañamos al equipo hasta que esté funcionando. Si tu gente usa WhatsApp, puede usar esto.",
   },
   {
     q: "¿Y si estoy fuera de Colombia?",
