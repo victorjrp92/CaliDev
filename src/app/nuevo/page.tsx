@@ -1,9 +1,10 @@
 import { WorkPageHero } from "@/components/ui/work-page-hero";
 import { Servicios } from "@/components/nuevo/servicios";
+import { Herramientas } from "@/components/nuevo/herramientas";
 
 /**
  * Home nuevo: hero con vídeo que se expande, y los servicios como paneles
- * que avanzan en horizontal. La última sección es el hueco de las órbitas.
+ * que avanzan en horizontal, y cierra con las herramientas orbitando.
  */
 export default function NuevoPage() {
   return (
@@ -28,14 +29,7 @@ export default function NuevoPage() {
 
       <Servicios />
 
-      <section className="bg-[var(--azul)] px-6 py-24 text-[var(--niebla)] md:px-14">
-        <div className="mx-auto max-w-5xl">
-          <p className="mono text-[var(--lima)]">Y aquí las herramientas</p>
-          <h2 className="mt-5 max-w-[20ch] text-3xl font-extrabold leading-[1.05] tracking-tight md:text-5xl">
-            El sitio de las órbitas con los logos.
-          </h2>
-        </div>
-      </section>
+      <Herramientas />
     </main>
   );
 }
