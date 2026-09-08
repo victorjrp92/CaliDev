@@ -1,0 +1,74 @@
+/**
+ * Paleta SEÑAL. El verde de marca contra un lima eléctrico.
+ *
+ * Regla de uso del lima: sobre fondo claro su contraste es ~1.5:1, así que
+ * NUNCA lleva texto sobre hueso — solo funciona como relleno (botones, chips)
+ * con tinta encima, o como acento sobre superficies oscuras. Para texto en
+ * color sobre fondo claro se usa el verde.
+ *
+ * Contrastes medidos (WCAG):
+ *   tinta/hueso 16.0 · verde/hueso 11.7 · tinta/lima 12.8
+ *   lima/azul 12.3 · lima/verde 9.3 · niebla/azul 12.0
+ */
+.senal {
+  --verde: #0a3d2e;
+  --lima: #c8f045;
+  --azul: #0f2233;
+  --niebla: #e6e8e3;
+  --hueso: #fafaf7;
+  --tinta: #14201b;
+}
+
+.senal .mono {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.senal .serif {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/**
+ * Recorte inicial del vídeo del hero. Va en CSS y no en línea porque el
+ * encuadre tiene que cambiar con el ancho: los márgenes de escritorio
+ * (22 % / 18 %) en un móvil de 390 px dejan una franja vertical que corta la
+ * mesa y deja fuera a la mitad del equipo. GSAP lee estos valores como punto
+ * de partida y los lleva a 0 con el scroll.
+ */
+.hero-pill {
+  top: 27%;
+  bottom: 27%;
+  left: 5%;
+  right: 5%;
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .hero-pill {
+    top: 18%;
+    bottom: 18%;
+    left: 22%;
+    right: 18%;
+  }
+}
+
+/* Con movimiento reducido el vídeo no se expande: se muestra ya a sangre. */
+.hero-pill[data-static="true"] {
+  inset: 0;
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .senal *,
+  .senal *::before,
+  .senal *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
