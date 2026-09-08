@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HorizontalScroll } from "@/components/ui/horizontal-scroll";
 import { SERVICIOS } from "@/lib/nuevo/servicios";
+import { PanelVisual } from "@/components/nuevo/panel-visual";
 
 /**
  * Los servicios como paneles que avanzan en horizontal. El primer panel es la
@@ -32,10 +33,13 @@ export function Servicios() {
       {SERVICIOS.map((s) => (
         <article
           key={s.n}
-          className="flex w-screen flex-none snap-start flex-col justify-center px-7 py-20 md:h-screen md:px-20"
+          className="w-screen flex-none snap-start px-7 py-20 md:h-screen md:px-20"
           style={{ background: s.fondo, color: s.texto }}
         >
-          <div className="max-w-[54ch]">
+          {/* Dos columnas en escritorio; en móvil el visual va debajo del texto,
+              donde no compite con el titular en una pantalla estrecha. */}
+          <div className="mx-auto flex h-full max-w-[1500px] flex-col justify-center gap-10 md:flex-row md:items-center md:gap-16">
+          <div className="max-w-[52ch] md:flex-1">
             <p className="mono" style={{ color: s.realce }}>
               {s.n} · {s.linea}
             </p>
@@ -55,6 +59,10 @@ export function Servicios() {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="md:w-[38%] md:flex-none">
+            <PanelVisual visual={s.visual} alt={s.visualAlt} />
+          </div>
           </div>
         </article>
       ))}
