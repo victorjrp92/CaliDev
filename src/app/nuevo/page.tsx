@@ -1,9 +1,9 @@
 import { WorkPageHero } from "@/components/ui/work-page-hero";
+import { Servicios } from "@/components/nuevo/servicios";
 
 /**
- * Home nuevo, primera pasada: solo el hero. La sección de abajo existe para
- * que haya scroll con el que ver la expansión del vídeo — la reemplazan los
- * servicios en scroll horizontal.
+ * Home nuevo: hero con vídeo que se expande, y los servicios como paneles
+ * que avanzan en horizontal. La última sección es el hueco de las órbitas.
  */
 export default function NuevoPage() {
   return (
@@ -26,26 +26,7 @@ export default function NuevoPage() {
         ]}
       />
 
-      {/* Provisional: da scroll para ver el pin y sirve de control positivo
-          de que la página sigue viva después del hero. */}
-      <section className="relative z-40 border-t border-[var(--verde)]/12 bg-[var(--hueso)] px-6 py-24 md:px-14">
-        <div className="mx-auto max-w-5xl">
-          <p className="mono text-[var(--verde)]">Aquí van los servicios</p>
-          <h2 className="mt-5 max-w-[18ch] text-4xl font-extrabold leading-[1.02] tracking-tight md:text-6xl">
-            Estrategia digital y sistemas que se quedan tuyos.
-          </h2>
-          <p className="mt-6 max-w-[58ch] text-lg text-[var(--tinta)]/70">
-            Webs, apps, CRMs, automatizaciones y consultoría. Esta sección la
-            reemplaza el scroll horizontal.
-          </p>
-          <a
-            href="#"
-            className="mt-9 inline-block rounded-full bg-[var(--lima)] px-7 py-3.5 text-[15px] font-semibold text-[var(--tinta)] transition-transform duration-200 hover:-translate-y-0.5"
-          >
-            Hablemos
-          </a>
-        </div>
-      </section>
+      <Servicios />
 
       <section className="bg-[var(--azul)] px-6 py-24 text-[var(--niebla)] md:px-14">
         <div className="mx-auto max-w-5xl">
