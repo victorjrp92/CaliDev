@@ -28,6 +28,18 @@ export const TESTIMONIOS: Testimonio[] = [
     foto: null,
   },
   {
+    // ⚠️ PENDIENTE — el único texto sin verificar de toda la página.
+    // Nadia está feliz con su web y la enseña con orgullo, pero eso lo contó
+    // Victor: no son las palabras de ella. El marcador es deliberadamente
+    // visible para que no pueda publicarse por accidente. Sustituir por lo
+    // que Nadia diga, textual.
+    id: "nadia",
+    cita: "[PENDIENTE: las palabras de Nadia sobre su página]",
+    autor: "Nadia",
+    cargo: "Colourful Fiesta — Sídney, Australia",
+    foto: null,
+  },
+  {
     id: "laura",
     cita:
       "Nos ayudaron a diseñar una estrategia de producto para predecir qué anuncios iban a funcionar antes de gastar el presupuesto. El producto mostró tanto potencial que terminamos siendo adquiridos.",

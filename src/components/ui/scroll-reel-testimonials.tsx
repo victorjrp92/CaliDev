@@ -13,17 +13,23 @@ export type ReelTestimonial = {
   alt?: string;
 };
 
+/** Alto de cada casilla, en rem. Lo comparten las tres columnas. */
+const CASILLA = 7.5;
+/** Casillas fantasma por columna lateral. Suficientes para llenar el alto visible. */
+const FANTASMA = 6;
+
 /**
- * Testimonios como un carrete de fotos: la tira se desplaza en vertical y la
- * ficha centrada es la activa; las vecinas quedan atenuadas y encogidas, como
- * fotogramas fuera de foco. A la derecha, la cita.
+ * Testimonios como una hoja de contactos.
+ *
+ * Tres columnas de casillas: las laterales son fantasmas —solo el borde, sin
+ * contenido— escalonadas media casilla para que la retícula no se lea como una
+ * tabla; la central es el carrete que se desplaza y donde vive la foto activa.
+ * El conjunto da cuerpo a la sección sin competir con la cita.
  *
  * El desplazamiento es una transformación con transición CSS y no un scroll
  * real: así el centro está siempre donde decimos y no depende de dónde haya
  * quedado la barra del navegador. Con `prefers-reduced-motion` el cambio es
  * instantáneo.
- *
- * Se puede navegar con las flechas, con el teclado y tocando una ficha.
  */
 export function ScrollReelTestimonials({
   testimonials,
@@ -62,7 +68,23 @@ export function ScrollReelTestimonials({
   }, [mover]);
 
   const actual = testimonials[activo];
-  const ALTO = 8.5; // rem por ficha, incluido el hueco
+  const transicion = still ? "none" : "transform 620ms cubic-bezier(0.22, 1, 0.36, 1)";
+
+  const columnaFantasma = (desfase: number, key: string) => (
+    <div key={key} className="relative overflow-hidden" style={{ width: `${CASILLA}rem` }}>
+      <div
+        className="absolute left-0 w-full"
+        style={{ top: `${-CASILLA * desfase}rem` }}
+        aria-hidden="true"
+      >
+        {Array.from({ length: FANTASMA }, (_, i) => (
+          <div key={i} className="p-1.5" style={{ height: `${CASILLA}rem` }}>
+            <div className="h-full w-full rounded-2xl border border-current/12 bg-current/4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -73,60 +95,67 @@ export function ScrollReelTestimonials({
       aria-label="Lo que dicen nuestros clientes"
       className={`grid items-center gap-10 outline-none focus-visible:ring-2 focus-visible:ring-[var(--lima)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent md:grid-cols-[auto_1fr] md:gap-16 ${className}`}
     >
-      {/* Carrete */}
+      {/* Hoja de contactos */}
       <div
-        className="relative mx-auto h-[26rem] w-40 overflow-hidden md:w-44"
+        className="relative mx-auto flex h-[24rem] justify-center"
         style={{
-          maskImage: "linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent)",
+          maskImage: "linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent)",
         }}
       >
-        <ul
-          className="absolute left-0 top-1/2 w-full"
-          style={{
-            transform: `translateY(calc(-50% - ${(activo - (total - 1) / 2) * ALTO}rem))`,
-            transition: still ? "none" : "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          {testimonials.map((t, i) => {
-            const esActivo = i === activo;
-            return (
-              <li key={t.id} className="flex h-[8.5rem] items-center justify-center py-2">
-                <button
-                  type="button"
-                  onClick={() => setActivo(i)}
-                  aria-label={`Ver el testimonio de ${t.author}`}
-                  aria-current={esActivo}
-                  className="block h-28 w-28 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 md:h-32 md:w-32"
-                  style={{
-                    opacity: esActivo ? 1 : 0.28,
-                    transform: esActivo ? "scale(1)" : "scale(0.82)",
-                    filter: esActivo ? "none" : "grayscale(1)",
-                  }}
-                >
-                  {t.image ? (
-                    <Image
-                      src={t.image}
-                      alt={t.alt ?? t.author}
-                      width={160}
-                      height={160}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    // Monograma mientras no hay foto real: nunca la cara de
-                    // un desconocido junto al nombre de una clienta.
-                    <span
-                      aria-hidden="true"
-                      className="grid h-full w-full place-items-center bg-[var(--verde)] text-3xl font-extrabold text-[var(--lima)]"
-                    >
-                      {t.author.charAt(0)}
-                    </span>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        {columnaFantasma(0.55, "izq")}
+
+        {/* Carrete central */}
+        <div className="relative overflow-hidden" style={{ width: `${CASILLA}rem` }}>
+          <ul
+            className="absolute left-0 top-1/2 w-full"
+            style={{
+              transform: `translateY(calc(-50% - ${(activo - (total - 1) / 2) * CASILLA}rem))`,
+              transition: transicion,
+            }}
+          >
+            {testimonials.map((t, i) => {
+              const esActivo = i === activo;
+              return (
+                <li key={t.id} className="p-1.5" style={{ height: `${CASILLA}rem` }}>
+                  <button
+                    type="button"
+                    onClick={() => setActivo(i)}
+                    aria-label={`Ver el testimonio de ${t.author}`}
+                    aria-current={esActivo}
+                    className="block h-full w-full cursor-pointer overflow-hidden rounded-2xl border border-current/12 transition-all duration-500"
+                    style={{
+                      opacity: esActivo ? 1 : 0.3,
+                      transform: esActivo ? "scale(1)" : "scale(0.88)",
+                      filter: esActivo ? "none" : "grayscale(1)",
+                    }}
+                  >
+                    {t.image ? (
+                      <Image
+                        src={t.image}
+                        alt={t.alt ?? t.author}
+                        width={180}
+                        height={180}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      // Monograma mientras no hay foto real: nunca la cara de
+                      // un desconocido junto al nombre de una clienta.
+                      <span
+                        aria-hidden="true"
+                        className="grid h-full w-full place-items-center bg-current/8 text-4xl font-extrabold text-[var(--lima)]"
+                      >
+                        {t.author.charAt(0)}
+                      </span>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {columnaFantasma(0.25, "der")}
       </div>
 
       {/* Cita */}
@@ -148,7 +177,7 @@ export function ScrollReelTestimonials({
             type="button"
             onClick={() => mover(-1)}
             aria-label="Testimonio anterior"
-            className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-current/25 transition-colors hover:bg-white/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lima)]"
+            className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-current/25 transition-colors hover:bg-current/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lima)]"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M15 18l-6-6 6-6" />
@@ -158,15 +187,13 @@ export function ScrollReelTestimonials({
             type="button"
             onClick={() => mover(1)}
             aria-label="Testimonio siguiente"
-            className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-current/25 transition-colors hover:bg-white/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lima)]"
+            className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-current/25 transition-colors hover:bg-current/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lima)]"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
-          <span className="mono ml-2 opacity-50">
-            {activo + 1} / {total}
-          </span>
+          <span className="mono ml-2 opacity-50">{activo + 1} / {total}</span>
         </div>
       </div>
     </div>
