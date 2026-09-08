@@ -1,10 +1,12 @@
 import { WorkPageHero } from "@/components/ui/work-page-hero";
 import { Servicios } from "@/components/nuevo/servicios";
+import { Testimonios } from "@/components/nuevo/testimonios";
 import { Herramientas } from "@/components/nuevo/herramientas";
 
 /**
  * Home nuevo: hero con vídeo que se expande, y los servicios como paneles
- * que avanzan en horizontal, y cierra con las herramientas orbitando.
+ * que avanzan en horizontal, los testimonios, y cierra con las herramientas
+ * orbitando.
  */
 export default function NuevoPage() {
   return (
@@ -28,6 +30,8 @@ export default function NuevoPage() {
       />
 
       <Servicios />
+
+      <Testimonios />
 
       <Herramientas />
     </main>
