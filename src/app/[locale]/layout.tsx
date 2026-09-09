@@ -1,12 +1,34 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { Archivo, IBM_Plex_Mono, Instrument_Serif } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { Barra } from '@/components/senal/barra';
 import { Pie } from '@/components/senal/pie';
 import { JsonLd } from '@/components/json-ld';
-import { variablesDeFuente } from '@/fuentes';
 import '@/styles/senal.css';
+
+const archivo = Archivo({
+  subsets: ['latin'],
+  variable: '--font-archivo',
+  weight: ['400', '500', '600', '800'],
+  display: 'swap',
+});
+
+const plex = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-plex',
+  weight: ['400', '500'],
+  display: 'swap',
+});
+
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  variable: '--font-instrument',
+  weight: '400',
+  style: 'italic',
+  display: 'swap',
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -59,9 +81,9 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${variablesDeFuente} h-full antialiased`}
+      className={`${archivo.variable} ${plex.variable} ${instrument.variable} h-full antialiased`}
     >
-      <body className="senal flex min-h-full flex-col bg-[var(--hueso)] font-[family-name:var(--font-cuerpo)] text-[var(--tinta)]">
+      <body className="senal flex min-h-full flex-col bg-[var(--hueso)] font-[family-name:var(--font-archivo)] text-[var(--tinta)]">
         <NextIntlClientProvider messages={messages}>
           <JsonLd data={jsonLd} />
           <Barra />

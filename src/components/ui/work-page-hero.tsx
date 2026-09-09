@@ -162,11 +162,9 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
   );
 
   const wordStyle: React.CSSProperties = {
-    // La familia de titular, no la de cuerpo: es el texto más grande del sitio.
-    fontFamily: "var(--font-titular), Georgia, serif",
+    fontFamily: "var(--font-archivo), system-ui, sans-serif",
     fontSize: "clamp(3rem, 10.5vw, 10.5rem)",
     fontWeight: 800,
-    letterSpacing: "-0.015em",
   };
 
   return (
@@ -224,17 +222,14 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
                 style={{
                   color: accentColor,
                   fontSize: "clamp(3.6rem, 13vw, 12.5rem)",
-                  // La cursiva de la misma familia del titular: Vollkorn trae la
-                  // suya, así que esta palabra deja de necesitar una fuente
-                  // prestada solo para ella.
-                  fontFamily: "var(--font-titular), Georgia, serif",
+                  fontFamily: "var(--font-instrument), Georgia, serif",
                   fontStyle: "italic",
                   fontWeight: 400,
                 }}
               >
                 {bottomWord}
               </span>
-            </div>
+              </div>
           </h1>
 
           {/* Relojes: el punto lima es el único uso del acento en el hero,
