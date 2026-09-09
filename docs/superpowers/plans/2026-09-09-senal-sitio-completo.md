@@ -151,15 +151,15 @@ redirigiendo a `/`.
 
 **Archivos:** Modificar `src/app/[locale]/page.tsx`; borrar `src/app/nuevo/page.tsx` y `layout.tsx`; crear `src/app/nuevo/page.tsx` (redirección)
 
-- [ ] **C2.1** `[locale]/page.tsx` compone hero + servicios + testimonios +
+- [x] **C2.1** `[locale]/page.tsx` compone hero + servicios + testimonios +
   herramientas + cierre, con `id` en cada sección.
-- [ ] **C2.2** `src/app/nuevo/page.tsx` → `redirect('/')`.
-- [ ] **C2.3** Quitar `robots: noindex` y poner metadatos y Open Graph reales.
-- [ ] **C2.4** Manejo del hash: en `servicios.tsx`, tras el `ScrollTrigger.refresh()`
+- [x] **C2.2** `src/app/nuevo/page.tsx` → `redirect('/')`.
+- [x] **C2.3** Quitar `robots: noindex` y poner metadatos y Open Graph reales.
+- [x] **C2.4** Manejo del hash: en `servicios.tsx`, tras el `ScrollTrigger.refresh()`
   inicial, si `location.hash` coincide con una sección, hacer `scrollIntoView`.
-- [ ] **C2.5** Correr `anclas` → `/es#servicios` deja la sección arriba.
-- [ ] **C2.6** Correr `alcanzabilidad` y `render`.
-- [ ] **C2.7** Commit.
+- [x] **C2.5** Correr `anclas` → `/es#servicios` deja la sección arriba.
+- [x] **C2.6** Correr `alcanzabilidad` y `render`.
+- [x] **C2.7** Commit.
 
 ### Tarea C3: sacar el texto del home a `messages`
 

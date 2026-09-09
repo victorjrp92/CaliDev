@@ -10,6 +10,9 @@ if (typeof window !== "undefined") {
 }
 
 export interface HorizontalScrollProps {
+  /** Ancla de la sección. Sin `scroll-margin`: el pin arranca en `top top`, así
+      que el borde superior ya es el sitio correcto al que saltar. */
+  id?: string;
   /** Cada hijo es un panel a pantalla completa. */
   children: React.ReactNode;
   /** Suavizado del scrub. Más alto = el desplazamiento persigue al scroll con más retardo. */
@@ -26,7 +29,7 @@ export interface HorizontalScrollProps {
  * restauración de posición al volver atrás; el snap nativo es lo que la gente
  * espera en un teléfono. Lo mismo con `prefers-reduced-motion`.
  */
-export function HorizontalScroll({ children, scrub = 1, className = "" }: HorizontalScrollProps) {
+export function HorizontalScroll({ children, id, scrub = 1, className = "" }: HorizontalScrollProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [pinned, setPinned] = useState(false);
@@ -73,6 +76,7 @@ export function HorizontalScroll({ children, scrub = 1, className = "" }: Horizo
 
   return (
     <section
+      id={id}
       ref={sectionRef}
       className={`relative ${pinned ? "h-screen overflow-hidden" : ""} ${className}`}
     >

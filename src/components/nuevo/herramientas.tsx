@@ -11,7 +11,7 @@ import { TODAS } from "@/lib/nuevo/herramientas";
  */
 export function Herramientas() {
   return (
-    <section className="relative overflow-hidden bg-[var(--azul)] pt-24 text-[var(--niebla)] md:pt-28">
+    <section id="herramientas" className="scroll-mt-20 relative overflow-hidden bg-[var(--azul)] pt-24 text-[var(--niebla)] md:pt-28">
       <div className="mx-auto max-w-5xl px-7 text-center md:px-14">
         <p className="mono text-[var(--lima)]">Con qué trabajamos</p>
         <h2 className="mx-auto mt-6 max-w-[17ch] text-[clamp(2.2rem,5.5vw,4.6rem)] font-extrabold leading-[1.0] tracking-[-0.035em]">

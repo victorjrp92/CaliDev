@@ -10,7 +10,7 @@ import { PanelVisual } from "@/components/nuevo/panel-visual";
  */
 export function Servicios() {
   return (
-    <HorizontalScroll className="bg-[var(--hueso)]">
+    <HorizontalScroll id="servicios" className="bg-[var(--hueso)]">
       {/* Panel de entrada */}
       <article className="flex w-screen flex-none snap-start flex-col justify-center px-7 py-20 md:h-screen md:px-20">
         <p className="mono text-[var(--verde)]">Qué hacemos</p>

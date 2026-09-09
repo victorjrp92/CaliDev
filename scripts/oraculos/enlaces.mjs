@@ -21,8 +21,14 @@ const unicos = [...new Set(href.map((h) => h.split("#")[0]).filter(Boolean))];
 let fallos = 0;
 for (const h of unicos) {
   const url = new URL(h, BASE).toString();
-  const res = await pagina.request.get(url).catch(() => null);
-  const estado = res?.status() ?? 0;
+  // Un intento y un reintento. En desarrollo, la primera petición a una ruta
+  // que aún no se ha compilado se agota y devuelve 0; sin el reintento el
+  // oráculo denunciaba enlaces rotos que no lo estaban.
+  let estado = 0;
+  for (let intento = 0; intento < 2 && !(estado >= 200 && estado < 400); intento++) {
+    const res = await pagina.request.get(url, { timeout: 60000 }).catch(() => null);
+    estado = res?.status() ?? 0;
+  }
   const ok = estado >= 200 && estado < 400;
   if (!ok) fallos++;
   console.log(`${ok ? "ok    " : "FALLA "} ${estado}  ${h}`);

@@ -9,7 +9,7 @@ import { TESTIMONIOS_DUMMY as TESTIMONIOS } from "@/lib/nuevo/testimonios";
  */
 export function Testimonios() {
   return (
-    <section className="bg-[var(--verde)] px-7 py-24 text-[var(--hueso)] md:px-14 md:py-32">
+    <section id="testimonios" className="scroll-mt-20 bg-[var(--verde)] px-7 py-24 text-[var(--hueso)] md:px-14 md:py-32">
       <div className="mx-auto max-w-6xl">
         <p className="mono text-[var(--lima)]">Lo que dicen</p>
         <h2 className="mt-6 max-w-[16ch] text-[clamp(2.2rem,5.5vw,4.4rem)] font-extrabold leading-[1.0] tracking-[-0.035em]">
