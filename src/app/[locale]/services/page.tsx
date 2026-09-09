@@ -1,21 +1,25 @@
-import { getTranslations } from 'next-intl/server';
-import { ServicesPage } from '@/components/services-page';
+import { redirect } from "next/navigation";
 
-export const revalidate = 60;
-
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+/**
+ * `/services` ya no es una página: los servicios viven en el home.
+ *
+ * Redirige en vez de desaparecer porque la ruta lleva tiempo publicada, está en
+ * enlaces antiguos y en el índice de los buscadores; devolver un 404 a quien
+ * llega buscando justo eso sería el peor recibimiento posible.
+ *
+ * Usa el `redirect` de Next y no el de next-intl porque el de next-intl no
+ * acepta ancla, y el ancla es justo el punto: hay que caer en la sección, no en
+ * lo alto del home.
+ *
+ * El contenido que tenía la página —precios, proceso y producto estrella— sigue
+ * en `messages` bajo el espacio `sp`. No se borra: no está en ningún otro sitio
+ * todavía y perderlo por limpiar sería tirar texto ya escrito y traducido.
+ */
+export default async function ServiciosRedirige({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'sp' });
-  return {
-    title: t('headline'),
-    description: t('subheadline'),
-  };
-}
-
-export default async function ServicesRoute() {
-  return (
-    <main>
-      <ServicesPage />
-    </main>
-  );
+  redirect(`/${locale}#servicios`);
 }

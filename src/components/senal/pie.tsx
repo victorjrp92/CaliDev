@@ -45,7 +45,6 @@ export function Pie() {
               {(
                 [
                   { href: "/about", texto: tNav("about") },
-                  { href: "/services", texto: tNav("services") },
                   { href: "/blog", texto: tNav("blog") },
                   { href: "/contact", texto: tNav("contact") },
                 ] as const
