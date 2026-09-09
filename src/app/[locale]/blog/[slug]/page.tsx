@@ -1,10 +1,10 @@
-import { getPostBySlug, getAllPosts } from '@/lib/blog';
+import { getPostBySlug, getAllPosts, getRelatedPosts } from '@/lib/blog';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { ShareButtons } from '@/components/share-buttons';
 import { Panel } from '@/components/senal/panel';
-import { Cierre } from '@/components/senal/cierre';
+import { Link } from '@/i18n/routing';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -39,6 +39,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
   const t = await getTranslations({ locale, namespace: 'blog' });
 
   if (!post) notFound();
+
+  const relacionados = getRelatedPosts(post);
 
   const fecha = new Date(post.date).toLocaleDateString(locale, {
     year: 'numeric',
@@ -86,7 +88,28 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         </div>
       </Panel>
 
-      <Cierre />
+      {relacionados.length > 0 && (
+        <Panel fondo="niebla">
+          <h2 className="text-[clamp(1.5rem,3vw,2.1rem)] font-extrabold leading-[1.1] tracking-[-0.03em]">
+            {t('related')}
+          </h2>
+          <ul className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+            {relacionados.map((r) => (
+              <li key={r.slug} className="border-t border-[var(--linea-tinta)] pt-6">
+                <p className="mono text-[var(--verde)]">
+                  {r.category} · {r.readingTime}
+                </p>
+                <h3 className="mt-4 text-[1.2rem] font-semibold leading-[1.25] tracking-[-0.02em]">
+                  <Link href={`/blog/${r.slug}`} className="titulo-articulo">
+                    {r.title}
+                  </Link>
+                </h3>
+                <p className="mt-3 leading-[1.6] opacity-70">{r.description}</p>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
     </main>
   );
 }

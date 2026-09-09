@@ -4,7 +4,6 @@ import { BlogList } from '@/components/blog-list';
 import { Panel } from '@/components/senal/panel';
 import { Titular } from '@/components/senal/titular';
 import { Boton } from '@/components/senal/boton';
-import { Cierre } from '@/components/senal/cierre';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -14,6 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 /**
  * Blog.
+ *
+ * NO lleva el panel de cierre. Esta sección existe para dar algo gratis y para
+ * que los buscadores encuentren el sitio; meterle una llamada a agendar la
+ * convierte en un embudo y traiciona el trato: quien viene a leer, lee.
  *
  * Hay artículos en inglés y en español, y ninguno en alemán. Sin estado vacío,
  * `/de/blog` devolvía una página en blanco con un titular flotando: parece un
@@ -57,8 +60,6 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
           </div>
         )}
       </Panel>
-
-      <Cierre />
     </main>
   );
 }

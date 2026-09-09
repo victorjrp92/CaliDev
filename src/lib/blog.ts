@@ -84,3 +84,19 @@ export function getAllCategories(locale: string = 'en'): string[] {
   posts.forEach(p => cats.add(p.category));
   return Array.from(cats);
 }
+
+/**
+ * Artículos relacionados: primero los de la misma categoría, después los más
+ * recientes del mismo idioma.
+ *
+ * Van al final de cada artículo en vez de una llamada a agendar. El blog está
+ * para dar algo gratis y para que los buscadores encuentren el sitio; enlazar
+ * el propio contenido sirve a las dos cosas, y una llamada a vender no sirve a
+ * ninguna.
+ */
+export function getRelatedPosts(post: BlogPost, limite = 3): BlogPost[] {
+  const resto = getAllPosts(post.locale).filter(p => p.slug !== post.slug);
+  const mismaCategoria = resto.filter(p => p.category === post.category);
+  const demas = resto.filter(p => p.category !== post.category);
+  return [...mismaCategoria, ...demas].slice(0, limite);
+}
