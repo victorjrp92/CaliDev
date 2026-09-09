@@ -42,6 +42,8 @@ export default function HomePage() {
         topWord={t('palabra1')}
         rightWord={t('palabra2')}
         bottomWord={t('palabra3')}
+        tagline={t('linea')}
+        ctaTexto={t('cta')}
         accentColor="#0A3D2E"
         textColor="#14201B"
         backgroundColor="#FAFAF7"

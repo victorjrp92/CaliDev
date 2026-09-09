@@ -300,23 +300,23 @@
   "senal": {
     "cierre": {
       "etiqueta": "Der nächste Schritt",
-      "titular": "Sagen Sie uns, was gerade kaputtgeht.",
-      "entrada": "Sagen Sie uns, wo Zeit oder Geld verloren geht, und wir sagen Ihnen, ob wir etwas beitragen können. Wir antworten innerhalb von 24 Stunden — und wenn Sie uns nicht brauchen, sagen wir auch das.",
+      "titular": "Was möchten Sie aufbauen oder verbessern?",
+      "entrada": "Egal ob schon etwas läuft oder Sie bei null anfangen. Sagen Sie uns, was Sie brauchen, und in einer halben Stunde finden wir heraus, wo man anfängt — und wenn Sie uns nicht brauchen, sagen wir das.",
       "boton": "Sprechen wir",
       "video_alt": "Ein Video-Call: Auf dem Laptop-Bildschirm hört ein Unternehmer aufmerksam zu, nickt und lächelt."
     },
     "servicios": {
       "etiqueta": "Was wir tun",
-      "titulo": "Vier Arten, zusammenzuarbeiten.",
-      "entrada": "Immer in dieser Reihenfolge: erst verstehen, dann bauen. Was gebaut wird, hängt davon ab, was die Analyse findet — nicht davon, was wir verkaufen möchten.",
+      "titulo": "Websites, Apps und Automatisierung für Ihr Unternehmen.",
+      "entrada": "Und wenn Sie nicht wissen, was Sie brauchen, gehört auch das dazu: Wir schauen uns an, wie Sie heute arbeiten, und einigen uns darauf, was sich zu lösen lohnt.",
       "pista_ancha": "Weiter scrollen · die Panels laufen von selbst",
       "pista_movil": "Wischen →",
       "cierre_etiqueta": "Fangen wir an",
-      "cierre_titulo": "Welche der vier ist Ihre?",
-      "cierre_cuerpo": "Wenn Sie es nicht wissen, ist genau das das Gespräch. Eine halbe Stunde, um herauszufinden, wo man anfängt.",
+      "cierre_titulo": "Sie müssen nicht wissen, was Sie wählen sollen.",
+      "cierre_cuerpo": "Dafür ist das erste Gespräch da. Dreißig Minuten, keine Verkaufspräsentation, und wir sagen Ihnen, wo man anfängt.",
       "cierre_boton": "Sprechen wir",
       "s01": {
-        "linea": "Digitale Strategie",
+        "linea": "Analyse und Verbesserungsplan",
         "titulo": "Wir fangen bei Ihrem Betrieb an, nicht beim Code.",
         "cuerpo": "Die meisten Agenturen öffnen einen Editor. Wir öffnen zuerst Ihre Zahlen — denn zu bauen, was Sie nicht brauchen, kostet mehr als gar nichts zu bauen.",
         "p1": "Wir finden, wo das Geld verloren geht, bevor wir etwas anfassen",
@@ -326,15 +326,15 @@
       },
       "s02": {
         "linea": "Websites",
-        "titulo": "Eine Seite, die Sie selbst pflegen — vom Handy aus.",
+        "titulo": "Eine Seite, die Ihre Leistungen zeigt und Anfragen entgegennimmt — und die Sie selbst vom Handy aus pflegen.",
         "cuerpo": "Mit einem Editor, der so einfach ist: Wer eine Story posten kann, kann seine Seite ändern. Ohne anzurufen und ohne zu warten, bis jemand Zeit hat.",
         "p1": "Texte, Fotos und Preise ändern — ohne Entwickler",
         "p2": "Mehrsprachig und darauf gebaut, gefunden zu werden",
-        "p3": "Sie gehört Ihnen: keine Abos, keine Bindung",
+        "p3": "Sie gehört Ihnen: Code und Zugänge, ohne monatliche Gebühr an uns",
         "alt": "Jemand baut am Computer eine Website"
       },
       "s03": {
-        "linea": "Apps und CRMs",
+        "linea": "Individuelle Apps und Systeme",
         "titulo": "Wenn das Geschäft der Tabelle entwächst.",
         "cuerpo": "Irgendwann hilft Excel nicht mehr, sondern verbirgt. Dann braucht es ein System, das zu Ihrer Arbeitsweise passt — und nicht umgekehrt.",
         "p1": "Auf Ihrem echten Betrieb gebaut, nicht auf einer Vorlage",
@@ -348,9 +348,11 @@
         "cuerpo": "Zahlungen abgleichen, Daten hin- und herschieben, den Montagsbericht bauen. Arbeit, die kein Urteilsvermögen braucht — und die Stunden frisst, die es brauchen.",
         "p1": "Wir verbinden die Werkzeuge, die Sie schon nutzen",
         "p2": "Der Bericht kommt, ohne dass jemand fragt",
-        "p3": "Bei LimpiaExpress waren es über 20 Stunden pro Woche",
+        "p3": "Bei LimpiaExpress waren es 27 Stunden pro Woche",
         "alt": "Ein automatischer Ablauf, der Schritt für Schritt aufleuchtet"
-      }
+      },
+      "marco": "Leistungen · {n} von {total}",
+      "lista": "Analyse und Plan · Websites · Individuelle Apps · Automatisierung"
     },
     "herramientas": {
       "etiqueta": "Womit wir arbeiten",
@@ -390,7 +392,9 @@
     "hero": {
       "palabra1": "wir bauen",
       "palabra2": "Ihren",
-      "palabra3": "Vorsprung"
+      "palabra3": "Vorsprung",
+      "linea": "Websites, Apps und Automatisierung für KMU, die mehr verkaufen und weniger von Hand machen wollen.",
+      "cta": "Sehen, was wir können"
     }
   }
 }

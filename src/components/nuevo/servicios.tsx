@@ -23,8 +23,13 @@ export function Servicios() {
         <p className="mt-7 max-w-[46ch] text-lg leading-relaxed text-[var(--tinta)]/70 md:text-xl">
           {t("entrada")}
         </p>
-        <p className="mono mt-10 text-[var(--tinta)]/45 max-md:hidden">{t("pista_ancha")}</p>
-        <p className="mono mt-10 text-[var(--tinta)]/45 md:hidden">{t("pista_movil")}</p>
+        {/* Los cuatro, nombrados antes del recorrido. El panel de entrada
+            gastaba una pantalla entera en explicar el método sin decir qué se
+            puede contratar — y como «Servicios» del menú entra directo aquí,
+            para mucha gente esta es la primera pantalla del sitio. */}
+        <p className="mono mt-10 text-[var(--verde)]">{t("lista")}</p>
+        <p className="mono mt-6 text-[var(--tinta)]/45 max-md:hidden">{t("pista_ancha")}</p>
+        <p className="mono mt-6 text-[var(--tinta)]/45 md:hidden">{t("pista_movil")}</p>
       </article>
 
       {SERVICIOS.map((s) => (
@@ -37,13 +42,26 @@ export function Servicios() {
               donde no compite con el titular en una pantalla estrecha. */}
           <div className="mx-auto flex h-full max-w-[1500px] flex-col justify-center gap-10 md:flex-row md:items-center md:gap-16">
           <div className="max-w-[52ch] md:flex-1">
+            {/* Jerarquía invertida. Antes el nombre del servicio iba a 12 px y
+                la frase de filosofía a 70: el texto que el ojo lee primero no
+                nombraba lo que se vende, y tres de los cuatro titulares no
+                contenían ni un sustantivo del negocio. Ahora manda el nombre y
+                la frase baja a entradilla — sin cambiar una palabra de ninguna
+                de las dos.
+
+                El rótulo dice «Servicios» en cada panel, no solo en el de
+                entrada: el título de la sección desaparecía en el segundo paso
+                y a partir de ahí nada indicaba qué se estaba leyendo. */}
             <p className="mono" style={{ color: s.realce }}>
-              {s.n} · {t(`s${s.n}.linea`)}
+              {t("marco", { n: s.n, total: "04" })}
             </p>
             <h3 className="mt-6 text-[clamp(2.1rem,5.2vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
-              {t(`s${s.n}.titulo`)}
+              {t(`s${s.n}.linea`)}
             </h3>
-            <p className="mt-6 text-lg leading-relaxed opacity-80 md:text-xl">{t(`s${s.n}.cuerpo`)}</p>
+            <p className="mt-5 max-w-[24ch] text-[clamp(1.25rem,2.3vw,1.9rem)] font-medium leading-[1.25] tracking-[-0.02em] opacity-90">
+              {t(`s${s.n}.titulo`)}
+            </p>
+            <p className="mt-6 text-lg leading-relaxed opacity-70 md:text-xl">{t(`s${s.n}.cuerpo`)}</p>
             <ul className="mt-9 flex flex-col gap-3.5">
               {(["p1", "p2", "p3"] as const).map((clave) => (
                 <li key={clave} className="flex items-start gap-3.5 text-[17px] leading-snug">

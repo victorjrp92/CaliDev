@@ -232,7 +232,7 @@
     "svc_consulting_b3": "Estrategia respaldada por datos y construida por ingenieros — no presentaciones que acumulan polvo",
     "svc_auto_title": "Automatizaciones y Flujos de Trabajo",
     "svc_auto_desc": "Tu equipo gasta horas en tareas repetitivas que un software hace en segundos. Encontramos esos cuellos de botella, construimos la automatización y te devolvemos tu tiempo.",
-    "svc_auto_b1": "Elimina más de 20 horas/semana de trabajo manual",
+    "svc_auto_b1": "Elimina 27 horas/semana de trabajo manual",
     "svc_auto_b2": "Conecta tus herramientas actuales — no necesitas reemplazar lo que funciona",
     "svc_auto_b3": "Dashboards personalizados para que veas todo en un solo lugar",
     "svc_apps_title": "Apps y Plataformas a Medida",
@@ -300,23 +300,23 @@
   "senal": {
     "cierre": {
       "etiqueta": "El siguiente paso",
-      "titular": "Cuéntanos qué se está rompiendo.",
-      "entrada": "Nos cuentas dónde se te va el tiempo o el dinero y te decimos si tenemos algo que aportar. Respondemos en 24 horas, y si no te hacemos falta, te lo decimos.",
+      "titular": "¿Qué quieres crear o mejorar?",
+      "entrada": "Da igual si ya tienes algo montado o si empiezas de cero. Cuéntanos qué necesitas y en media hora vemos por dónde empezar — y si no te hacemos falta, te lo decimos.",
       "boton": "Hablemos",
       "video_alt": "Videollamada de trabajo: en la pantalla del portátil, un empresario escucha con atención, asiente y sonríe."
     },
     "servicios": {
       "etiqueta": "Qué hacemos",
-      "titulo": "Cuatro maneras de trabajar juntos.",
-      "entrada": "Siempre en ese orden: primero entender, después construir. Lo que se construye depende de lo que el análisis encuentre, no de lo que queramos vender.",
+      "titulo": "Páginas web, aplicaciones y automatizaciones para tu negocio.",
+      "entrada": "Y si no sabes cuál necesitas, eso también lo resolvemos: primero miramos cómo trabajas hoy y acordamos qué vale la pena arreglar.",
       "pista_ancha": "Sigue bajando · los paneles avanzan solos",
       "pista_movil": "Desliza →",
       "cierre_etiqueta": "Empecemos",
-      "cierre_titulo": "¿Cuál de las cuatro es la tuya?",
-      "cierre_cuerpo": "Si no lo tienes claro, esa es justamente la conversación. Media hora para saber por dónde empezar.",
+      "cierre_titulo": "No necesitas saber cuál elegir.",
+      "cierre_cuerpo": "Para eso está la primera conversación. Treinta minutos, sin presentación de ventas, y te decimos por dónde empezar.",
       "cierre_boton": "Hablemos",
       "s01": {
-        "linea": "Estrategia digital",
+        "linea": "Diagnóstico y plan de mejora",
         "titulo": "Empezamos por tu operación, no por el código.",
         "cuerpo": "La mayoría de agencias abre un editor. Nosotros abrimos tus números primero, porque construir lo que no necesitas sale más caro que no construir nada.",
         "p1": "Encontramos dónde se te va el dinero antes de tocar nada",
@@ -326,15 +326,15 @@
       },
       "s02": {
         "linea": "Páginas web",
-        "titulo": "Un sitio que actualizas tú, desde el celular.",
+        "titulo": "Una web que muestra tus servicios y recibe consultas — y que actualizas tú, desde el celular.",
         "cuerpo": "Con un editor propio tan simple que si publicas una historia, puedes cambiar tu página. Sin llamar a nadie y sin esperar a que alguien tenga tiempo.",
         "p1": "Cambias textos, fotos y precios sin programador",
         "p2": "Multilingüe y optimizado para que te encuentren",
-        "p3": "Es tuyo: sin suscripciones ni ataduras",
+        "p3": "Es tuya: el código y los accesos, sin cuota mensual nuestra",
         "alt": "Una persona construyendo una página web en el computador"
       },
       "s03": {
-        "linea": "Apps y CRMs",
+        "linea": "Aplicaciones y sistemas a medida",
         "titulo": "Cuando el negocio supera las hojas de cálculo.",
         "cuerpo": "Llega un punto en que el Excel deja de ayudar y empieza a esconder. Ahí es cuando hace falta un sistema hecho para cómo trabajas tú, no al revés.",
         "p1": "Construido sobre tu operación real, no sobre una plantilla",
@@ -348,9 +348,11 @@
         "cuerpo": "Cuadrar pagos, pasar datos de un lado a otro, armar el reporte del lunes. Trabajo que no requiere criterio y que se lleva las horas que sí lo requieren.",
         "p1": "Conectamos las herramientas que ya usas",
         "p2": "El reporte llega sin que nadie lo pida",
-        "p3": "En LimpiaExpress fueron más de 20 horas por semana",
+        "p3": "En LimpiaExpress fueron 27 horas por semana",
         "alt": "Un flujo automático que se enciende paso a paso"
-      }
+      },
+      "marco": "Servicios · {n} de {total}",
+      "lista": "Diagnóstico y plan · Páginas web · Aplicaciones a medida · Automatizaciones"
     },
     "herramientas": {
       "etiqueta": "Con qué trabajamos",
@@ -390,7 +392,9 @@
     "hero": {
       "palabra1": "construimos",
       "palabra2": "tu",
-      "palabra3": "ventaja"
+      "palabra3": "ventaja",
+      "linea": "Páginas web, aplicaciones y automatizaciones para pymes que quieren vender más y trabajar menos a mano.",
+      "cta": "Ver qué podemos hacer"
     }
   }
 }

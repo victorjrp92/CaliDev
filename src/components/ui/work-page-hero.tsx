@@ -25,6 +25,15 @@ export interface WorkPageHeroProps {
   topWord?: string;
   rightWord?: string;
   bottomWord?: string;
+  /**
+   * La línea que dice de qué va esto. Va debajo de la primera palabra porque el
+   * eslogan cinético es memorable pero no explica nada: sin ella, sobre el
+   * pliegue de un móvil solo se leen tres palabras abstractas.
+   */
+  tagline?: string;
+  /** Texto y destino de la llamada a la acción del hero. */
+  ctaTexto?: string;
+  ctaHref?: string;
   /** Color de las palabras destacadas y de las horas. */
   accentColor?: string;
   /** Color de la palabra central y de las ciudades. */
@@ -97,6 +106,9 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
   topWord = "construimos",
   rightWord = "tu",
   bottomWord = "ventaja",
+  tagline,
+  ctaTexto,
+  ctaHref = "#servicios",
   accentColor = "#0A3D2E",
   textColor = "#14201B",
   backgroundColor = "#FAFAF7",
@@ -109,6 +121,13 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
+  /**
+   * La línea explicativa y el botón viven en su propio grupo, no en el de las
+   * palabras: aquel lleva `pointer-events: none` para no robarle el ratón al
+   * vídeo, y dentro de él un enlace sería imposible de pulsar. Se desvanecen
+   * con la misma línea de tiempo para salir de escena a la vez.
+   */
+  const infoRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { formatTime } = useLiveTime();
   const [reduced, setReduced] = useState(false);
@@ -153,7 +172,7 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
         { top: "0%", left: "0%", bottom: "0%", right: "0%", borderRadius: "0rem", ease: "none" },
         0
       ).to(
-        textGroupRef.current,
+        [textGroupRef.current, infoRef.current].filter(Boolean),
         { opacity: 0, scale: 1.15, filter: "blur(12px)", ease: "none" },
         0
       );
@@ -272,6 +291,56 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
             </div>
           )}
         </div>
+
+        {/* Línea explicativa y llamada a la acción. Fuera del grupo de las
+            palabras porque aquel no recibe eventos de puntero —para no robarle
+            el ratón al vídeo— y dentro de él un enlace sería imposible de
+            pulsar. `top` los coloca bajo la primera palabra: su tamaño es
+            proporcional al ancho, así que el hueco también tiene que serlo. */}
+        {(tagline || ctaTexto) && (
+          <div
+            ref={infoRef}
+            className={
+              // En móvil, centrado bajo la primera palabra: ahí hay hueco entre
+              // la palabra y el vídeo. En escritorio no lo hay —la píldora
+              // ocupa el centro desde el 18 %— así que se va a la franja
+              // izquierda, el único espacio libre, sobre los relojes.
+              "absolute z-30 flex flex-col items-center gap-4 px-6 text-center " +
+              "top-[var(--info-arriba)] inset-x-0 " +
+              "md:inset-x-auto md:left-[clamp(1.25rem,4vw,5rem)] md:top-[24%] " +
+              "md:max-w-[calc(22vw-clamp(1.25rem,4vw,5rem)-2rem)] md:items-start md:gap-5 md:px-0 md:text-left"
+            }
+            style={
+              {
+                "--info-arriba":
+                  "calc(max(2%, calc(var(--alto-barra) + 0.5rem)) + clamp(3.2rem, 11vw, 11rem))",
+                willChange: "transform, opacity, filter",
+              } as React.CSSProperties
+            }
+          >
+            {/* En texto normal y no en el mono versal del resto de etiquetas:
+                una frase de cien caracteres en versales espaciadas ocupa cuatro
+                líneas y se lee peor — el mono está para rótulos cortos. */}
+            {tagline && (
+              <p
+                className="max-w-[36ch] text-[15px] leading-[1.45] md:max-w-none md:text-[17px] md:leading-[1.5]"
+                style={{ color: accentColor, opacity: 0.8 }}
+              >
+                {tagline}
+              </p>
+            )}
+            {ctaTexto && (
+              <a
+                href={ctaHref}
+                className="mono inline-flex items-center gap-2 rounded-full px-6 py-3 transition-[filter] hover:brightness-95"
+                style={{ background: liveColor, color: textColor }}
+              >
+                {ctaTexto}
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </div>
+        )}
 
         {/* ── Vídeo que se expande ── */}
         <div

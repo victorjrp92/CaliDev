@@ -300,23 +300,23 @@
   "senal": {
     "cierre": {
       "etiqueta": "Next step",
-      "titular": "Tell us what's breaking.",
-      "entrada": "Tell us where your time or money is leaking and we'll say whether we can help. We answer within 24 hours — and if you don't need us, we'll say that too.",
+      "titular": "What do you want to build or fix?",
+      "entrada": "It doesn't matter whether you already have something running or you're starting from zero. Tell us what you need and in half an hour we'll work out where to start — and if you don't need us, we'll say so.",
       "boton": "Let's talk",
       "video_alt": "A work video call: on the laptop screen, a business owner listens closely, nods and smiles."
     },
     "servicios": {
       "etiqueta": "What we do",
-      "titulo": "Four ways to work together.",
-      "entrada": "Always in that order: understand first, build second. What gets built depends on what the analysis finds, not on what we'd like to sell.",
+      "titulo": "Websites, apps and automation for your business.",
+      "entrada": "And if you don't know which one you need, that's part of the job too: we look at how you work today and agree on what's worth fixing.",
       "pista_ancha": "Keep scrolling · the panels advance on their own",
       "pista_movil": "Swipe →",
       "cierre_etiqueta": "Let's start",
-      "cierre_titulo": "Which of the four is yours?",
-      "cierre_cuerpo": "If you're not sure, that's exactly the conversation. Half an hour to work out where to begin.",
+      "cierre_titulo": "You don't need to know which one to pick.",
+      "cierre_cuerpo": "That's what the first conversation is for. Thirty minutes, no sales deck, and we tell you where to start.",
       "cierre_boton": "Let's talk",
       "s01": {
-        "linea": "Digital strategy",
+        "linea": "Diagnosis and improvement plan",
         "titulo": "We start with your operation, not with code.",
         "cuerpo": "Most agencies open an editor. We open your numbers first, because building what you don't need costs more than building nothing at all.",
         "p1": "We find where the money is leaking before touching anything",
@@ -326,15 +326,15 @@
       },
       "s02": {
         "linea": "Websites",
-        "titulo": "A site you update yourself, from your phone.",
+        "titulo": "A site that shows your services and takes enquiries — and that you update yourself, from your phone.",
         "cuerpo": "With an editor so simple that if you can post a story, you can change your site. Without calling anyone and without waiting for someone to have time.",
         "p1": "Change text, photos and prices with no developer",
         "p2": "Multilingual and built to be found",
-        "p3": "It's yours: no subscriptions, no lock-in",
+        "p3": "It's yours: the code and the access, with no monthly fee to us",
         "alt": "Someone building a website on a computer"
       },
       "s03": {
-        "linea": "Apps and CRMs",
+        "linea": "Custom apps and systems",
         "titulo": "When the business outgrows the spreadsheet.",
         "cuerpo": "There's a point where Excel stops helping and starts hiding. That's when you need a system built for how you work, not the other way round.",
         "p1": "Built on your real operation, not on a template",
@@ -348,9 +348,11 @@
         "cuerpo": "Reconciling payments, moving data from one place to another, assembling Monday's report. Work that takes no judgement and eats the hours that do.",
         "p1": "We connect the tools you already use",
         "p2": "The report arrives without anyone asking",
-        "p3": "At LimpiaExpress it was over 20 hours a week",
+        "p3": "At LimpiaExpress it was 27 hours a week",
         "alt": "An automated flow lighting up step by step"
-      }
+      },
+      "marco": "Services · {n} of {total}",
+      "lista": "Diagnosis and plan · Websites · Custom apps · Automation"
     },
     "herramientas": {
       "etiqueta": "What we build with",
@@ -390,7 +392,9 @@
     "hero": {
       "palabra1": "we build",
       "palabra2": "your",
-      "palabra3": "edge"
+      "palabra3": "edge",
+      "linea": "Websites, apps and automation for small companies that want to sell more and do less by hand.",
+      "cta": "See what we can do"
     }
   }
 }
