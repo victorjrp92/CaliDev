@@ -73,7 +73,12 @@
     "author": "Autor",
     "vacio_titulo": "Noch keine Artikel auf Deutsch.",
     "vacio_desc": "Wir schreiben in drei Sprachen und nicht immer gleichzeitig. Bis dahin gibt es die Artikel auf Englisch.",
-    "vacio_boton": "Artikel auf Englisch ansehen"
+    "vacio_boton": "Artikel auf Englisch ansehen",
+    "otros_titulo": "In anderen Sprachen",
+    "otros_desc": "Noch nicht übersetzt. Sie sind vollständig und lesen sich genauso.",
+    "idioma_en": "Auf Englisch",
+    "idioma_es": "Auf Spanisch",
+    "idioma_de": "Auf Deutsch"
   },
   "testimonials": {
     "title": "Was unsere Kunden sagen",

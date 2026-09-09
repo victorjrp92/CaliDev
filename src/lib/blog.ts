@@ -100,3 +100,22 @@ export function getRelatedPosts(post: BlogPost, limite = 3): BlogPost[] {
   const demas = resto.filter(p => p.category !== post.category);
   return [...mismaCategoria, ...demas].slice(0, limite);
 }
+
+/**
+ * Artículos escritos en OTRO idioma que el pedido.
+ *
+ * Existen porque esconderlos sería peor que mostrarlos: hoy hay cuatro textos
+ * en inglés y uno en español, y un lector en español que solo viera uno pensaría
+ * que el blog está vacío. Van en su propia sección y marcados con su idioma, no
+ * mezclados: enseñar contenido en inglés bajo una URL `/es/` sin avisar es lo
+ * que hacía el sitio antes y lo que confunde tanto al lector como a Google.
+ */
+export function getPostsInOtherLanguages(locale: string): BlogPost[] {
+  if (!fs.existsSync(contentDir)) return [];
+  return fs
+    .readdirSync(contentDir)
+    .filter(f => f.endsWith('.mdx'))
+    .map(f => getPostBySlug(f.replace('.mdx', ''), locale))
+    .filter((p): p is BlogPost => p !== null && p.locale !== locale)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}

@@ -73,7 +73,12 @@
     "author": "Author",
     "vacio_titulo": "No articles in English yet.",
     "vacio_desc": "We write in three languages and not always at once. In the meantime, what's published is in Spanish.",
-    "vacio_boton": "See the Spanish articles"
+    "vacio_boton": "See the Spanish articles",
+    "otros_titulo": "In other languages",
+    "otros_desc": "We haven't translated these yet. They're complete and read just the same.",
+    "idioma_en": "In English",
+    "idioma_es": "In Spanish",
+    "idioma_de": "In German"
   },
   "testimonials": {
     "title": "What Our Clients Say",

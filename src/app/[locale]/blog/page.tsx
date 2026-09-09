@@ -1,9 +1,9 @@
-import { getAllPosts, getAllCategories } from '@/lib/blog';
+import { getAllPosts, getAllCategories, getPostsInOtherLanguages } from '@/lib/blog';
 import { getTranslations } from 'next-intl/server';
 import { BlogList } from '@/components/blog-list';
+import { OtrosIdiomas } from '@/components/otros-idiomas';
 import { Panel } from '@/components/senal/panel';
 import { Titular } from '@/components/senal/titular';
-import { Boton } from '@/components/senal/boton';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -18,10 +18,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
  * que los buscadores encuentren el sitio; meterle una llamada a agendar la
  * convierte en un embudo y traiciona el trato: quien viene a leer, lee.
  *
- * Hay artículos en inglés y en español, y ninguno en alemán. Sin estado vacío,
- * `/de/blog` devolvía una página en blanco con un titular flotando: parece un
- * sitio roto, no un blog al que aún le faltan traducciones. Ahora lo dice y
- * ofrece el idioma donde sí hay algo que leer.
+ * Dos listas y no una: primero lo escrito en el idioma de quien mira, después
+ * lo demás marcado con su idioma. Antes no había filtro y los cuatro textos en
+ * inglés aparecían bajo `/es/` como si fueran españoles, que confunde al lector
+ * y a Google por igual; pero filtrar y ya escondía cuatro artículos buenos y
+ * dejaba el blog en español pareciendo vacío. Nada se oculta, nada se disfraza.
  */
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -29,11 +30,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   const categories = getAllCategories(locale);
   const t = await getTranslations({ locale, namespace: 'blog' });
 
-  // Adónde mandar a quien llega a un idioma sin artículos: al que más tenga.
-  const refugio = (['en', 'es', 'de'] as const)
-    .filter((l) => l !== locale)
-    .map((l) => ({ locale: l, n: getAllPosts(l).length }))
-    .sort((a, b) => b.n - a.n)[0];
+  const otros = getPostsInOtherLanguages(locale);
 
   return (
     <main>
@@ -52,14 +49,11 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
               {t('vacio_titulo')}
             </h2>
             <p className="mt-5 text-[1.0625rem] leading-[1.7] opacity-75">{t('vacio_desc')}</p>
-            {refugio && refugio.n > 0 && (
-              <Boton forma="verde" href="/blog" locale={refugio.locale} className="mt-9">
-                {t('vacio_boton')}
-              </Boton>
-            )}
           </div>
         )}
       </Panel>
+
+      {otros.length > 0 && <OtrosIdiomas posts={otros} />}
     </main>
   );
 }
