@@ -295,6 +295,93 @@
       "entrada": "Sagen Sie uns, wo Zeit oder Geld verloren geht, und wir sagen Ihnen, ob wir etwas beitragen können. Wir antworten innerhalb von 24 Stunden — und wenn Sie uns nicht brauchen, sagen wir auch das.",
       "boton": "Sprechen wir",
       "video_alt": "Ein Video-Call: Auf dem Laptop-Bildschirm hört ein Unternehmer aufmerksam zu, nickt und lächelt."
+    },
+    "servicios": {
+      "etiqueta": "Was wir tun",
+      "titulo": "Vier Arten, zusammenzuarbeiten.",
+      "entrada": "Immer in dieser Reihenfolge: erst verstehen, dann bauen. Was gebaut wird, hängt davon ab, was die Analyse findet — nicht davon, was wir verkaufen möchten.",
+      "pista_ancha": "Weiter scrollen · die Panels laufen von selbst",
+      "pista_movil": "Wischen →",
+      "cierre_etiqueta": "Fangen wir an",
+      "cierre_titulo": "Welche der vier ist Ihre?",
+      "cierre_cuerpo": "Wenn Sie es nicht wissen, ist genau das das Gespräch. Eine halbe Stunde, um herauszufinden, wo man anfängt.",
+      "cierre_boton": "Sprechen wir",
+      "s01": {
+        "linea": "Digitale Strategie",
+        "titulo": "Wir fangen bei Ihrem Betrieb an, nicht beim Code.",
+        "cuerpo": "Die meisten Agenturen öffnen einen Editor. Wir öffnen zuerst Ihre Zahlen — denn zu bauen, was Sie nicht brauchen, kostet mehr als gar nichts zu bauen.",
+        "p1": "Wir finden, wo das Geld verloren geht, bevor wir etwas anfassen",
+        "p2": "Ein Plan mit geschätzter Wirkung, echten Zeiten und echten Kosten",
+        "p3": "Wenn Sie uns nicht brauchen, sagen wir es",
+        "alt": "Eine Hand notiert auf einem gedruckten Bericht mit Diagrammen, daneben ein Kaffee"
+      },
+      "s02": {
+        "linea": "Websites",
+        "titulo": "Eine Seite, die Sie selbst pflegen — vom Handy aus.",
+        "cuerpo": "Mit einem Editor, der so einfach ist: Wer eine Story posten kann, kann seine Seite ändern. Ohne anzurufen und ohne zu warten, bis jemand Zeit hat.",
+        "p1": "Texte, Fotos und Preise ändern — ohne Entwickler",
+        "p2": "Mehrsprachig und darauf gebaut, gefunden zu werden",
+        "p3": "Sie gehört Ihnen: keine Abos, keine Bindung",
+        "alt": "Jemand baut am Computer eine Website"
+      },
+      "s03": {
+        "linea": "Apps und CRMs",
+        "titulo": "Wenn das Geschäft der Tabelle entwächst.",
+        "cuerpo": "Irgendwann hilft Excel nicht mehr, sondern verbirgt. Dann braucht es ein System, das zu Ihrer Arbeitsweise passt — und nicht umgekehrt.",
+        "p1": "Auf Ihrem echten Betrieb gebaut, nicht auf einer Vorlage",
+        "p2": "Web und mobil zugleich, mit denselben Daten",
+        "p3": "Ihre Daten, Ihre Plattform, Ihre Regeln",
+        "alt": "Seiricon und ServiNomic, zwei Systeme, die wir gebaut haben"
+      },
+      "s04": {
+        "linea": "Automatisierung",
+        "titulo": "Was Ihr Team von Hand macht, macht sich selbst.",
+        "cuerpo": "Zahlungen abgleichen, Daten hin- und herschieben, den Montagsbericht bauen. Arbeit, die kein Urteilsvermögen braucht — und die Stunden frisst, die es brauchen.",
+        "p1": "Wir verbinden die Werkzeuge, die Sie schon nutzen",
+        "p2": "Der Bericht kommt, ohne dass jemand fragt",
+        "p3": "Bei LimpiaExpress waren es über 20 Stunden pro Woche",
+        "alt": "Ein automatischer Ablauf, der Schritt für Schritt aufleuchtet"
+      }
+    },
+    "herramientas": {
+      "etiqueta": "Womit wir arbeiten",
+      "titulo": "Werkzeuge, die Sie kennen — mit Urteilsvermögen eingesetzt.",
+      "entrada": "Keines ist Magie und keines taugt für alles. Die Kunst ist zu wissen, welches wofür — und Ihnen keine Schicht zu berechnen, die Sie nicht brauchen."
+    },
+    "testimonios": {
+      "etiqueta": "Was sie sagen",
+      "titulo": "Sie müssen es uns nicht glauben."
+    },
+    "flujo": {
+      "reserva": [
+        "Eine Buchung",
+        "kommt an"
+      ],
+      "asigna": [
+        "Jemand wird",
+        "zugeteilt"
+      ],
+      "cobro": [
+        "Die Rechnung",
+        "entsteht"
+      ],
+      "ruta": [
+        "Die Tagesroute",
+        "geht raus"
+      ],
+      "nomina": [
+        "Es geht in die",
+        "Lohnabrechnung"
+      ],
+      "reporte": [
+        "Montags-",
+        "bericht"
+      ]
+    },
+    "hero": {
+      "palabra1": "wir bauen",
+      "palabra2": "Ihren",
+      "palabra3": "Vorsprung"
     }
   }
 }

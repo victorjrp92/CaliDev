@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { MEDIDA, NODOS, PROFUNDIDAD, aristas, nivelDe } from "@/lib/nuevo/workflow";
@@ -27,6 +28,7 @@ const RELLENO: Record<string, string> = {
  * Con `prefers-reduced-motion` no se anima: se pinta el grafo entero encendido.
  */
 export function WorkflowAnimado({ className = "" }: { className?: string }) {
+  const t = useTranslations("senal.flujo");
   const ref = useRef<HTMLDivElement>(null);
   const [still, setStill] = useState(false);
   const [desde, setDesde] = useState<string | null>(null);
@@ -137,9 +139,12 @@ export function WorkflowAnimado({ className = "" }: { className?: string }) {
                   letterSpacing: "0.01em",
                 }}
               >
-                {n.etiqueta.map((linea, i) => (
-                  <tspan key={linea} x={n.x} dy={i === 0 ? 0 : 3.1}>
-                    {linea}
+                {/* Dos líneas: centrada bajo el nodo, en una sola no cabe.
+                    El texto vive en `messages` porque cambia con el idioma; el
+                    grafo —posiciones y dependencias— no. */}
+                {([0, 1] as const).map((i) => (
+                  <tspan key={i} x={n.x} dy={i === 0 ? 0 : 3.1}>
+                    {t(`${n.id}.${i}`)}
                   </tspan>
                 ))}
               </text>

@@ -18,7 +18,6 @@ export type Nodo = {
   id: string;
   /** La etiqueta va en dos líneas: centrada bajo un nodo, en una sola se
    *  pisaría con la del nodo vecino. Se declara partida, no se adivina. */
-  etiqueta: [string, string];
   x: number;
   y: number;
   /** Nodos que deben encenderse antes que este. */
@@ -29,12 +28,12 @@ export type Nodo = {
 };
 
 export const NODOS: Nodo[] = [
-  { id: "reserva", etiqueta: ["Entra una", "reserva"], x: 14, y: 28, de: [], forma: "entrada", tono: "tinta" },
-  { id: "asigna", etiqueta: ["Se asigna", "la persona"], x: 37, y: 13, de: ["reserva"], forma: "paso", tono: "hueso" },
-  { id: "cobro", etiqueta: ["Se genera", "el cobro"], x: 37, y: 43, de: ["reserva"], forma: "paso", tono: "azul" },
-  { id: "ruta", etiqueta: ["Sale la ruta", "del día"], x: 62, y: 13, de: ["asigna"], forma: "paso", tono: "hueso" },
-  { id: "nomina", etiqueta: ["Entra a", "nómina"], x: 62, y: 43, de: ["cobro"], forma: "paso", tono: "azul" },
-  { id: "reporte", etiqueta: ["Reporte", "del lunes"], x: 86, y: 28, de: ["ruta", "nomina"], forma: "salida", tono: "verde" },
+  { id: "reserva", x: 14, y: 28, de: [], forma: "entrada", tono: "tinta" },
+  { id: "asigna", x: 37, y: 13, de: ["reserva"], forma: "paso", tono: "hueso" },
+  { id: "cobro", x: 37, y: 43, de: ["reserva"], forma: "paso", tono: "azul" },
+  { id: "ruta", x: 62, y: 13, de: ["asigna"], forma: "paso", tono: "hueso" },
+  { id: "nomina", x: 62, y: 43, de: ["cobro"], forma: "paso", tono: "azul" },
+  { id: "reporte", x: 86, y: 28, de: ["ruta", "nomina"], forma: "salida", tono: "verde" },
 ];
 
 /** Radio o media caja de cada forma, en unidades del lienzo. */

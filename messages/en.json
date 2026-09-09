@@ -295,6 +295,93 @@
       "entrada": "Tell us where your time or money is leaking and we'll say whether we can help. We answer within 24 hours — and if you don't need us, we'll say that too.",
       "boton": "Let's talk",
       "video_alt": "A work video call: on the laptop screen, a business owner listens closely, nods and smiles."
+    },
+    "servicios": {
+      "etiqueta": "What we do",
+      "titulo": "Four ways to work together.",
+      "entrada": "Always in that order: understand first, build second. What gets built depends on what the analysis finds, not on what we'd like to sell.",
+      "pista_ancha": "Keep scrolling · the panels advance on their own",
+      "pista_movil": "Swipe →",
+      "cierre_etiqueta": "Let's start",
+      "cierre_titulo": "Which of the four is yours?",
+      "cierre_cuerpo": "If you're not sure, that's exactly the conversation. Half an hour to work out where to begin.",
+      "cierre_boton": "Let's talk",
+      "s01": {
+        "linea": "Digital strategy",
+        "titulo": "We start with your operation, not with code.",
+        "cuerpo": "Most agencies open an editor. We open your numbers first, because building what you don't need costs more than building nothing at all.",
+        "p1": "We find where the money is leaking before touching anything",
+        "p2": "A plan with estimated impact, real timelines and real costs",
+        "p3": "If you don't need us, we say so",
+        "alt": "A hand annotating a printed report with charts, next to a coffee"
+      },
+      "s02": {
+        "linea": "Websites",
+        "titulo": "A site you update yourself, from your phone.",
+        "cuerpo": "With an editor so simple that if you can post a story, you can change your site. Without calling anyone and without waiting for someone to have time.",
+        "p1": "Change text, photos and prices with no developer",
+        "p2": "Multilingual and built to be found",
+        "p3": "It's yours: no subscriptions, no lock-in",
+        "alt": "Someone building a website on a computer"
+      },
+      "s03": {
+        "linea": "Apps and CRMs",
+        "titulo": "When the business outgrows the spreadsheet.",
+        "cuerpo": "There's a point where Excel stops helping and starts hiding. That's when you need a system built for how you work, not the other way round.",
+        "p1": "Built on your real operation, not on a template",
+        "p2": "Web and mobile at once, on the same data",
+        "p3": "Your data, your platform, your rules",
+        "alt": "Seiricon and ServiNomic, two systems we built"
+      },
+      "s04": {
+        "linea": "Automation",
+        "titulo": "What your team does by hand, done on its own.",
+        "cuerpo": "Reconciling payments, moving data from one place to another, assembling Monday's report. Work that takes no judgement and eats the hours that do.",
+        "p1": "We connect the tools you already use",
+        "p2": "The report arrives without anyone asking",
+        "p3": "At LimpiaExpress it was over 20 hours a week",
+        "alt": "An automated flow lighting up step by step"
+      }
+    },
+    "herramientas": {
+      "etiqueta": "What we build with",
+      "titulo": "Tools you already know, used with judgement.",
+      "entrada": "None of them is magic and none is good for everything. The skill is knowing which to use for what — and not charging you for a layer you don't need."
+    },
+    "testimonios": {
+      "etiqueta": "What they say",
+      "titulo": "You don't have to take our word for it."
+    },
+    "flujo": {
+      "reserva": [
+        "A booking",
+        "comes in"
+      ],
+      "asigna": [
+        "Someone is",
+        "assigned"
+      ],
+      "cobro": [
+        "The charge",
+        "is created"
+      ],
+      "ruta": [
+        "The day's route",
+        "goes out"
+      ],
+      "nomina": [
+        "It enters",
+        "payroll"
+      ],
+      "reporte": [
+        "Monday's",
+        "report"
+      ]
+    },
+    "hero": {
+      "palabra1": "we build",
+      "palabra2": "your",
+      "palabra3": "edge"
     }
   }
 }

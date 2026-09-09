@@ -17,85 +17,48 @@ export type Visual =
   /** El grafo animado en SVG, que reacciona al clic. */
   | { tipo: "workflow" };
 
+/**
+ * Solo lo que NO se traduce.
+ *
+ * El texto —línea, titular, cuerpo, puntos y alternativo— vive en `messages`
+ * bajo `senal.servicios.s01`…`s04` y se busca por `n`. Aquí quedan los colores,
+ * el tipo de visual y sus rutas, que son iguales en los tres idiomas: tenerlos
+ * duplicados en cada traducción sería pedir que se desincronicen.
+ */
 export type Servicio = {
+  /** «01»…«04». Es también la clave de traducción del panel. */
   n: string;
-  linea: string;
-  titulo: string;
-  cuerpo: string;
-  puntos: string[];
   /** Fondo y texto del panel. Pares con contraste verificado. */
   fondo: string;
   texto: string;
   /** Color del cintillo y las viñetas dentro del panel. */
   realce: string;
   visual: Visual;
-  /** Texto alternativo del visual. */
-  visualAlt: string;
 };
 
 export const SERVICIOS: Servicio[] = [
   {
     n: "01",
-    linea: "Estrategia digital",
-    titulo: "Empezamos por tu operación, no por el código.",
-    cuerpo:
-      "La mayoría de agencias abre un editor. Nosotros abrimos tus números primero, porque construir lo que no necesitas sale más caro que no construir nada.",
-    puntos: [
-      "Encontramos dónde se te va el dinero antes de tocar nada",
-      "Un plan con impacto estimado, tiempos y costos reales",
-      "Si no nos necesitas, te lo decimos",
-    ],
     fondo: "#0A3D2E",
     texto: "#FAFAF7",
     realce: "#C8F045",
-    visual: { tipo: "clip", src: "/nuevo/clips/estrategia.mp4", poster: "/nuevo/clips/estrategia.jpg" },
-    visualAlt: "Una mano anotando sobre un informe impreso con gráficas, junto a un café",  },
+    visual: { tipo: "clip", src: "/nuevo/clips/estrategia.mp4", poster: "/nuevo/clips/estrategia.jpg" },  },
   {
     n: "02",
-    linea: "Páginas web",
-    titulo: "Un sitio que actualizas tú, desde el celular.",
-    cuerpo:
-      "Con un editor propio tan simple que si publicas una historia, puedes cambiar tu página. Sin llamar a nadie y sin esperar a que alguien tenga tiempo.",
-    puntos: [
-      "Cambias textos, fotos y precios sin programador",
-      "Multilingüe y optimizado para que te encuentren",
-      "Es tuyo: sin suscripciones ni ataduras",
-    ],
     fondo: "#E6E8E3",
     texto: "#14201B",
     realce: "#0A3D2E",
-    visual: { tipo: "clip", src: "/nuevo/clips/imac.mp4", poster: "/nuevo/clips/imac.jpg" },
-    visualAlt: "Una persona construyendo una página web en el computador",  },
+    visual: { tipo: "clip", src: "/nuevo/clips/imac.mp4", poster: "/nuevo/clips/imac.jpg" },  },
   {
     n: "03",
-    linea: "Apps y CRMs",
-    titulo: "Cuando el negocio supera las hojas de cálculo.",
-    cuerpo:
-      "Llega un punto en que el Excel deja de ayudar y empieza a esconder. Ahí es cuando hace falta un sistema hecho para cómo trabajas tú, no al revés.",
-    puntos: [
-      "Construido sobre tu operación real, no sobre una plantilla",
-      "Web y móvil a la vez, con los mismos datos",
-      "Tus datos, tu plataforma, tus reglas",
-    ],
     fondo: "#0F2233",
     texto: "#E6E8E3",
     realce: "#C8F045",
-    visual: { tipo: "productos", fondo: "/nuevo/shots/seiricon.webp" },
-    visualAlt: "Seiricon y ServiNomic, dos sistemas que construimos",  },
+    visual: { tipo: "productos", fondo: "/nuevo/shots/seiricon.webp" },  },
   {
     n: "04",
-    linea: "Automatizaciones",
-    titulo: "Lo que tu equipo hace a mano, hecho solo.",
-    cuerpo:
-      "Cuadrar pagos, pasar datos de un lado a otro, armar el reporte del lunes. Trabajo que no requiere criterio y que se lleva las horas que sí lo requieren.",
-    puntos: [
-      "Conectamos las herramientas que ya usas",
-      "El reporte llega sin que nadie lo pida",
-      "En LimpiaExpress fueron más de 20 horas por semana",
-    ],
     fondo: "#C8F045",
     texto: "#14201B",
     realce: "#0A3D2E",
-    visual: { tipo: "workflow" },
-    visualAlt: "Un flujo automático que se enciende paso a paso",  },
+    visual: { tipo: "workflow" },  },
 ];

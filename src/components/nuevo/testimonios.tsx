@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { ScrollReelTestimonials } from "@/components/ui/scroll-reel-testimonials";
 // TODO: volver a TESTIMONIOS (los reales) antes de fusionar a main.
 import { TESTIMONIOS_DUMMY as TESTIMONIOS } from "@/lib/nuevo/testimonios";
@@ -8,12 +9,14 @@ import { TESTIMONIOS_DUMMY as TESTIMONIOS } from "@/lib/nuevo/testimonios";
  * separarlo del recorrido horizontal de arriba y del azul de las herramientas.
  */
 export function Testimonios() {
+  const t = useTranslations("senal.testimonios");
+
   return (
     <section id="testimonios" className="scroll-mt-20 bg-[var(--verde)] px-7 py-24 text-[var(--hueso)] md:px-14 md:py-32">
       <div className="mx-auto max-w-6xl">
-        <p className="mono text-[var(--lima)]">Lo que dicen</p>
+        <p className="mono text-[var(--lima)]">{t("etiqueta")}</p>
         <h2 className="mt-6 max-w-[16ch] text-[clamp(2.2rem,5.5vw,4.4rem)] font-extrabold leading-[1.0] tracking-[-0.035em]">
-          No hace falta que lo digamos nosotros.
+          {t("titulo")}
         </h2>
 
         <ScrollReelTestimonials

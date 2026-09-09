@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { useTranslations } from 'next-intl';
 import { WorkPageHero } from '@/components/ui/work-page-hero';
 import { Servicios } from '@/components/nuevo/servicios';
 import { Testimonios } from '@/components/nuevo/testimonios';
@@ -28,6 +29,8 @@ export const metadata: Metadata = {
  * navegador.
  */
 export default function HomePage() {
+  const t = useTranslations('senal.hero');
+
   return (
     <main>
       <SaltoAncla />
@@ -36,9 +39,9 @@ export default function HomePage() {
         videoSrc="/hero/loop.mp4"
         poster="/hero/poster.jpg"
         playbackRate={0.8}
-        topWord="construimos"
-        rightWord="tu"
-        bottomWord="ventaja"
+        topWord={t('palabra1')}
+        rightWord={t('palabra2')}
+        bottomWord={t('palabra3')}
         accentColor="#0A3D2E"
         textColor="#14201B"
         backgroundColor="#FAFAF7"
