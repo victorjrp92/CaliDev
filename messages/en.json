@@ -23,7 +23,7 @@
     "highlight2_title": "Philosophy",
     "highlight2_desc": "<h>No lock-in</h>. No artificial dependency. You own <h>100%</h> of what we build.",
     "highlight3_title": "Proof",
-    "highlight3_desc": "<h>+37%</h> profit growth · <h>27hrs</h> saved weekly · Real client results",
+    "highlight3_desc": "<h>10 → 22</h> team members · <h>27hrs</h> recovered weekly · Real client results",
     "highlight1_value": "10+",
     "highlight2_value": "100%",
     "highlight3_value": "24/7",
@@ -70,7 +70,15 @@
     "toc": "Table of Contents",
     "related": "Related Articles",
     "published": "Published",
-    "author": "Author"
+    "author": "Author",
+    "vacio_titulo": "No articles in English yet.",
+    "vacio_desc": "We write in three languages and not always at once. In the meantime, what's published is in Spanish.",
+    "vacio_boton": "See the Spanish articles",
+    "otros_titulo": "In other languages",
+    "otros_desc": "We haven't translated these yet. They're complete and read just the same.",
+    "idioma_en": "In English",
+    "idioma_es": "In Spanish",
+    "idioma_de": "In German"
   },
   "testimonials": {
     "title": "What Our Clients Say",
@@ -102,11 +110,21 @@
     "email": "Email",
     "message": "Message",
     "send": "Send Message",
-    "success": "Message sent successfully!",
+    "success": "Thank you. We reply within 24 hours.",
     "error": "Something went wrong. Please try again.",
     "name_placeholder": "Your name",
     "email_placeholder": "your@email.com",
-    "message_placeholder": "Tell us about your project..."
+    "message_placeholder": "Tell us about your project...",
+    "sending": "Sending…",
+    "success_label": "Received",
+    "interes_prefijo": "I'm writing about {interes}. ",
+    "pasos_titulo": "What happens next",
+    "paso1_titulo": "You get a reply, not a form",
+    "paso1_desc": "We answer within 24 hours, and a person on the team answers. If your case isn't for us, we say so right there.",
+    "paso2_titulo": "Half an hour to understand",
+    "paso2_desc": "A short call to find where your time or money is leaking. No sales deck, no commitment.",
+    "paso3_titulo": "We tell you what we'd do",
+    "paso3_desc": "And what it would cost. If the answer is that you don't need anything, that's an answer too."
   },
   "footer": {
     "rights": "All rights reserved.",
@@ -154,21 +172,21 @@
     "results_sub": "Not hypothetical case studies. These are businesses we've worked with and the outcomes they achieved.",
     "t_limpia_name": "Deisy Moncayo",
     "t_limpia_role": "CEO, LimpiaExpress Cali",
-    "t_limpia_text": "Before CaliDev, we managed everything in spreadsheets — payroll, bookings, client data. Victor didn't just build us an app. He analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week. Our profits grew 37%, we went from 12 to 19 employees, expanded to a second city, and we're projecting 6 cities by 2027.",
-    "t_limpia_s1_val": "+37%",
-    "t_limpia_s1_label": "Profit Increase",
-    "t_limpia_s2_val": "27 hrs",
-    "t_limpia_s2_label": "Saved per Week",
-    "t_limpia_s3_val": "12 → 19",
-    "t_limpia_s3_label": "Employees",
-    "t_limpia_s4_val": "1 → 6",
-    "t_limpia_s4_label": "Cities by 2027",
+    "t_limpia_text": "Before CaliDev, we managed everything in spreadsheets — payroll, bookings, client data. Victor didn't just build us an app. He analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week.",
+    "t_limpia_s1_val": "+89%",
+    "t_limpia_s1_label": "Revenue, February to July",
+    "t_limpia_s2_val": "10 → 24",
+    "t_limpia_s2_label": "Team members",
+    "t_limpia_s3_val": "9% → 56%",
+    "t_limpia_s3_label": "Clients who buy products",
     "t_cubiko_name": "Laura Sanchez",
     "t_cubiko_role": "CEO, Cubiko Colombia → acquired by Dropi",
     "t_cubiko_text": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
     "cta_title": "Let's Talk About Your Business",
     "cta_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
-    "cta_btn": "Book Your Free 30-Min Strategy Call"
+    "cta_btn": "Book Your Free 30-Min Strategy Call",
+    "t_limpia_s4_val": "27 h",
+    "t_limpia_s4_label": "Recovered per week"
   },
   "sp": {
     "headline": "We don't just build software — we build the strategy behind it",
@@ -234,15 +252,13 @@
     "results_sub": "Not hypothetical case studies. These are businesses we've worked with and the outcomes they achieved.",
     "t_limpia_name": "Deisy Moncayo",
     "t_limpia_role": "CEO, LimpiaExpress Cali",
-    "t_limpia_text": "Before CaliDev, we managed everything in spreadsheets — payroll, bookings, client data. Victor didn't just build us an app. He analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week. Our profits grew 37%, we went from 12 to 19 employees, expanded to a second city, and we're projecting 6 cities by 2027.",
-    "t_limpia_s1_val": "+37%",
-    "t_limpia_s1_label": "Profit Increase",
-    "t_limpia_s2_val": "27 hrs",
-    "t_limpia_s2_label": "Saved per Week",
-    "t_limpia_s3_val": "12 → 19",
-    "t_limpia_s3_label": "Employees",
-    "t_limpia_s4_val": "1 → 6",
-    "t_limpia_s4_label": "Cities by 2027",
+    "t_limpia_text": "Before CaliDev, we managed everything in spreadsheets — payroll, bookings, client data. Victor didn't just build us an app. He analyzed our entire operation, found where we were losing money, and built a CRM that gave us 27 hours back every week.",
+    "t_limpia_s1_val": "+89%",
+    "t_limpia_s1_label": "Revenue, February to July",
+    "t_limpia_s2_val": "10 → 24",
+    "t_limpia_s2_label": "Team members",
+    "t_limpia_s3_val": "9% → 56%",
+    "t_limpia_s3_label": "Clients who buy products",
     "t_cubiko_name2": "Laura Sanchez",
     "t_cubiko_role2": "CEO, Cubiko Colombia → acquired by Dropi",
     "t_cubiko_text2": "CaliDev helped us design a product strategy using Google's API to analyze Meta Ads performance — predicting which ads would succeed before spending the budget. The product showed so much potential that we were acquired by Dropi, one of Colombia's largest e-commerce conglomerates.",
@@ -260,13 +276,15 @@
     "team_karen_bio": "Systems Engineer. Full-stack development, technical architecture, and infrastructure. Turning strategy into production-ready systems.",
     "final_title": "Let's Talk About Your Business",
     "final_desc": "30 minutes. No sales pitch. Just an honest conversation about your challenges and whether we can help.",
-    "final_cta": "Book Your Free 30-Min Strategy Call"
+    "final_cta": "Book Your Free 30-Min Strategy Call",
+    "t_limpia_s4_val": "27 h",
+    "t_limpia_s4_label": "Recovered per week"
   },
   "results_strip": {
     "title": "Real Results, Real Clients",
     "subtitle": "Numbers from businesses we've worked with",
-    "s1_val": "+37%",
-    "s1_label": "Profit Increase",
+    "s1_val": "+89%",
+    "s1_label": "Revenue, February to July",
     "s1_client": "LimpiaExpress Cali",
     "s2_val": "27 hrs",
     "s2_label": "Saved per Week",
@@ -278,5 +296,101 @@
     "s4_label": "Cities by 2027",
     "s4_client": "LimpiaExpress Cali",
     "cta": "See Our Client Stories"
+  },
+  "senal": {
+    "cierre": {
+      "etiqueta": "Next step",
+      "titular": "Tell us what's breaking.",
+      "entrada": "Tell us where your time or money is leaking and we'll say whether we can help. We answer within 24 hours — and if you don't need us, we'll say that too.",
+      "boton": "Let's talk",
+      "video_alt": "A work video call: on the laptop screen, a business owner listens closely, nods and smiles."
+    },
+    "servicios": {
+      "etiqueta": "What we do",
+      "titulo": "Four ways to work together.",
+      "entrada": "Always in that order: understand first, build second. What gets built depends on what the analysis finds, not on what we'd like to sell.",
+      "pista_ancha": "Keep scrolling · the panels advance on their own",
+      "pista_movil": "Swipe →",
+      "cierre_etiqueta": "Let's start",
+      "cierre_titulo": "Which of the four is yours?",
+      "cierre_cuerpo": "If you're not sure, that's exactly the conversation. Half an hour to work out where to begin.",
+      "cierre_boton": "Let's talk",
+      "s01": {
+        "linea": "Digital strategy",
+        "titulo": "We start with your operation, not with code.",
+        "cuerpo": "Most agencies open an editor. We open your numbers first, because building what you don't need costs more than building nothing at all.",
+        "p1": "We find where the money is leaking before touching anything",
+        "p2": "A plan with estimated impact, real timelines and real costs",
+        "p3": "If you don't need us, we say so",
+        "alt": "A hand annotating a printed report with charts, next to a coffee"
+      },
+      "s02": {
+        "linea": "Websites",
+        "titulo": "A site you update yourself, from your phone.",
+        "cuerpo": "With an editor so simple that if you can post a story, you can change your site. Without calling anyone and without waiting for someone to have time.",
+        "p1": "Change text, photos and prices with no developer",
+        "p2": "Multilingual and built to be found",
+        "p3": "It's yours: no subscriptions, no lock-in",
+        "alt": "Someone building a website on a computer"
+      },
+      "s03": {
+        "linea": "Apps and CRMs",
+        "titulo": "When the business outgrows the spreadsheet.",
+        "cuerpo": "There's a point where Excel stops helping and starts hiding. That's when you need a system built for how you work, not the other way round.",
+        "p1": "Built on your real operation, not on a template",
+        "p2": "Web and mobile at once, on the same data",
+        "p3": "Your data, your platform, your rules",
+        "alt": "Seiricon and ServiNomic, two systems we built"
+      },
+      "s04": {
+        "linea": "Automation",
+        "titulo": "What your team does by hand, done on its own.",
+        "cuerpo": "Reconciling payments, moving data from one place to another, assembling Monday's report. Work that takes no judgement and eats the hours that do.",
+        "p1": "We connect the tools you already use",
+        "p2": "The report arrives without anyone asking",
+        "p3": "At LimpiaExpress it was over 20 hours a week",
+        "alt": "An automated flow lighting up step by step"
+      }
+    },
+    "herramientas": {
+      "etiqueta": "What we build with",
+      "titulo": "Tools you already know, used with judgement.",
+      "entrada": "None of them is magic and none is good for everything. The skill is knowing which to use for what — and not charging you for a layer you don't need."
+    },
+    "testimonios": {
+      "etiqueta": "What they say",
+      "titulo": "You don't have to take our word for it."
+    },
+    "flujo": {
+      "reserva": [
+        "A booking",
+        "comes in"
+      ],
+      "asigna": [
+        "Someone is",
+        "assigned"
+      ],
+      "cobro": [
+        "The charge",
+        "is created"
+      ],
+      "ruta": [
+        "The day's route",
+        "goes out"
+      ],
+      "nomina": [
+        "It enters",
+        "payroll"
+      ],
+      "reporte": [
+        "Monday's",
+        "report"
+      ]
+    },
+    "hero": {
+      "palabra1": "we build",
+      "palabra2": "your",
+      "palabra3": "edge"
+    }
   }
 }

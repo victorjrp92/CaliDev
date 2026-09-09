@@ -1,0 +1,455 @@
+/**
+ * Paleta SEÑAL. El verde de marca contra un lima eléctrico.
+ *
+ * Regla de uso del lima: sobre fondo claro su contraste es ~1.5:1, así que
+ * NUNCA lleva texto sobre hueso — solo funciona como relleno (botones, chips)
+ * con tinta encima, o como acento sobre superficies oscuras. Para texto en
+ * color sobre fondo claro se usa el verde.
+ *
+ * Contrastes medidos (WCAG):
+ *   tinta/hueso 16.0 · verde/hueso 11.7 · tinta/lima 12.8
+ *   lima/azul 12.3 · lima/verde 9.3 · niebla/azul 12.0
+ */
+.senal {
+  --verde: #0a3d2e;
+  --lima: #c8f045;
+  --azul: #0f2233;
+  --niebla: #e6e8e3;
+  --hueso: #fafaf7;
+  --tinta: #14201b;
+
+  /* Estructura. El verde hondo es una capa por debajo del verde de marca —
+     el pie tiene que leerse como suelo, no como otra sección más. */
+  --verde-hondo: #072a20;
+  --linea: rgba(250, 250, 247, 0.14);
+  --linea-tinta: rgba(20, 32, 27, 0.12);
+  --cristal: rgba(10, 61, 46, 0.78);
+
+  /* Alto de la barra de navegación. Vive aquí porque no solo lo usa la barra:
+     el hero tiene que apartar su primera palabra para que no la tape, y ese
+     cálculo debe seguir siendo correcto si la barra cambia de alto. */
+  --alto-barra: 4rem;
+}
+
+@media (min-width: 768px) {
+  .senal {
+    --alto-barra: 5rem;
+  }
+}
+
+.senal .mono {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.senal .serif {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/**
+ * Recorte inicial del vídeo del hero. Va en CSS y no en línea porque el
+ * encuadre tiene que cambiar con el ancho: los márgenes de escritorio
+ * (22 % / 18 %) en un móvil de 390 px dejan una franja vertical que corta la
+ * mesa y deja fuera a la mitad del equipo. GSAP lee estos valores como punto
+ * de partida y los lleva a 0 con el scroll.
+ */
+.hero-pill {
+  top: 27%;
+  bottom: 27%;
+  left: 5%;
+  right: 5%;
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .hero-pill {
+    top: 18%;
+    bottom: 18%;
+    left: 22%;
+    right: 18%;
+  }
+}
+
+/* Con movimiento reducido el vídeo no se expande: se muestra ya a sangre. */
+.hero-pill[data-static="true"] {
+  inset: 0;
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .senal *,
+  .senal *::before,
+  .senal *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/**
+ * Hoja de contactos de los testimonios.
+ *
+ * Sobre fondo oscuro el relieve no puede venir del gris, como en una interfaz
+ * clara: viene de la luz. Cada fantasma lleva una arista superior iluminada,
+ * un relleno que se apaga hacia abajo y una sombra que lo despega del fondo;
+ * la foto lleva la misma arista y una sombra más honda, y eso es lo que la
+ * levanta por encima de los demás. La casilla escala con el ancho para que
+ * tres columnas quepan en un móvil de 390 px.
+ */
+.hoja-contactos {
+  --casilla: 6rem;
+  mask-image:
+    linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+}
+
+@media (min-width: 768px) {
+  .hoja-contactos {
+    --casilla: 7.5rem;
+  }
+}
+
+.reel-fantasma {
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(250, 250, 247, 0.085), rgba(250, 250, 247, 0.03));
+  box-shadow:
+    inset 0 1px 0 rgba(250, 250, 247, 0.16),
+    inset 0 0 0 1px rgba(250, 250, 247, 0.055),
+    0 16px 28px -16px rgba(0, 0, 0, 0.6);
+}
+
+.reel-foto {
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, #d7dbd3, #7f8a80);
+  box-shadow:
+    inset 0 1px 0 rgba(250, 250, 247, 0.3),
+    0 0 0 1px rgba(250, 250, 247, 0.16),
+    0 26px 48px -16px rgba(0, 0, 0, 0.7),
+    0 8px 16px -8px rgba(0, 0, 0, 0.5);
+}
+
+/*
+ * Fuga de luz lima en la esquina: tiñe el fondo de la imagen, no la cara.
+ *
+ * Es el tratamiento de imagen compartido de todo el sitio —retratos, fotogramas
+ * de vídeo, capturas—; el gris lo pone el componente y esto le devuelve el
+ * color de marca solo por una esquina. Vive aquí y no en el carrete porque lo
+ * usan también el equipo y las portadas del blog.
+ */
+.duotono::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 55% at 0% 0%, rgba(200, 240, 69, 0.5), transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/**
+ * Barra superior.
+ *
+ * Cristal y no color sólido porque los paneles cambian de fondo todo el rato
+ * (hueso, verde, niebla, azul, lima): una barra sólida chocaría con la mitad,
+ * mientras que un velo verde translúcido se lee como el mismo objeto sobre
+ * todos. El 78 % no es arbitrario — es la opacidad mínima con la que el texto
+ * hueso mantiene 4,5:1 sobre el peor fondo (hueso sobre hueso da 6,09:1),
+ * medido en scripts/oraculos/contraste.mjs.
+ *
+ * Arriba del todo NO hay barra: el logo y los enlaces se apoyan directamente
+ * sobre el fondo de la página. El hero es aire y tipografía, y una franja de
+ * borde a borde encima pesa más que todo lo que hay debajo.
+ *
+ * Que eso funcione depende de una cosa: el color del texto tiene que salir del
+ * fondo que hay detrás y no de una constante. El home arranca en hueso y las
+ * páginas interiores en verde, así que una sola constante dejaría una de las
+ * dos ilegible; la barra lee el fondo del primer bloque de cada página en vez
+ * de suponerlo. Al bajar entra el velo y a partir de ahí el texto es siempre
+ * hueso, porque el velo domina la mezcla.
+ *
+ * Un intento anterior dejaba el velo puesto siempre por miedo a esto. Era la
+ * salida cómoda y se notaba: la franja verde aplastaba el hero.
+ */
+/* El desenfoque lo pone Tailwind con `backdrop-blur-xl` en el componente, no
+   aquí: escrito a mano, el minificador de Tailwind 4 se quedaba solo con la
+   versión `-webkit-` y Chromium no aplicaba ninguna de las dos — la barra salía
+   sin cristal. Tailwind emite el par correcto. */
+.barra {
+  height: var(--alto-barra);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.barra[data-velo="true"] {
+  background: var(--cristal);
+  border-bottom-color: var(--linea);
+}
+
+/*
+ * Botón de agenda: plegado ocupa lo que el icono y al acercarse enseña lo que
+ * hace. El texto se estrecha a cero en vez de esconderse con `display:none`,
+ * porque así sigue en el árbol de accesibilidad y un lector de pantalla lo lee
+ * entero aunque en pantalla no se vea.
+ */
+.agenda {
+  padding: 0.55rem 0.6rem;
+  border-radius: 999px;
+  transition: background-color 0.28s ease, padding 0.28s ease;
+}
+
+.agenda-texto {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease,
+    margin-left 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.agenda:hover,
+.agenda:focus-visible {
+  background: rgba(250, 250, 247, 0.1);
+  padding-right: 1rem;
+}
+
+.agenda:hover .agenda-texto,
+.agenda:focus-visible .agenda-texto {
+  max-width: 14rem;
+  opacity: 1;
+  margin-left: 0.6rem;
+}
+
+/*
+ * El filete lima que sigue al puntero.
+ *
+ * Uno solo que se desplaza, no un borde por enlace: así se ve el recorrido de
+ * un elemento al siguiente, y ver de dónde viene es lo que lo convierte en una
+ * pista y no en un adorno. Su casa es el botón de agenda.
+ */
+.linea-viva {
+  position: absolute;
+  bottom: -0.55rem;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--lima);
+  transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.linea-viva[data-quieto="true"] {
+  transition: none;
+}
+
+/*
+ * Punto lima bajo el enlace activo. Solo aparece cuando corresponde, así que
+ * significa algo; el subrayado permanente no diría nada.
+ *
+ * La opacidad del enlace inactivo no es una cifra de gusto: a 0,72 el texto
+ * quedaba en 4,07:1 y suspendía AA. La jerarquía entre activo e inactivo la
+ * lleva sobre todo el punto, no el desvanecido, así que subirla no cuesta nada
+ * de diseño y hace legible la mitad de la barra.
+ */
+.enlace-barra {
+  position: relative;
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
+}
+
+.enlace-barra:hover,
+.enlace-barra[data-activo="true"] {
+  opacity: 1;
+}
+
+.enlace-barra[data-activo="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -0.55rem;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 999px;
+  /* Hereda el color del texto de la barra en vez de fijarse en lima: sin velo
+     el texto es verde sobre hueso, y ahí un punto lima no se vería (1,5:1). */
+  background: currentColor;
+}
+
+.barra[data-velo="true"] .enlace-barra[data-activo="true"]::after {
+  background: var(--lima);
+}
+
+/*
+ * Marco del vídeo del cierre.
+ *
+ * Cuatro sombras y no una: un filete a ras que define el borde, una de contacto
+ * muy corta que lo apoya en el papel, y dos ambientales cada vez más abiertas y
+ * suaves. Una sola sombra grande deja el vídeo flotando sin peso; lo que da
+ * cuerpo es que la de contacto sea casi opaca y muy corta mientras la lejana es
+ * amplia y tenue — que es como cae la luz sobre un objeto de verdad.
+ */
+.marco-video {
+  border-radius: 1.25rem;
+  box-shadow:
+    0 0 0 1px rgba(20, 32, 27, 0.09),
+    0 2px 5px -2px rgba(20, 32, 27, 0.22),
+    0 16px 26px -12px rgba(20, 32, 27, 0.28),
+    0 44px 68px -38px rgba(20, 32, 27, 0.5);
+}
+
+/*
+ * Enlaces de título en el blog.
+ *
+ * El subrayado lima crece de izquierda a derecha al acercarse. El lima va como
+ * subrayado y nunca como color de texto sobre claro: sobre hueso da 1,5:1 y
+ * sería ilegible, pero como forma —una barra de 2 px— no hay nada que
+ * descifrar, así que la regla del contraste de texto no aplica.
+ */
+.titulo-articulo {
+  background-image: linear-gradient(var(--lima), var(--lima));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.titulo-articulo:hover,
+.titulo-articulo:focus-visible {
+  background-size: 100% 2px;
+}
+
+/*
+ * Cuerpo de un artículo del blog.
+ *
+ * Las etiquetas las genera MDX, así que no hay dónde colgarles una clase: se
+ * estilan por descendencia desde `.articulo`. Es la única parte del sitio donde
+ * se hace así, y por eso está aquí junta y no repartida.
+ *
+ * Los enlaces van en VERDE con subrayado lima. Lima como color de texto sobre
+ * hueso da 1,5:1 y sería ilegible; como subrayado es una forma, no un carácter
+ * que descifrar.
+ */
+.articulo {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.articulo > * + * {
+  margin-top: 1.5rem;
+}
+
+.articulo h2 {
+  margin-top: 3.5rem;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  scroll-margin-top: 6rem;
+}
+
+.articulo h3 {
+  margin-top: 2.75rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  scroll-margin-top: 6rem;
+}
+
+.articulo h2 a,
+.articulo h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.articulo p {
+  opacity: 0.85;
+}
+
+.articulo a {
+  color: var(--verde);
+  text-decoration: underline;
+  text-decoration-color: var(--lima);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.articulo strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.articulo ul,
+.articulo ol {
+  padding-left: 1.4rem;
+  opacity: 0.85;
+}
+
+.articulo ul { list-style: disc; }
+.articulo ol { list-style: decimal; }
+.articulo li + li { margin-top: 0.6rem; }
+.articulo li::marker { color: var(--verde); }
+
+.articulo blockquote {
+  margin-left: 0;
+  padding-left: 1.6rem;
+  border-left: 3px solid var(--lima);
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  line-height: 1.4;
+  color: var(--verde);
+}
+
+.articulo code {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.9em;
+  background: var(--niebla);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.articulo pre {
+  background: var(--tinta);
+  color: var(--hueso);
+  padding: 1.25rem 1.4rem;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.articulo pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.articulo img {
+  border-radius: 12px;
+}
+
+.articulo table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.articulo th,
+.articulo td {
+  border-bottom: 1px solid var(--linea-tinta);
+  padding: 0.7rem 0.5rem;
+  text-align: left;
+}
+
+.articulo th {
+  font-weight: 600;
+}

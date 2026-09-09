@@ -23,7 +23,7 @@
     "highlight2_title": "Philosophie",
     "highlight2_desc": "<h>Kein Lock-in</h>. Keine künstliche Abhängigkeit. <h>100%</h> gehört Ihnen.",
     "highlight3_title": "Ergebnisse",
-    "highlight3_desc": "<h>+37%</h> Gewinnwachstum · <h>27 Std.</h> wöchentlich gespart · Echte Kundenergebnisse",
+    "highlight3_desc": "<h>10 → 22</h> Mitarbeiterinnen · <h>27 Std.</h> pro Woche zurückgewonnen · Echte Kundenergebnisse",
     "highlight1_value": "10+",
     "highlight2_value": "100%",
     "highlight3_value": "24/7",
@@ -70,7 +70,15 @@
     "toc": "Inhaltsverzeichnis",
     "related": "Verwandte Artikel",
     "published": "Veröffentlicht",
-    "author": "Autor"
+    "author": "Autor",
+    "vacio_titulo": "Noch keine Artikel auf Deutsch.",
+    "vacio_desc": "Wir schreiben in drei Sprachen und nicht immer gleichzeitig. Bis dahin gibt es die Artikel auf Englisch.",
+    "vacio_boton": "Artikel auf Englisch ansehen",
+    "otros_titulo": "In anderen Sprachen",
+    "otros_desc": "Noch nicht übersetzt. Sie sind vollständig und lesen sich genauso.",
+    "idioma_en": "Auf Englisch",
+    "idioma_es": "Auf Spanisch",
+    "idioma_de": "Auf Deutsch"
   },
   "testimonials": {
     "title": "Was unsere Kunden sagen",
@@ -102,11 +110,21 @@
     "email": "E-Mail",
     "message": "Nachricht",
     "send": "Nachricht senden",
-    "success": "Nachricht erfolgreich gesendet!",
+    "success": "Danke. Wir antworten innerhalb von 24 Stunden.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "name_placeholder": "Ihr Name",
     "email_placeholder": "ihre@email.com",
-    "message_placeholder": "Erzählen Sie uns von Ihrem Projekt..."
+    "message_placeholder": "Erzählen Sie uns von Ihrem Projekt...",
+    "sending": "Wird gesendet…",
+    "success_label": "Erhalten",
+    "interes_prefijo": "Ich schreibe wegen {interes}. ",
+    "pasos_titulo": "Wie es weitergeht",
+    "paso1_titulo": "Sie bekommen eine Antwort, kein Formular",
+    "paso1_desc": "Wir antworten innerhalb von 24 Stunden, und es antwortet ein Mensch aus dem Team. Passt Ihr Fall nicht zu uns, sagen wir das sofort.",
+    "paso2_titulo": "Eine halbe Stunde zum Verstehen",
+    "paso2_desc": "Ein kurzes Gespräch, um zu sehen, wo Zeit oder Geld verloren geht. Keine Verkaufspräsentation, keine Verpflichtung.",
+    "paso3_titulo": "Wir sagen Ihnen, was wir tun würden",
+    "paso3_desc": "Und was es kosten würde. Lautet die Antwort, dass Sie nichts brauchen, ist das auch eine Antwort."
   },
   "footer": {
     "rights": "Alle Rechte vorbehalten.",
@@ -154,21 +172,21 @@
     "results_sub": "Keine hypothetischen Fallstudien. Das sind Unternehmen, mit denen wir gearbeitet haben, und die Ergebnisse, die sie erzielt haben.",
     "t_limpia_name": "Deisy Moncayo",
     "t_limpia_role": "CEO, LimpiaExpress Cali",
-    "t_limpia_text": "Vor CaliDev haben wir alles in Tabellen verwaltet — Gehaltsabrechnung, Buchungen, Kundendaten. Victor hat uns nicht nur eine App gebaut. Er hat unseren gesamten Betrieb analysiert, gefunden wo wir Geld verloren, und ein CRM gebaut, das uns 27 Stunden pro Woche zurückgab. Unsere Gewinne stiegen um 37%, wir wuchsen von 12 auf 19 Mitarbeiter, expandierten in eine zweite Stadt und planen bis 2027 in 6 Städten zu sein.",
-    "t_limpia_s1_val": "+37%",
-    "t_limpia_s1_label": "Gewinnsteigerung",
-    "t_limpia_s2_val": "27 Std.",
-    "t_limpia_s2_label": "Wöchentlich gespart",
-    "t_limpia_s3_val": "12 → 19",
-    "t_limpia_s3_label": "Mitarbeiter",
-    "t_limpia_s4_val": "1 → 6",
-    "t_limpia_s4_label": "Städte bis 2027",
+    "t_limpia_text": "Vor CaliDev haben wir alles in Tabellen verwaltet — Gehaltsabrechnung, Buchungen, Kundendaten. Victor hat uns nicht nur eine App gebaut. Er hat unseren gesamten Betrieb analysiert, gefunden wo wir Geld verloren, und ein CRM gebaut, das uns 27 Stunden pro Woche zurückgab.",
+    "t_limpia_s1_val": "+89 %",
+    "t_limpia_s1_label": "Umsatz, Februar bis Juli",
+    "t_limpia_s2_val": "10 → 24",
+    "t_limpia_s2_label": "Mitarbeiterinnen",
+    "t_limpia_s3_val": "9 % → 56 %",
+    "t_limpia_s3_label": "Kundinnen, die Produkte kaufen",
     "t_cubiko_name": "Laura Sanchez",
     "t_cubiko_role": "CEO, Cubiko Colombia → übernommen von Dropi",
     "t_cubiko_text": "CaliDev half uns, eine Produktstrategie mit Googles API zur Analyse der Meta-Ads-Performance zu entwickeln — vorhersagend, welche Anzeigen erfolgreich sein würden, bevor das Budget ausgegeben wurde. Das Produkt zeigte so viel Potenzial, dass wir von Dropi übernommen wurden, einem der größten E-Commerce-Konglomerate Kolumbiens.",
     "cta_title": "Lassen Sie uns über Ihr Unternehmen sprechen",
     "cta_desc": "30 Minuten. Kein Verkaufsgespräch. Nur ein ehrliches Gespräch über Ihre Herausforderungen und ob wir helfen können.",
-    "cta_btn": "Kostenloses 30-Min Strategiegespräch buchen"
+    "cta_btn": "Kostenloses 30-Min Strategiegespräch buchen",
+    "t_limpia_s4_val": "27 Std.",
+    "t_limpia_s4_label": "Pro Woche zurückgewonnen"
   },
   "sp": {
     "headline": "Wir bauen nicht nur Software — wir entwickeln die Strategie dahinter",
@@ -234,15 +252,13 @@
     "results_sub": "Keine hypothetischen Fallstudien. Das sind Unternehmen, mit denen wir gearbeitet haben, und die Ergebnisse, die sie erzielt haben.",
     "t_limpia_name": "Deisy Moncayo",
     "t_limpia_role": "CEO, LimpiaExpress Cali",
-    "t_limpia_text": "Vor CaliDev haben wir alles in Tabellen verwaltet — Gehaltsabrechnung, Buchungen, Kundendaten. Victor hat uns nicht nur eine App gebaut. Er hat unseren gesamten Betrieb analysiert, gefunden wo wir Geld verloren, und ein CRM gebaut, das uns 27 Stunden pro Woche zurückgab. Unsere Gewinne stiegen um 37%, wir wuchsen von 12 auf 19 Mitarbeiter, expandierten in eine zweite Stadt und planen bis 2027 in 6 Städten zu sein.",
-    "t_limpia_s1_val": "+37%",
-    "t_limpia_s1_label": "Gewinnsteigerung",
-    "t_limpia_s2_val": "27 Std.",
-    "t_limpia_s2_label": "Wöchentlich gespart",
-    "t_limpia_s3_val": "12 → 19",
-    "t_limpia_s3_label": "Mitarbeiter",
-    "t_limpia_s4_val": "1 → 6",
-    "t_limpia_s4_label": "Städte bis 2027",
+    "t_limpia_text": "Vor CaliDev haben wir alles in Tabellen verwaltet — Gehaltsabrechnung, Buchungen, Kundendaten. Victor hat uns nicht nur eine App gebaut. Er hat unseren gesamten Betrieb analysiert, gefunden wo wir Geld verloren, und ein CRM gebaut, das uns 27 Stunden pro Woche zurückgab.",
+    "t_limpia_s1_val": "+89 %",
+    "t_limpia_s1_label": "Umsatz, Februar bis Juli",
+    "t_limpia_s2_val": "10 → 24",
+    "t_limpia_s2_label": "Mitarbeiterinnen",
+    "t_limpia_s3_val": "9 % → 56 %",
+    "t_limpia_s3_label": "Kundinnen, die Produkte kaufen",
     "t_cubiko_name2": "Laura Sanchez",
     "t_cubiko_role2": "CEO, Cubiko Colombia → übernommen von Dropi",
     "t_cubiko_text2": "CaliDev half uns, eine Produktstrategie mit Googles API zur Analyse der Meta-Ads-Performance zu entwickeln — vorhersagend, welche Anzeigen erfolgreich sein würden, bevor das Budget ausgegeben wurde. Das Produkt zeigte so viel Potenzial, dass wir von Dropi übernommen wurden, einem der größten E-Commerce-Konglomerate Kolumbiens.",
@@ -260,13 +276,15 @@
     "team_karen_bio": "Systemingenieurin. Full-Stack-Entwicklung, technische Architektur und Infrastruktur. Strategie in produktionsreife Systeme umsetzen.",
     "final_title": "Lassen Sie uns über Ihr Unternehmen sprechen",
     "final_desc": "30 Minuten. Kein Verkaufsgespräch. Nur ein ehrliches Gespräch über Ihre Herausforderungen und ob wir helfen können.",
-    "final_cta": "Kostenloses 30-Min Strategiegespräch buchen"
+    "final_cta": "Kostenloses 30-Min Strategiegespräch buchen",
+    "t_limpia_s4_val": "27 Std.",
+    "t_limpia_s4_label": "Pro Woche zurückgewonnen"
   },
   "results_strip": {
     "title": "Echte Ergebnisse, Echte Kunden",
     "subtitle": "Zahlen von Unternehmen, mit denen wir gearbeitet haben",
-    "s1_val": "+37%",
-    "s1_label": "Gewinnsteigerung",
+    "s1_val": "+89 %",
+    "s1_label": "Umsatz, Februar bis Juli",
     "s1_client": "LimpiaExpress Cali",
     "s2_val": "27 Std",
     "s2_label": "Wöchentlich Gespart",
@@ -278,5 +296,101 @@
     "s4_label": "Städte bis 2027",
     "s4_client": "LimpiaExpress Cali",
     "cta": "Kundengeschichten ansehen"
+  },
+  "senal": {
+    "cierre": {
+      "etiqueta": "Der nächste Schritt",
+      "titular": "Sagen Sie uns, was gerade kaputtgeht.",
+      "entrada": "Sagen Sie uns, wo Zeit oder Geld verloren geht, und wir sagen Ihnen, ob wir etwas beitragen können. Wir antworten innerhalb von 24 Stunden — und wenn Sie uns nicht brauchen, sagen wir auch das.",
+      "boton": "Sprechen wir",
+      "video_alt": "Ein Video-Call: Auf dem Laptop-Bildschirm hört ein Unternehmer aufmerksam zu, nickt und lächelt."
+    },
+    "servicios": {
+      "etiqueta": "Was wir tun",
+      "titulo": "Vier Arten, zusammenzuarbeiten.",
+      "entrada": "Immer in dieser Reihenfolge: erst verstehen, dann bauen. Was gebaut wird, hängt davon ab, was die Analyse findet — nicht davon, was wir verkaufen möchten.",
+      "pista_ancha": "Weiter scrollen · die Panels laufen von selbst",
+      "pista_movil": "Wischen →",
+      "cierre_etiqueta": "Fangen wir an",
+      "cierre_titulo": "Welche der vier ist Ihre?",
+      "cierre_cuerpo": "Wenn Sie es nicht wissen, ist genau das das Gespräch. Eine halbe Stunde, um herauszufinden, wo man anfängt.",
+      "cierre_boton": "Sprechen wir",
+      "s01": {
+        "linea": "Digitale Strategie",
+        "titulo": "Wir fangen bei Ihrem Betrieb an, nicht beim Code.",
+        "cuerpo": "Die meisten Agenturen öffnen einen Editor. Wir öffnen zuerst Ihre Zahlen — denn zu bauen, was Sie nicht brauchen, kostet mehr als gar nichts zu bauen.",
+        "p1": "Wir finden, wo das Geld verloren geht, bevor wir etwas anfassen",
+        "p2": "Ein Plan mit geschätzter Wirkung, echten Zeiten und echten Kosten",
+        "p3": "Wenn Sie uns nicht brauchen, sagen wir es",
+        "alt": "Eine Hand notiert auf einem gedruckten Bericht mit Diagrammen, daneben ein Kaffee"
+      },
+      "s02": {
+        "linea": "Websites",
+        "titulo": "Eine Seite, die Sie selbst pflegen — vom Handy aus.",
+        "cuerpo": "Mit einem Editor, der so einfach ist: Wer eine Story posten kann, kann seine Seite ändern. Ohne anzurufen und ohne zu warten, bis jemand Zeit hat.",
+        "p1": "Texte, Fotos und Preise ändern — ohne Entwickler",
+        "p2": "Mehrsprachig und darauf gebaut, gefunden zu werden",
+        "p3": "Sie gehört Ihnen: keine Abos, keine Bindung",
+        "alt": "Jemand baut am Computer eine Website"
+      },
+      "s03": {
+        "linea": "Apps und CRMs",
+        "titulo": "Wenn das Geschäft der Tabelle entwächst.",
+        "cuerpo": "Irgendwann hilft Excel nicht mehr, sondern verbirgt. Dann braucht es ein System, das zu Ihrer Arbeitsweise passt — und nicht umgekehrt.",
+        "p1": "Auf Ihrem echten Betrieb gebaut, nicht auf einer Vorlage",
+        "p2": "Web und mobil zugleich, mit denselben Daten",
+        "p3": "Ihre Daten, Ihre Plattform, Ihre Regeln",
+        "alt": "Seiricon und ServiNomic, zwei Systeme, die wir gebaut haben"
+      },
+      "s04": {
+        "linea": "Automatisierung",
+        "titulo": "Was Ihr Team von Hand macht, macht sich selbst.",
+        "cuerpo": "Zahlungen abgleichen, Daten hin- und herschieben, den Montagsbericht bauen. Arbeit, die kein Urteilsvermögen braucht — und die Stunden frisst, die es brauchen.",
+        "p1": "Wir verbinden die Werkzeuge, die Sie schon nutzen",
+        "p2": "Der Bericht kommt, ohne dass jemand fragt",
+        "p3": "Bei LimpiaExpress waren es über 20 Stunden pro Woche",
+        "alt": "Ein automatischer Ablauf, der Schritt für Schritt aufleuchtet"
+      }
+    },
+    "herramientas": {
+      "etiqueta": "Womit wir arbeiten",
+      "titulo": "Werkzeuge, die Sie kennen — mit Urteilsvermögen eingesetzt.",
+      "entrada": "Keines ist Magie und keines taugt für alles. Die Kunst ist zu wissen, welches wofür — und Ihnen keine Schicht zu berechnen, die Sie nicht brauchen."
+    },
+    "testimonios": {
+      "etiqueta": "Was sie sagen",
+      "titulo": "Sie müssen es uns nicht glauben."
+    },
+    "flujo": {
+      "reserva": [
+        "Eine Buchung",
+        "kommt an"
+      ],
+      "asigna": [
+        "Jemand wird",
+        "zugeteilt"
+      ],
+      "cobro": [
+        "Die Rechnung",
+        "entsteht"
+      ],
+      "ruta": [
+        "Die Tagesroute",
+        "geht raus"
+      ],
+      "nomina": [
+        "Es geht in die",
+        "Lohnabrechnung"
+      ],
+      "reporte": [
+        "Montags-",
+        "bericht"
+      ]
+    },
+    "hero": {
+      "palabra1": "wir bauen",
+      "palabra2": "Ihren",
+      "palabra3": "Vorsprung"
+    }
   }
 }
