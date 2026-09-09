@@ -143,3 +143,59 @@
   mix-blend-mode: screen;
   pointer-events: none;
 }
+
+/**
+ * Barra superior.
+ *
+ * Cristal y no color sólido porque los paneles cambian de fondo todo el rato
+ * (hueso, verde, niebla, azul, lima): una barra sólida chocaría con la mitad,
+ * mientras que un velo verde translúcido se lee como el mismo objeto sobre
+ * todos. El 78 % no es arbitrario — es la opacidad mínima con la que el texto
+ * hueso mantiene 4,5:1 sobre el peor fondo (hueso sobre hueso da 6,09:1),
+ * medido en scripts/oraculos/contraste.mjs.
+ *
+ * El velo está SIEMPRE puesto. La primera versión lo dejaba transparente arriba
+ * del todo para no partir el hero, y era un fallo: el hero arranca sobre hueso,
+ * así que el texto hueso de la barra quedaba invisible sobre él. Bajar la
+ * opacidad tampoco vale — al 55 % el contraste cae a 4,2:1 y suspende. Lo que
+ * marca que la página se ha movido es el filete inferior, que entra con el
+ * scroll.
+ */
+/* El desenfoque lo pone Tailwind con `backdrop-blur-xl` en el componente, no
+   aquí: escrito a mano, el minificador de Tailwind 4 se quedaba solo con la
+   versión `-webkit-` y Chromium no aplicaba ninguna de las dos — la barra salía
+   sin cristal. Tailwind emite el par correcto. */
+.barra {
+  background: var(--cristal);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.32s ease;
+}
+
+.barra[data-velo="true"] {
+  border-bottom-color: var(--linea);
+}
+
+/* Punto lima bajo el enlace activo. Solo aparece cuando corresponde, así que
+   significa algo; el subrayado permanente no diría nada. */
+.enlace-barra {
+  position: relative;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+}
+
+.enlace-barra:hover,
+.enlace-barra[data-activo="true"] {
+  opacity: 1;
+}
+
+.enlace-barra[data-activo="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -0.55rem;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 999px;
+  background: var(--lima);
+}

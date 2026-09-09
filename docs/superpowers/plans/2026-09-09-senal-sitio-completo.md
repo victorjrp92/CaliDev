@@ -95,40 +95,40 @@ redirigiendo a `/`.
 
 **Archivos:** Crear `src/components/senal/barra.tsx`, `src/components/senal/menu-movil.tsx`
 
-- [ ] **B1.1** Barra fija con dos estados; el velo entra con `scrollY > 24`
+- [x] **B1.1** Barra fija con dos estados; el velo entra con `scrollY > 24`
   mediante un listener pasivo que solo cambia una clase (nada de estado por
   fotograma).
-- [ ] **B1.2** Enlaces: Inicio (`/`), Servicios (`/#servicios`), Nosotros
+- [x] **B1.2** Enlaces: Inicio (`/`), Servicios (`/#servicios`), Nosotros
   (`/about`), Blog (`/blog`), Contacto (`/contact`). Activo por `usePathname`;
   «Servicios» activo además cuando `#servicios` está a la vista
   (IntersectionObserver).
-- [ ] **B1.3** Selector de idioma y botón «Agendar una llamada» (lima/tinta).
-- [ ] **B1.4** `menu-movil.tsx`: capa verde a pantalla completa, foco atrapado,
+- [x] **B1.3** Selector de idioma y botón «Agendar una llamada» (lima/tinta).
+- [x] **B1.4** `menu-movil.tsx`: capa verde a pantalla completa, foco atrapado,
   cierre con Escape, `aria-expanded` en el disparador.
-- [ ] **B1.5** Correr `contraste` → hueso sobre cristal pasa sobre los 5 fondos.
-- [ ] **B1.6** Correr `alcanzabilidad` → ningún titular tapado por la barra.
-- [ ] **B1.7** Commit.
+- [x] **B1.5** Correr `contraste` → hueso sobre cristal pasa sobre los 5 fondos.
+- [x] **B1.6** Correr `alcanzabilidad` → ningún titular tapado por la barra.
+- [x] **B1.7** Commit.
 
 ### Tarea B2: pie de página
 
 **Archivos:** Crear `src/components/senal/pie.tsx`
 
-- [ ] **B2.1** Fondo `--verde-hondo`; logo, lema con palabra en Instrument,
+- [x] **B2.1** Fondo `--verde-hondo`; logo, lema con palabra en Instrument,
   columnas Servicios y Empresa, relojes, idiomas, copyright, sociales.
-- [ ] **B2.2** **Omitir la columna Legal** hasta que Victor dé los textos: un
+- [x] **B2.2** **Omitir la columna Legal** hasta que Victor dé los textos: un
   enlace a una página inexistente es un fallo, no un marcador de posición.
-- [ ] **B2.3** Correr `enlaces` → 0 enlaces rotos.
-- [ ] **B2.4** Commit.
+- [x] **B2.3** Correr `enlaces` → 0 enlaces rotos.
+- [x] **B2.4** Commit.
 
 ### Tarea B3: panel de cierre
 
 **Archivos:** Crear `src/components/senal/cierre.tsx`
 
-- [ ] **B3.1** Panel lima con etiqueta, h2, entrada, botón invertido a
+- [x] **B3.1** Panel lima con etiqueta, h2, entrada, botón invertido a
   `/contact`, vías directas en mono y los relojes en tinta.
-- [ ] **B3.2** Correo y WhatsApp salen de `messages`, no del código, para que
+- [x] **B3.2** Correo y WhatsApp salen de `messages`, no del código, para que
   se cambien sin tocar componentes.
-- [ ] **B3.3** Commit.
+- [x] **B3.3** Commit.
 
 ---
 
@@ -138,14 +138,14 @@ redirigiendo a `/`.
 
 **Archivos:** Modificar `src/app/[locale]/layout.tsx`
 
-- [ ] **C1.1** Cambiar Inter por Archivo + IBM Plex Mono + Instrument Serif.
-- [ ] **C1.2** Importar `@/styles/senal.css`; `body` con clase `senal`.
-- [ ] **C1.3** Quitar `ThemeProvider` **solo aquí**; comprobar que
+- [x] **C1.1** Cambiar Inter por Archivo + IBM Plex Mono + Instrument Serif.
+- [x] **C1.2** Importar `@/styles/senal.css`; `body` con clase `senal`.
+- [x] **C1.3** Quitar `ThemeProvider` **solo aquí**; comprobar que
   `src/app/admin/layout.tsx` lo tiene por su cuenta y añadirlo si no.
-- [ ] **C1.4** Sustituir `Header`/`Footer` por `Barra`/`Pie`.
-- [ ] **C1.5** `npm run build` → compila; `/es/about` sale con la tipografía
+- [x] **C1.4** Sustituir `Header`/`Footer` por `Barra`/`Pie`.
+- [x] **C1.5** `npm run build` → compila; `/es/about` sale con la tipografía
   nueva aunque el diseño interior siga siendo el viejo (es lo esperado).
-- [ ] **C1.6** Commit.
+- [x] **C1.6** Commit.
 
 ### Tarea C2: mover la landing
 
