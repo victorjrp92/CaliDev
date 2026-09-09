@@ -5,14 +5,16 @@ import { Link } from "@/i18n/routing";
  * Las tres formas del botón, y por qué son tres y no dos.
  *
  * `primario` es lima con texto tinta: el lima solo puede llevar texto encima si
- * el texto es oscuro (12,8:1). `invertido` existe para el panel de cierre, que
- * ya es lima entero — allí un botón lima sería invisible, así que se le da la
- * vuelta. `secundario` es solo filete y hereda el color del panel, así que
- * funciona sobre cualquiera de los seis fondos.
+ * el texto es oscuro (12,8:1). `verde` es el sólido para fondos claros — sobre
+ * hueso da 11,7:1 y es lo que lleva el panel de cierre. `invertido` (tinta con
+ * texto lima) queda para fondos lima, donde un botón lima sería invisible.
+ * `secundario` es solo filete y hereda el color del panel, así que funciona
+ * sobre cualquiera de los fondos.
  */
 const FORMAS = {
   primario: "bg-[var(--lima)] text-[var(--tinta)] hover:brightness-95",
   invertido: "bg-[var(--tinta)] text-[var(--lima)] hover:brightness-125",
+  verde: "bg-[var(--verde)] text-[var(--hueso)] hover:brightness-125",
   secundario: "border border-current/30 hover:bg-current/8",
 } as const;
 

@@ -288,3 +288,21 @@
 .barra[data-velo="true"] .enlace-barra[data-activo="true"]::after {
   background: var(--lima);
 }
+
+/*
+ * Marco del vídeo del cierre.
+ *
+ * Cuatro sombras y no una: un filete a ras que define el borde, una de contacto
+ * muy corta que lo apoya en el papel, y dos ambientales cada vez más abiertas y
+ * suaves. Una sola sombra grande deja el vídeo flotando sin peso; lo que da
+ * cuerpo es que la de contacto sea casi opaca y muy corta mientras la lejana es
+ * amplia y tenue — que es como cae la luz sobre un objeto de verdad.
+ */
+.marco-video {
+  border-radius: 1.25rem;
+  box-shadow:
+    0 0 0 1px rgba(20, 32, 27, 0.09),
+    0 2px 5px -2px rgba(20, 32, 27, 0.22),
+    0 16px 26px -12px rgba(20, 32, 27, 0.28),
+    0 44px 68px -38px rgba(20, 32, 27, 0.5);
+}
