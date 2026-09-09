@@ -47,12 +47,16 @@ La página `/services` sigue existiendo como el detalle (precios, proceso,
 producto estrella) y se alcanza desde el panel de cierre del recorrido
 horizontal. Embudo: vistazo en el home → detalle en la página.
 
-**D4 · La barra es cristal, no un color sólido.** Los paneles cambian de fondo
+**D4 · La barra es cristal, siempre puesto, y el hero se aparta de ella.** Los paneles cambian de fondo
 todo el rato (hueso, verde, niebla, azul, lima). Una barra sólida chocaría con
 la mitad; un velo verde translúcido con desenfoque se lee como un mismo objeto
 sobre todos y mantiene el texto hueso por encima de 4,5:1 sobre cualquiera de
-ellos, porque el velo domina la mezcla. Sobre el hero arranca transparente y el
-velo entra al pasar de 24 px de scroll.
+ellos, porque el velo domina la mezcla. El velo no se quita nunca: quitarlo arriba del
+todo dejaba el texto hueso invisible sobre el hero, que arranca en hueso, y
+bajar la opacidad tampoco vale (al 55 % el contraste cae a 4,2:1). Lo que entra
+con el scroll es el filete inferior. Y como la barra flota sobre el contenido,
+su alto es una ficha (`--alto-barra`) que el hero usa para apartar su primera
+palabra — con el 2 % original, «construimos» salía cortada por la mitad.
 
 **D5 · Sin gasto nuevo en kie.ai.** Las imágenes que faltan (portadas de blog,
 texturas) se generan con Codex, que no cuesta. Los tres clips que ya tenemos se
@@ -255,6 +259,7 @@ verificador que no puede fallar es peor que ninguno.
 |---|---|---|
 | `contraste` | Texto hueso sobre el cristal de la barra compuesto sobre los cinco fondos, y cada par texto/fondo del sitio | Poner lima sobre hueso a propósito |
 | `alcanzabilidad` | Contenido tapado por la barra fija o por el pin horizontal: recorre cada ruta y hace `elementFromPoint` sobre cada titular | Subir la barra a 300 px de alto |
+| `barra-tapa` | Texto grande cortado por la barra. **No lo cubre `alcanzabilidad`**: la tipografía del hero son `<span>` con `pointer-events: none`, así que `elementFromPoint` nunca la devuelve — un oráculo de impacto es ciego justo a la letra más grande de la página. Este mide geometría | Devolver la palabra del hero a `top: 2%` |
 | `paridad-i18n` | Claves que faltan o vacías en es/en/de | Borrar una clave |
 | `anclas` | `/#servicios` deja la sección a menos de 100 px del borde superior tras asentarse | Quitar el `scroll-margin-top` |
 | `enlaces` | Ningún enlace de barra o pie da 404 | Añadir un `/inexistente` |

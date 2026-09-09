@@ -172,6 +172,21 @@ redirigiendo a `/`.
 
 ---
 
+## Fase B-bis — Correcciones sobre lo entregado
+
+- [x] **Bb1** La barra cortaba «construimos» por la mitad. `--alto-barra` pasa a
+  ser ficha y el hero aparta su primera palabra con
+  `max(2%, calc(var(--alto-barra) + 0.5rem))`.
+- [x] **Bb2** Oráculo `barra-tapa.mjs`, probado roto. Cubre el punto ciego de
+  `alcanzabilidad`: el texto con `pointer-events: none` es invisible a
+  `elementFromPoint`.
+- [x] **Bb3** Carrete: la central sube y las laterales bajan (contramovimiento).
+- [x] **Bb4** Carrete: avance solo cada 3 s, detenido con ratón encima, con el
+  foco dentro, fuera de pantalla y con `prefers-reduced-motion`; `aria-live`
+  apagado mientras gira solo.
+
+---
+
 ## Fase D — Nosotros
 
 **Archivos:** Reescribir `src/components/about-page.tsx`; crear
