@@ -179,45 +179,58 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
           className="pointer-events-none absolute inset-0 z-30"
           style={{ willChange: "transform, opacity, filter" }}
         >
-          {/* El 2 % del alto son 18 px en un portátil, y la barra de navegación
-              mide 80: la palabra salía cortada por la mitad. `max()` la aparta
-              lo justo en pantallas normales y respeta el 2 % en las muy altas,
-              donde ese porcentaje ya despeja de sobra. */}
-          <div
-            className="absolute inset-x-0 flex justify-center"
-            style={{ top: "max(2%, calc(var(--alto-barra) + 0.5rem))" }}
-          >
-            <span
-              className="select-none text-center leading-none tracking-tighter"
-              style={{ ...wordStyle, color: accentColor }}
+          {/* Las tres palabras van dentro de un h1: «construimos tu ventaja» ES
+              el titular de la página. Eran tres `<span>` sueltos, así que el
+              home no tenía ningún h1 — un lector de pantalla no encontraba de
+              qué va el sitio y los buscadores tampoco. Los relojes quedan
+              fuera: un titular no lleva un reloj dentro. */}
+          <h1 className="absolute inset-0 font-normal">
+            {/* El 2 % del alto son 18 px en un portátil, y la barra de navegación
+                mide 80: la palabra salía cortada por la mitad. `max()` la aparta
+                lo justo en pantallas normales y respeta el 2 % en las muy altas,
+                donde ese porcentaje ya despeja de sobra. */}
+            <div
+              className="absolute inset-x-0 flex justify-center"
+              style={{ top: "max(2%, calc(var(--alto-barra) + 0.5rem))" }}
             >
-              {topWord}
-            </span>
-          </div>
+              <span
+                className="select-none text-center leading-none tracking-tighter"
+                style={{ ...wordStyle, color: accentColor }}
+              >
+                {topWord}
+              </span>
+            </div>
+            {/* Los tres bloques son absolutos, así que en el árbol de
+                accesibilidad quedan pegados: sin esto un lector de pantalla
+                dice «construimostuventaja» de corrido. El espacio no ocupa
+                nada porque el h1 no fija tamaño de letra. */}
+            {" "}
 
-          <div className="absolute right-[3%] top-[38%] flex items-center">
-            <span
-              className="select-none leading-none tracking-tighter"
-              style={{ ...wordStyle, color: textColor }}
-            >
-              {rightWord}
-            </span>
-          </div>
+            <div className="absolute right-[3%] top-[38%] flex items-center">
+              <span
+                className="select-none leading-none tracking-tighter"
+                style={{ ...wordStyle, color: textColor }}
+              >
+                {rightWord}
+              </span>
+            </div>
+            {" "}
 
-          <div className="absolute inset-x-0 bottom-[2%] flex justify-center">
-            <span
-              className="select-none text-center leading-none"
-              style={{
-                color: accentColor,
-                fontSize: "clamp(3.6rem, 13vw, 12.5rem)",
-                fontFamily: "var(--font-instrument), Georgia, serif",
-                fontStyle: "italic",
-                fontWeight: 400,
-              }}
-            >
-              {bottomWord}
-            </span>
-          </div>
+            <div className="absolute inset-x-0 bottom-[2%] flex justify-center">
+              <span
+                className="select-none text-center leading-none"
+                style={{
+                  color: accentColor,
+                  fontSize: "clamp(3.6rem, 13vw, 12.5rem)",
+                  fontFamily: "var(--font-instrument), Georgia, serif",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                }}
+              >
+                {bottomWord}
+              </span>
+              </div>
+          </h1>
 
           {/* Relojes: el punto lima es el único uso del acento en el hero,
               y está ahí porque significa algo — la hora va en vivo. */}
