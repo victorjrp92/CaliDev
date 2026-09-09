@@ -179,7 +179,14 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
           className="pointer-events-none absolute inset-0 z-30"
           style={{ willChange: "transform, opacity, filter" }}
         >
-          <div className="absolute inset-x-0 top-[2%] flex justify-center">
+          {/* El 2 % del alto son 18 px en un portátil, y la barra de navegación
+              mide 80: la palabra salía cortada por la mitad. `max()` la aparta
+              lo justo en pantallas normales y respeta el 2 % en las muy altas,
+              donde ese porcentaje ya despeja de sobra. */}
+          <div
+            className="absolute inset-x-0 flex justify-center"
+            style={{ top: "max(2%, calc(var(--alto-barra) + 0.5rem))" }}
+          >
             <span
               className="select-none text-center leading-none tracking-tighter"
               style={{ ...wordStyle, color: accentColor }}

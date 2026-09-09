@@ -24,6 +24,17 @@
   --linea: rgba(250, 250, 247, 0.14);
   --linea-tinta: rgba(20, 32, 27, 0.12);
   --cristal: rgba(10, 61, 46, 0.78);
+
+  /* Alto de la barra de navegación. Vive aquí porque no solo lo usa la barra:
+     el hero tiene que apartar su primera palabra para que no la tape, y ese
+     cálculo debe seguir siendo correcto si la barra cambia de alto. */
+  --alto-barra: 4rem;
+}
+
+@media (min-width: 768px) {
+  .senal {
+    --alto-barra: 5rem;
+  }
 }
 
 .senal .mono {
@@ -166,6 +177,7 @@
    versión `-webkit-` y Chromium no aplicaba ninguna de las dos — la barra salía
    sin cristal. Tailwind emite el par correcto. */
 .barra {
+  height: var(--alto-barra);
   background: var(--cristal);
   border-bottom: 1px solid transparent;
   transition: border-color 0.32s ease;

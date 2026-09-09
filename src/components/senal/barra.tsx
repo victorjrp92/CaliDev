@@ -73,7 +73,7 @@ export function Barra() {
       <header className="fixed inset-x-0 top-0 z-50">
         <div
           data-velo={velo}
-          className="barra flex h-16 items-center backdrop-blur-xl backdrop-saturate-150 gap-6 px-5 text-[var(--hueso)] md:h-20 md:px-10"
+          className="barra flex items-center gap-6 px-5 backdrop-blur-xl backdrop-saturate-150 text-[var(--hueso)] md:px-10"
         >
           <Link href="/" aria-label="CaliDev, inicio" className="flex-none">
             <Logo className="h-6 w-auto md:h-7" />
