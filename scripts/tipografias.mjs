@@ -8,47 +8,62 @@
  * dibujada nunca lo enseña.
  */
 import { chromium } from "playwright";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
 const SALIDA = "/tmp/tipos";
 mkdirSync(SALIDA, { recursive: true });
 
+/**
+ * Las caras locales de la carpeta de Victor, ya recortadas a latino y
+ * convertidas a woff2, incrustadas como data URI. Van todas en cada página
+ * porque cargarlas cuesta nada y evita un montaje distinto por combinación.
+ */
+const CARAS_LOCALES = readFileSync(
+  "/private/tmp/claude-501/-Users-victorjrp92/c18727fc-5b37-4311-a62d-25da02d62e4c/scratchpad/caras.css",
+  "utf8"
+);
+
 const COMBOS = [
   {
     id: "actual",
     titular: "Archivo",
+    pesoTitular: 800,
     cuerpo: "Archivo",
     mono: "IBM Plex Mono",
     cursiva: "Instrument Serif",
     google: "Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1",
   },
   {
-    id: "serif",
-    titular: "Fraunces",
-    cuerpo: "Inter Tight",
+    // Losa: la slab de Arvo manda y la sans de cabina de B612 sostiene el texto.
+    id: "losa",
+    titular: "Arvo",
+    pesoTitular: 700,
+    cuerpo: "B612",
     mono: "IBM Plex Mono",
-    cursiva: "Fraunces",
-    google:
-      "Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500",
+    cursiva: "Vollkorn",
+    google: "IBM+Plex+Mono:wght@400;500",
   },
   {
-    id: "grotesca",
-    titular: "Bricolage Grotesque",
-    cuerpo: "Archivo",
-    mono: "Martian Mono",
-    cursiva: "Instrument Serif",
-    google:
-      "Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400;500;600&family=Martian+Mono:wght@400;500&family=Instrument+Serif:ital@1",
+    // Lectura: titular de serif cálida, cuerpo técnico.
+    id: "lectura",
+    titular: "Vollkorn",
+    pesoTitular: 800,
+    cuerpo: "B612",
+    mono: "IBM Plex Mono",
+    cursiva: "Vollkorn",
+    google: "IBM+Plex+Mono:wght@400;500",
   },
   {
-    id: "neoclasica",
-    titular: "Instrument Serif",
-    cuerpo: "Instrument Sans",
-    mono: "IBM Plex Mono",
-    cursiva: "Instrument Serif",
-    google:
-      "Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500",
+    // Invertida: lo contrario, y sin una sola fuente de Google — las etiquetas
+    // también salen de la carpeta, en B612 espaciada.
+    id: "invertida",
+    titular: "B612",
+    pesoTitular: 700,
+    cuerpo: "Vollkorn",
+    mono: "B612",
+    cursiva: "Vollkorn",
+    google: null,
   },
 ];
 
@@ -67,9 +82,12 @@ for (const combo of COMBOS) {
     const pagina = await navegador.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
     await pagina.goto(BASE + toma.url, { waitUntil: "networkidle", timeout: 90000 });
 
-    await pagina.addStyleTag({
-      url: `https://fonts.googleapis.com/css2?family=${combo.google}&display=block`,
-    });
+    await pagina.addStyleTag({ content: CARAS_LOCALES });
+    if (combo.google) {
+      await pagina.addStyleTag({
+        url: `https://fonts.googleapis.com/css2?family=${combo.google}&display=block`,
+      });
+    }
 
     // Las tres fichas mandan sobre todo el sitio; los titulares se separan
     // aparte porque hoy comparten familia con el cuerpo y estas propuestas no.
@@ -82,6 +100,7 @@ for (const combo of COMBOS) {
         }
         h1, h2, h3, blockquote {
           font-family: "${combo.titular}", Georgia, serif !important;
+          font-weight: ${combo.pesoTitular} !important;
         }
         /* Las palabras del hero llevan la familia en un atributo style, así que
            la herencia del h1 no las alcanza: sin esto el titular más grande del
@@ -90,6 +109,7 @@ for (const combo of COMBOS) {
         h1 > div:nth-of-type(1) span,
         h1 > div:nth-of-type(2) span {
           font-family: "${combo.titular}", Georgia, serif !important;
+          font-weight: ${combo.pesoTitular} !important;
         }
         .serif, .senal .serif {
           font-family: "${combo.cursiva}", Georgia, serif !important;

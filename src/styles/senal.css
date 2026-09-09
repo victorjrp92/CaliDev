@@ -37,6 +37,24 @@
   }
 }
 
+/*
+ * Titulares en Vollkorn.
+ *
+ * Una regla y no una clase en cada componente: los titulares están repartidos
+ * por medio sitio y con clases habría que acordarse en cada uno. Además el
+ * interletrado se relaja aquí — los −0,035em que pedía Archivo aplastan las
+ * serifas de Vollkorn y le quitan justo lo que la hace legible. El tamaño
+ * grande de Vollkorn ya es más pequeño a igualdad de puntos, así que el peso
+ * sube a 800 donde antes bastaba con menos.
+ */
+.senal h1,
+.senal h2,
+.senal h3,
+.senal blockquote {
+  font-family: var(--font-titular), Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
 .senal .mono {
   font-family: var(--font-plex), ui-monospace, monospace;
   font-size: 11.5px;
@@ -44,8 +62,10 @@
   text-transform: uppercase;
 }
 
+/* La cursiva ya no es una familia prestada: Vollkorn trae la suya, así que
+   «ventaja» y las comillas de los testimonios hablan la misma voz que el resto. */
 .senal .serif {
-  font-family: var(--font-instrument), Georgia, serif;
+  font-family: var(--font-titular), Georgia, serif;
   font-style: italic;
   font-weight: 400;
 }
