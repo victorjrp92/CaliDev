@@ -6,6 +6,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { Logo } from "@/components/senal/logo";
 import { MenuMovil } from "@/components/senal/menu-movil";
 import { construirEnlaces, type EnlaceNav } from "@/components/senal/enlaces-nav";
+import { detectarTono, type Tono } from "@/components/senal/tono-superior";
 
 const IDIOMAS = [
   { codigo: "en", etiqueta: "EN" },
@@ -25,6 +26,15 @@ export function Barra() {
   const [velo, setVelo] = useState(false);
   const [menu, setMenu] = useState(false);
   const [enServicios, setEnServicios] = useState(false);
+  const [tono, setTono] = useState<Tono>("claro");
+
+  // El fondo por el que asoma la barra cuando aún no hay velo. Se mide en vez
+  // de suponerse: el home arranca en hueso y las interiores en verde.
+  useEffect(() => {
+    const medir = () => setTono(detectarTono());
+    const fotograma = requestAnimationFrame(medir);
+    return () => cancelAnimationFrame(fotograma);
+  }, [ruta]);
 
   // Listener pasivo que solo escribe estado al cruzar el umbral: cambiarlo en
   // cada fotograma provocaría un render por píxel de scroll. El velo no depende
@@ -73,7 +83,14 @@ export function Barra() {
       <header className="fixed inset-x-0 top-0 z-50">
         <div
           data-velo={velo}
-          className="barra flex items-center gap-6 px-5 backdrop-blur-xl backdrop-saturate-150 text-[var(--hueso)] md:px-10"
+          className={`barra flex items-center gap-6 px-5 md:px-10 ${
+            velo ? "backdrop-blur-xl backdrop-saturate-150" : ""
+          }`}
+          style={{
+            // Con velo el texto es siempre hueso: el velo domina la mezcla y da
+            // 6,09:1 sobre el peor fondo. Sin velo lo decide lo que hay detrás.
+            color: velo || tono === "oscuro" ? "var(--hueso)" : "var(--verde)",
+          }}
         >
           <Link href="/" aria-label="CaliDev, inicio" className="flex-none">
             <Logo className="h-6 w-auto md:h-7" />
@@ -106,8 +123,14 @@ export function Barra() {
                 aria-current={l.codigo === idioma ? "true" : undefined}
                 className="px-1.5 py-1 transition-opacity"
                 style={{
-                  color: l.codigo === idioma ? "var(--lima)" : undefined,
-                  opacity: l.codigo === idioma ? 1 : 0.6,
+                  // El lima solo entra cuando hay velo. Sin él, el fondo puede
+                  // ser hueso y lima sobre hueso da 1,5:1 — la misma regla que
+                  // rige toda la paleta, y que aquí se coló igual.
+                  color: l.codigo === idioma && velo ? "var(--lima)" : undefined,
+                  fontWeight: l.codigo === idioma ? 500 : 400,
+                  // 0,55 dejaba los idiomas inactivos en 3,2:1. El peso ya
+                  // distingue el activo; el desvanecido solo los hacía ilegibles.
+                  opacity: l.codigo === idioma ? 1 : 0.86,
                 }}
               >
                 {l.etiqueta}
@@ -115,10 +138,7 @@ export function Barra() {
             ))}
           </div>
 
-          <Link
-            href="/contact"
-            className="mono hidden flex-none rounded-full bg-[var(--lima)] px-5 py-2.5 text-[var(--tinta)] transition-[filter] hover:brightness-95 lg:inline-flex"
-          >
+          <Link href="/contact" className="mono llamada-barra hidden flex-none lg:inline-flex">
             {t("schedule")}
           </Link>
 
