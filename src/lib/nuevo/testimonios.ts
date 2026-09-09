@@ -48,3 +48,33 @@ export const TESTIMONIOS: Testimonio[] = [
     foto: null,
   },
 ];
+
+/**
+ * ⚠️ DUMMY — personas, citas y fotos INVENTADAS, solo para ver la maqueta con
+ * cuerpo mientras llegan las fotos y las palabras reales. Los retratos son
+ * generados por IA: no son nadie. Nada de esto puede llegar a producción; la
+ * sección debe volver a `TESTIMONIOS` antes de fusionar.
+ */
+export const TESTIMONIOS_DUMMY: Testimonio[] = [
+  {
+    id: "dummy-1",
+    cita: "Llegamos con una hoja de cálculo y un caos de WhatsApp. Salimos con un sistema que el equipo usa solo, sin que nadie lo persiga.",
+    autor: "Mariana Ocampo",
+    cargo: "Fundadora, estudio de interiores — Cali",
+    foto: "/nuevo/dummy/retrato_1.webp",
+  },
+  {
+    id: "dummy-2",
+    cita: "No nos vendieron una página. Nos preguntaron qué queríamos que pasara después de que alguien la viera, y construyeron eso.",
+    autor: "Julián Restrepo",
+    cargo: "Gerente, distribuidora de insumos — Medellín",
+    foto: "/nuevo/dummy/retrato_2.webp",
+  },
+  {
+    id: "dummy-3",
+    cita: "Es la primera vez que un proveedor de tecnología entiende primero el negocio y después abre el computador.",
+    autor: "Camila Trujillo",
+    cargo: "Directora, academia de idiomas — Sídney",
+    foto: "/nuevo/dummy/retrato_3.webp",
+  },
+];

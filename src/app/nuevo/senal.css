@@ -72,3 +72,60 @@
     scroll-behavior: auto !important;
   }
 }
+
+/**
+ * Hoja de contactos de los testimonios.
+ *
+ * Sobre fondo oscuro el relieve no puede venir del gris, como en una interfaz
+ * clara: viene de la luz. Cada fantasma lleva una arista superior iluminada,
+ * un relleno que se apaga hacia abajo y una sombra que lo despega del fondo;
+ * la foto lleva la misma arista y una sombra más honda, y eso es lo que la
+ * levanta por encima de los demás. La casilla escala con el ancho para que
+ * tres columnas quepan en un móvil de 390 px.
+ */
+.hoja-contactos {
+  --casilla: 6rem;
+  mask-image:
+    linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+}
+
+@media (min-width: 768px) {
+  .hoja-contactos {
+    --casilla: 7.5rem;
+  }
+}
+
+.reel-fantasma {
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(250, 250, 247, 0.085), rgba(250, 250, 247, 0.03));
+  box-shadow:
+    inset 0 1px 0 rgba(250, 250, 247, 0.16),
+    inset 0 0 0 1px rgba(250, 250, 247, 0.055),
+    0 16px 28px -16px rgba(0, 0, 0, 0.6);
+}
+
+.reel-foto {
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, #d7dbd3, #7f8a80);
+  box-shadow:
+    inset 0 1px 0 rgba(250, 250, 247, 0.3),
+    0 0 0 1px rgba(250, 250, 247, 0.16),
+    0 26px 48px -16px rgba(0, 0, 0, 0.7),
+    0 8px 16px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* Fuga de luz lima en la esquina: tiñe el fondo del retrato, no la cara. */
+.reel-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 55% at 0% 0%, rgba(200, 240, 69, 0.5), transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
