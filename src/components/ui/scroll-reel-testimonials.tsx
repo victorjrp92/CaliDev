@@ -135,7 +135,7 @@ export function ScrollReelTestimonials({
               <li key={t.id} className="contents">
                 <div aria-hidden="true" className="reel-fantasma shrink-0" style={{ height: c(1) }} />
                 <div
-                  className="reel-foto relative shrink-0 overflow-hidden"
+                  className="reel-foto duotono relative shrink-0 overflow-hidden"
                   style={{ height: c(1) }}
                   aria-current={i === activo || undefined}
                 >

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ServiNomic — Opción B: Diagnóstico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1512;
+    --surface:#11201B;
+    --surface-2:#162A23;
+    --line:#20372E;
+    --fg:#EAF2EE;
+    --fg-60:#93A79E;
+    --fg-40:#66796F;
+    --acc:#34E39B;
+    --acc-dim:#0F6B4C;
+    --amber:#FFC24B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--fg);
+    font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:16px;line-height:1.6;
+    padding-bottom:88px;padding-top:26px;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 20px}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"JetBrains Mono",monospace}
+
+  .top{position:sticky;top:26px;z-index:40;background:rgba(11,21,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+  .brand .mark{width:26px;height:26px;border-radius:7px;background:var(--acc);color:#062018;display:grid;place-items:center;font-size:12px;font-weight:800}
+  .from{font-size:11px;font-weight:600;color:var(--acc);background:rgba(52,227,155,.11);padding:5px 10px;border-radius:100px;border:1px solid rgba(52,227,155,.22)}
+
+  /* ── HERO = LA CALCULADORA. La primera interacción es el filtro. ── */
+  .hero{padding:28px 0 10px}
+  h1{font-size:29px;line-height:1.2;letter-spacing:-.022em;font-weight:800}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{margin-top:13px;font-size:16px;color:var(--fg-60);line-height:1.55}
+
+  .calc{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .calc .lbl{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+  .calc h2{margin-top:9px;font-size:19px;font-weight:800;line-height:1.3;letter-spacing:-.015em}
+  .chips{margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .chip{
+    border:1.5px solid var(--line);background:var(--surface-2);color:var(--fg);
+    border-radius:12px;padding:13px 6px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;
+    font-family:"JetBrains Mono",monospace;
+  }
+  .chip.sel{border-color:var(--acc);background:rgba(52,227,155,.13);color:var(--acc)}
+
+  /* resultado del diagnóstico: la razón para seguir bajando */
+  .result{margin-top:16px;border-top:1px dashed var(--line);padding-top:16px}
+  .result .cap{font-size:12px;color:var(--fg-40);letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+  .figures{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fig{background:var(--surface-2);border-radius:13px;padding:14px}
+  .fig .v{font-family:"JetBrains Mono",monospace;font-size:24px;font-weight:700;color:var(--amber);letter-spacing:-.02em;line-height:1}
+  .fig .l{font-size:12px;color:var(--fg-60);margin-top:6px;line-height:1.35}
+  .disclaim{margin-top:11px;font-size:11.5px;color:var(--fg-40);line-height:1.45}
+
+  .cta{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    background:var(--acc);color:#052017;font-weight:800;font-size:16px;
+    padding:17px 22px;border-radius:14px;border:0;cursor:pointer;
+    box-shadow:0 6px 20px rgba(52,227,155,.2);
+  }
+  .cta.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line);box-shadow:none;font-weight:700}
+  .reassure{margin-top:10px;text-align:center;font-size:12.5px;color:var(--fg-40)}
+
+  /* ── PRUEBA ── */
+  .sec{padding:38px 0}
+  h3.t{font-size:23px;line-height:1.25;letter-spacing:-.02em;font-weight:800}
+  .lead{margin-top:9px;color:var(--fg-60);font-size:15.5px}
+
+  .case{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px}
+  .case .who{display:flex;align-items:center;gap:12px}
+  .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(140deg,var(--acc-dim),var(--acc));color:#052017;display:grid;place-items:center;font-weight:800;font-size:18px;flex-shrink:0}
+  .who b{display:block;font-size:15px}
+  .who span{font-size:12.5px;color:var(--fg-40)}
+  .case blockquote{margin-top:15px;font-size:16px;line-height:1.55}
+  .ba{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:10px}
+  .ba .row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:14px}
+  .ba .k{color:var(--fg-60)}
+  .ba .from-v{font-family:"JetBrains Mono",monospace;color:var(--fg-40);text-decoration:line-through}
+  .ba .to-v{font-family:"JetBrains Mono",monospace;color:var(--acc);font-weight:700}
+
+  /* ── QUÉ HACE ── */
+  .mods{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .mod{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:16px 17px;display:flex;gap:13px}
+  .mod .ic{width:30px;height:30px;border-radius:9px;background:rgba(52,227,155,.11);color:var(--acc);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;font-family:"JetBrains Mono",monospace}
+  .mod h4{font-size:15.5px;font-weight:700}
+  .mod p{margin-top:4px;font-size:14px;color:var(--fg-60);line-height:1.5}
+
+  /* ── PROCESO ── */
+  .steps{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+  .step{display:flex;gap:13px}
+  .step .n{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;color:var(--fg-40);padding-top:3px;flex-shrink:0}
+  .step h4{font-size:15.5px;font-weight:700}
+  .step p{margin-top:3px;font-size:14px;color:var(--fg-60);line-height:1.5}
+  .slots{margin-top:18px;background:rgba(52,227,155,.07);border:1px solid rgba(52,227,155,.18);border-radius:14px;padding:15px;font-size:14px;line-height:1.5;color:var(--fg-60)}
+  .slots strong{color:var(--fg)}
+
+  /* ── FORMULARIO ── */
+  .form{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 19px;margin-top:20px}
+  .prog{display:flex;gap:5px;margin-bottom:17px}
+  .prog i{height:4px;flex:1;border-radius:3px;background:var(--line);display:block}
+  .prog i.on{background:var(--acc)}
+  .form .q{font-size:11.5px;font-weight:700;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
+  .form h4{margin-top:8px;font-size:19px;font-weight:800;line-height:1.3;letter-spacing:-.015em}
+  .form .hint{margin-top:5px;font-size:13.5px;color:var(--fg-40)}
+  .opts{margin-top:15px;display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--fg);border-radius:12px;padding:14px 15px;font-size:15px;cursor:pointer;text-align:left;width:100%}
+  .opt .dot{width:19px;height:19px;border-radius:50%;border:2px solid #3A5247;flex-shrink:0}
+  .opt.sel{border-color:var(--acc);background:rgba(52,227,155,.11)}
+  .opt.sel .dot{border-color:var(--acc);background:var(--acc);box-shadow:inset 0 0 0 3px var(--surface)}
+
+  footer{text-align:center;padding:24px 0 10px;font-size:12px;color:var(--fg-40);border-top:1px solid var(--line);margin-top:34px}
+
+  .sticky{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(11,21,18,.96);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:11px 20px calc(11px + env(safe-area-inset-bottom));
+  }
+  .sticky .wrap{padding:0}
+  .sticky small{display:block;text-align:center;margin-top:7px;font-size:11.5px;color:var(--fg-40)}
+
+  .note{position:fixed;top:0;left:0;right:0;background:var(--acc);color:#052017;padding:7px;font-size:11px;text-align:center;z-index:99;font-weight:700}
+
+  @media(min-width:720px){
+    .wrap{max-width:640px}
+    h1{font-size:38px}
+    .mods{display:grid;grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="note">OPCIÓN B — Diagnóstico · el filtro ES el gancho · calculadora primero, prueba después</div>
+
+<div class="top">
+  <div class="wrap">
+    <div class="brand"><span class="mark">CD</span>CaliDev</div>
+    <span class="from">★ Lo usa LimpiaExpress</span>
+  </div>
+</div>
+
+<!-- HERO = CALCULADORA. La primera acción es responder, no leer. -->
+<section class="hero">
+  <div class="wrap">
+    <h1>¿Sabes cuánto te cuesta <em>cuadrar la nómina a mano</em> cada mes?</h1>
+    <p class="sub">Dinos cuánta gente tienes en operación y te lo calculamos ahora mismo. Sin registrarte.</p>
+
+    <div class="calc">
+      <div class="lbl">Diagnóstico rápido</div>
+      <h2>¿Cuántas personas trabajan en tu operación?</h2>
+      <div class="chips">
+        <button class="chip" data-n="2">1 – 3</button>
+        <button class="chip sel" data-n="7">4 – 10</button>
+        <button class="chip" data-n="18">11 – 25</button>
+        <button class="chip" data-n="38">26 – 50</button>
+        <button class="chip" data-n="70">+50</button>
+        <button class="chip" data-n="0">No sé aún</button>
+      </div>
+
+      <div class="result">
+        <div class="cap">Lo que probablemente te está costando</div>
+        <div class="figures">
+          <div class="fig"><div class="v" id="hrs">14 h</div><div class="l">al mes cuadrando pagos y respondiendo reclamos</div></div>
+          <div class="fig"><div class="v" id="cop">$1.1M</div><div class="l">al mes en tiempo tuyo y errores de pago</div></div>
+        </div>
+        <p class="disclaim">Estimado a partir de lo que medimos en LimpiaExpress antes de implementar. En la llamada lo calculamos con tus números reales.</p>
+      </div>
+
+      <a href="#registro" class="cta" style="margin-top:18px">Quiero recuperar ese tiempo →</a>
+      <p class="reassure">1 minuto · No pedimos datos personales al inicio</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRUEBA: alguien que ya pasó por esto -->
+<section class="sec">
+  <div class="wrap">
+    <h3 class="t">Así se veía LimpiaExpress antes</h3>
+    <p class="lead">Misma ciudad, mismo problema, 19 colaboradores.</p>
+
+    <div class="case">
+      <div class="who">
+        <div class="avatar">D</div>
+        <div><b>Deisy Moncayo</b><span>CEO, LimpiaExpress Cali</span></div>
+      </div>
+      <blockquote>&ldquo;Manejábamos todo en hojas de cálculo — nómina, reservas, clientes. Victor analizó toda la operación, encontró dónde perdíamos dinero y construyó un sistema que nos devolvió 27 horas a la semana.&rdquo;</blockquote>
+      <div class="ba">
+        <div class="row"><span class="k">Cerrar la nómina</span><span class="from-v">1 día</span><span class="to-v">20 min</span></div>
+        <div class="row"><span class="k">Utilidades</span><span class="from-v">base</span><span class="to-v">+37%</span></div>
+        <div class="row"><span class="k">Colaboradores</span><span class="from-v">12</span><span class="to-v">19</span></div>
+        <div class="row"><span class="k">Ciudades</span><span class="from-v">1</span><span class="to-v">3</span></div>
+      </div>
+    </div>
+
+    <a href="#registro" class="cta ghost" style="margin-top:18px">Ver si aplica a mi empresa →</a>
+  </div>
+</section>
+
+<!-- QUÉ HACE -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <h3 class="t">Qué hace el sistema</h3>
+    <div class="mods">
+      <div class="mod"><span class="ic">01</span><div><h4>Nómina por horas y servicio</h4><p>Cuadra horas, extras y descuentos solo. Calcula seguridad social y deja el soporte listo.</p></div></div>
+      <div class="mod"><span class="ic">02</span><div><h4>Control de servicios</h4><p>Quién atendió, dónde, cuánto duró y cuánto dejó. Todo ligado a su cliente.</p></div></div>
+      <div class="mod"><span class="ic">03</span><div><h4>Evaluación del equipo</h4><p>Desempeño por colaborador, con bonos calculados sobre lo que pasó en terreno.</p></div></div>
+      <div class="mod"><span class="ic">04</span><div><h4>La plata, a la vista</h4><p>Gastos, insumos y márgenes en un tablero. Dejas de enterarte a fin de mes.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <h3 class="t">Qué pasa si te registras</h3>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><div><h4>Contestas 6 preguntas</h4><p>Menos de un minuto. No hay que agendar nada.</p></div></div>
+      <div class="step"><span class="n">02</span><div><h4>Revisamos tu caso a mano</h4><p>Priorizamos las empresas donde el sistema hace más diferencia.</p></div></div>
+      <div class="step"><span class="n">03</span><div><h4>Te escribimos por WhatsApp</h4><p>30 minutos, sin pitch. Te decimos honestamente si te sirve o no.</p></div></div>
+    </div>
+    <div class="slots">Acompañamos <strong>2 empresas a la vez</strong>. No es escasez inventada: es lo que podemos implementar bien al mismo tiempo.</div>
+  </div>
+</section>
+
+<!-- FORMULARIO -->
+<section class="sec" id="registro" style="padding-top:0;scroll-margin-top:92px">
+  <div class="wrap">
+    <h3 class="t">Empecemos</h3>
+    <p class="lead">Ya nos dijiste el tamaño. Faltan dos preguntas.</p>
+
+    <div class="form">
+      <div class="prog"><i class="on"></i><i class="on"></i><i></i></div>
+      <div class="q">Paso 1 de 3</div>
+      <h4>¿Tienes una empresa con personal operativo?</h4>
+      <p class="hint">Personal operativo = gente que presta el servicio en terreno.</p>
+      <div class="opts">
+        <button class="opt sel"><span class="dot"></span>Sí, la empresa es mía</button>
+        <button class="opt"><span class="dot"></span>Soy socia o la administro</button>
+        <button class="opt"><span class="dot"></span>Trabajo en una, pero no es mía</button>
+        <button class="opt"><span class="dot"></span>No tengo empresa</button>
+      </div>
+      <button class="cta" style="margin-top:19px">Continuar →</button>
+    </div>
+  </div>
+</section>
+
+<footer>CaliDev · Sistemas de operación para empresas de servicios · Cali, Colombia</footer>
+
+<div class="sticky">
+  <div class="wrap">
+    <a href="#registro" class="cta">Entrar a la lista de espera</a>
+    <small>Quedan 2 cupos · Revisamos cada registro a mano</small>
+  </div>
+</div>
+
+<script>
+  // El diagnóstico se recalcula al tocar: da una razón concreta para seguir bajando.
+  var HRS_POR_PERSONA = 2;      // horas/mes de cuadre y reclamos por persona
+  var COP_HORA = 78000;         // costo estimado de una hora del dueño
+  document.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('sel')});
+      c.classList.add('sel');
+      var n = Number(c.dataset.n);
+      if(!n){ document.getElementById('hrs').textContent='—'; document.getElementById('cop').textContent='—'; return; }
+      var hrs = Math.round(n * HRS_POR_PERSONA);
+      var cop = (hrs * COP_HORA) / 1000000;
+      document.getElementById('hrs').textContent = hrs + ' h';
+      document.getElementById('cop').textContent = '$' + cop.toFixed(1) + 'M';
+    });
+  });
+  document.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click', function(){
+      b.parentElement.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel')});
+      b.classList.add('sel');
+    });
+  });
+</script>
+</body>
+</html>

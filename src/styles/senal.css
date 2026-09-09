@@ -17,6 +17,13 @@
   --niebla: #e6e8e3;
   --hueso: #fafaf7;
   --tinta: #14201b;
+
+  /* Estructura. El verde hondo es una capa por debajo del verde de marca —
+     el pie tiene que leerse como suelo, no como otra sección más. */
+  --verde-hondo: #072a20;
+  --linea: rgba(250, 250, 247, 0.14);
+  --linea-tinta: rgba(20, 32, 27, 0.12);
+  --cristal: rgba(10, 61, 46, 0.78);
 }
 
 .senal .mono {
@@ -120,8 +127,15 @@
     0 8px 16px -8px rgba(0, 0, 0, 0.5);
 }
 
-/* Fuga de luz lima en la esquina: tiñe el fondo del retrato, no la cara. */
-.reel-foto::after {
+/*
+ * Fuga de luz lima en la esquina: tiñe el fondo de la imagen, no la cara.
+ *
+ * Es el tratamiento de imagen compartido de todo el sitio —retratos, fotogramas
+ * de vídeo, capturas—; el gris lo pone el componente y esto le devuelve el
+ * color de marca solo por una esquina. Vive aquí y no en el carrete porque lo
+ * usan también el equipo y las portadas del blog.
+ */
+.duotono::after {
   content: "";
   position: absolute;
   inset: 0;

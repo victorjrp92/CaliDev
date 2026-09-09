@@ -24,8 +24,8 @@ redirigiendo a `/`.
 - Crear: `src/styles/senal.css` (contenido de `src/app/nuevo/senal.css` + fichas nuevas)
 - Modificar: `src/app/nuevo/layout.tsx` (importar la ruta nueva)
 
-- [ ] **A1.1** `git mv src/app/nuevo/senal.css src/styles/senal.css`
-- [ ] **A1.2** Añadir al bloque `.senal` las fichas de estructura:
+- [x] **A1.1** `git mv src/app/nuevo/senal.css src/styles/senal.css`
+- [x] **A1.2** Añadir al bloque `.senal` las fichas de estructura:
 
 ```css
   --verde-hondo: #072a20;
@@ -34,9 +34,9 @@ redirigiendo a `/`.
   --cristal: rgba(10, 61, 46, 0.78);
 ```
 
-- [ ] **A1.3** Corregir el import en `src/app/nuevo/layout.tsx` a `@/styles/senal.css`
-- [ ] **A1.4** `npx tsc --noEmit && npm run build` → compila
-- [ ] **A1.5** Playwright: `/nuevo` sigue idéntica (captura contra la de referencia)
+- [x] **A1.3** Corregir el import en `src/app/nuevo/layout.tsx` a `@/styles/senal.css`
+- [x] **A1.4** `npx tsc --noEmit && npm run build` → compila
+- [x] **A1.5** Playwright: `/nuevo` sigue idéntica (captura contra la de referencia)
 
 ### Tarea A2: escribir los seis oráculos y probarlos rotos
 
@@ -44,48 +44,48 @@ redirigiendo a `/`.
 - Crear: `scripts/oraculos/contraste.mjs`, `alcanzabilidad.mjs`, `paridad-i18n.mjs`, `anclas.mjs`, `enlaces.mjs`, `render.mjs`
 - Crear: `scripts/oraculos/correr.sh` (los ejecuta todos, sale distinto de 0 si alguno falla)
 
-- [ ] **A2.1** `contraste.mjs`: función `ratio(fg,bg)` WCAG; compone
+- [x] **A2.1** `contraste.mjs`: función `ratio(fg,bg)` WCAG; compone
   `--cristal` sobre cada uno de los cinco fondos y mide hueso encima; además
   comprueba la lista de pares declarados en el spec. Sale 1 si alguno < 4.5.
-- [ ] **A2.2** Probarlo roto: añadir el par `["#C8F045","#FAFAF7"]` → debe fallar
+- [x] **A2.2** Probarlo roto: añadir el par `["#C8F045","#FAFAF7"]` → debe fallar
   con 1.5. Quitarlo. **Si no falla, el oráculo está ciego.**
-- [ ] **A2.3** `alcanzabilidad.mjs`: por cada ruta, hace scroll real en pasos de
+- [x] **A2.3** `alcanzabilidad.mjs`: por cada ruta, hace scroll real en pasos de
   media pantalla y para cada `h1,h2` comprueba `document.elementFromPoint(cx,cy)`
   contenido en el propio titular. Sale 1 si alguno queda tapado.
-- [ ] **A2.4** Probarlo roto: subir la barra a `height: 300px` → deben caer
+- [x] **A2.4** Probarlo roto: subir la barra a `height: 300px` → deben caer
   titulares. Restaurar.
-- [ ] **A2.5** `paridad-i18n.mjs`: aplana es/en/de y compara conjuntos de claves
+- [x] **A2.5** `paridad-i18n.mjs`: aplana es/en/de y compara conjuntos de claves
   y valores no vacíos.
-- [ ] **A2.6** Probarlo roto: borrar `nav.blog` de `de.json` → falla. Restaurar.
-- [ ] **A2.7** `anclas.mjs`: va a `/es#servicios`, espera red inactiva + 1,5 s,
+- [x] **A2.6** Probarlo roto: borrar `nav.blog` de `de.json` → falla. Restaurar.
+- [x] **A2.7** `anclas.mjs`: va a `/es#servicios`, espera red inactiva + 1,5 s,
   mide `getBoundingClientRect().top` de `#servicios`; falla si |top| > 100.
-- [ ] **A2.8** Probarlo roto: quitar el `scroll-margin-top`. Restaurar.
-- [ ] **A2.9** `enlaces.mjs`: recoge los `href` de barra y pie, pide cada uno,
+- [x] **A2.8** Probarlo roto: quitar el `scroll-margin-top`. Restaurar.
+- [x] **A2.9** `enlaces.mjs`: recoge los `href` de barra y pie, pide cada uno,
   falla si alguno no es 200.
-- [ ] **A2.10** Probarlo roto: añadir un enlace a `/inexistente`. Restaurar.
-- [ ] **A2.11** `render.mjs`: cada ruta responde 200 y su `h1` tiene texto.
-- [ ] **A2.12** Probarlo roto: vaciar un `h1`. Restaurar.
-- [ ] **A2.13** Commit: `test(senal): seis oráculos, cada uno probado roto`
+- [x] **A2.10** Probarlo roto: añadir un enlace a `/inexistente`. Restaurar.
+- [x] **A2.11** `render.mjs`: cada ruta responde 200 y su `h1` tiene texto.
+- [x] **A2.12** Probarlo roto: vaciar un `h1`. Restaurar.
+- [x] **A2.13** Commit: `test(senal): seis oráculos, cada uno probado roto`
 
 ### Tarea A3: piezas compartidas
 
 **Archivos (uno por componente, según la preferencia del repo):**
 - Crear: `src/components/senal/panel.tsx`, `titular.tsx`, `boton.tsx`, `duotono.tsx`, `relojes.tsx`
 
-- [ ] **A3.1** `panel.tsx`: props `fondo: "verde"|"hueso"|"niebla"|"azul"|"lima"|"verde-hondo"`,
+- [x] **A3.1** `panel.tsx`: props `fondo: "verde"|"hueso"|"niebla"|"azul"|"lima"|"verde-hondo"`,
   `id?`, `className?`. Aplica fondo, color de texto correcto para ese fondo, y
   `scroll-margin-top: 5rem` cuando lleva `id`.
-- [ ] **A3.2** `titular.tsx`: `etiqueta`, `children` (h2), `entrada?`, `nivel?`.
-- [ ] **A3.3** `boton.tsx`: variantes `primario` (lima/tinta), `secundario`
+- [x] **A3.2** `titular.tsx`: `etiqueta`, `children` (h2), `entrada?`, `nivel?`.
+- [x] **A3.3** `boton.tsx`: variantes `primario` (lima/tinta), `secundario`
   (filete), `invertido` (tinta/lima, para fondo lima). Renderiza `Link` de
   `@/i18n/routing` si `href` es interno.
-- [ ] **A3.4** `duotono.tsx`: extraer el tratamiento de `.reel-foto` a una clase
+- [x] **A3.4** `duotono.tsx`: extraer el tratamiento de `.reel-foto` a una clase
   reutilizable `.duotono` en `senal.css`; el componente envuelve `next/image`.
-- [ ] **A3.5** `relojes.tsx`: extraer el reloj de `work-page-hero.tsx` (usa
+- [x] **A3.5** `relojes.tsx`: extraer el reloj de `work-page-hero.tsx` (usa
   `requestAnimationFrame` para el primer valor, no `setState` en el efecto).
   El hero pasa a consumirlo.
-- [ ] **A3.6** `npx tsc --noEmit` y `npx eslint src/components/senal/`
-- [ ] **A3.7** Commit: `feat(senal): piezas compartidas de la cáscara`
+- [x] **A3.6** `npx tsc --noEmit` y `npx eslint src/components/senal/`
+- [x] **A3.7** Commit: `feat(senal): piezas compartidas de la cáscara`
 
 ---
 

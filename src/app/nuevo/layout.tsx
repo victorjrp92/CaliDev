@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import "@/app/globals.css";
-import "@/app/nuevo/senal.css";
+import "@/styles/senal.css";
 
 const archivo = Archivo({
   subsets: ["latin"],
