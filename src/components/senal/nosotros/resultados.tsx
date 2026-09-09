@@ -5,16 +5,17 @@ import { Titular } from "@/components/senal/titular";
 /**
  * Resultados de clientes reales.
  *
- * Tres cifras, no cuatro. La que falta era «+37 % en utilidades», y se retiró:
- * no la puedo verificar y además hay una regla firme sobre este cliente — de sus
- * finanzas solo se publica crecimiento relativo, nunca cifras de ingresos ni de
- * utilidad. Y «12 → 19 empleados» estaba mal: son 10 → 22 colaboradoras.
- * Publicar tres cifras ciertas vale más que cuatro con una dudosa.
+ * Cuatro cifras, todas confirmadas por Victor: crecimiento de febrero a julio,
+ * plantilla, venta de producto y horas recuperadas.
+ *
+ * El crecimiento va en PORCENTAJE y no en pesos, aunque conozcamos las dos
+ * cifras: de las finanzas de este cliente solo se publica lo relativo. La regla
+ * la puso él y el motivo es concreto — «Colombia es un país delicado».
  */
 export function Resultados() {
   const t = useTranslations("about");
 
-  const cifras = [1, 2, 3].map((i) => ({
+  const cifras = [1, 2, 3, 4].map((i) => ({
     valor: t(`t_limpia_s${i}_val`),
     etiqueta: t(`t_limpia_s${i}_label`),
   }));
@@ -36,7 +37,7 @@ export function Resultados() {
           </figcaption>
         </figure>
 
-        <dl className="grid gap-9 sm:grid-cols-3 md:grid-cols-1">
+        <dl className="grid gap-9 sm:grid-cols-2 md:grid-cols-1">
           {cifras.map((c) => (
             <div key={c.etiqueta}>
               <dt className="sr-only">{c.etiqueta}</dt>
