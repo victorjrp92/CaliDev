@@ -11,11 +11,28 @@ const navegador = await chromium.launch();
 const pagina = await navegador.newPage({ viewport: { width: 1440, height: 900 } });
 await pagina.goto(BASE + "/es", { waitUntil: "networkidle", timeout: 45000 });
 
-const href = await pagina.evaluate(() =>
-  [...document.querySelectorAll("header a[href], footer a[href], nav a[href]")]
-    .map((a) => a.getAttribute("href"))
-    .filter((h) => h && !h.startsWith("http") && !h.startsWith("mailto:") && !h.startsWith("tel:"))
-);
+const recoger = () =>
+  pagina.evaluate(() =>
+    [...document.querySelectorAll("header a[href], footer a[href], nav a[href]")]
+      .map((a) => a.getAttribute("href"))
+      .filter((h) => h && !h.startsWith("http") && !h.startsWith("mailto:") && !h.startsWith("tel:"))
+  );
+
+// Abrir lo que esconda enlaces antes de contarlos. El selector de idioma pasó a
+// ser un desplegable y el recuento cayó de 7 a 5 sin que nada fallara: un
+// oráculo que comprueba menos que ayer y sigue en verde es la forma más
+// silenciosa de perder cobertura.
+//
+// Se recoge DESPUÉS DE CADA clic y se acumula, en vez de abrir todo y contar al
+// final: hay más de un disparador en la página y abrir el segundo cerraba el
+// primero, así que contar al final devolvía exactamente lo mismo que antes.
+const href = [...(await recoger())];
+for (const disparador of await pagina.locator("[aria-haspopup]").all()) {
+  await disparador.click().catch(() => {});
+  await pagina.waitForTimeout(250);
+  href.push(...(await recoger()));
+}
+
 const unicos = [...new Set(href.map((h) => h.split("#")[0]).filter(Boolean))];
 
 let fallos = 0;

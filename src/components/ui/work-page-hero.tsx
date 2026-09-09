@@ -195,7 +195,16 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
             >
               <span
                 className="select-none text-center leading-none tracking-tighter"
-                style={{ ...wordStyle, color: accentColor }}
+                style={{
+                  ...wordStyle,
+                  color: accentColor,
+                  // Versales por CSS y no escribiendo «CONSTRUIMOS» en el texto:
+                  // así el árbol de accesibilidad conserva «construimos» y los
+                  // lectores de pantalla no lo deletrean letra a letra. Solo la
+                  // primera palabra — «tu ventaja» sigue en minúscula, que es lo
+                  // correcto en español y además da la escalera de tres voces.
+                  textTransform: "uppercase",
+                }}
               >
                 {topWord}
               </span>

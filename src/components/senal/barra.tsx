@@ -1,25 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/routing";
 import { Logo } from "@/components/senal/logo";
 import { MenuMovil } from "@/components/senal/menu-movil";
+import { SelectorIdioma } from "@/components/senal/selector-idioma";
+import { BotonAgenda } from "@/components/senal/boton-agenda";
+import { useLineaViva } from "@/components/senal/use-linea-viva";
 import { construirEnlaces, type EnlaceNav } from "@/components/senal/enlaces-nav";
 import { detectarTono, type Tono } from "@/components/senal/tono-superior";
-
-const IDIOMAS = [
-  { codigo: "en", etiqueta: "EN" },
-  { codigo: "es", etiqueta: "ES" },
-  { codigo: "de", etiqueta: "DE" },
-];
 
 /** A partir de aquí aparece el filete inferior, que marca que la página se movió. */
 const UMBRAL = 24;
 
 export function Barra() {
   const t = useTranslations("nav");
-  const idioma = useLocale();
   const ruta = usePathname();
   const enlaces = construirEnlaces(t);
 
@@ -27,6 +23,8 @@ export function Barra() {
   const [menu, setMenu] = useState(false);
   const [enServicios, setEnServicios] = useState(false);
   const [tono, setTono] = useState<Tono>("claro");
+
+  const { zona, casa, tramo, quieto, seguible, volverACasa } = useLineaViva();
 
   // El fondo por el que asoma la barra cuando aún no hay velo. Se mide en vez
   // de suponerse: el home arranca en hueso y las interiores en verde.
@@ -38,7 +36,7 @@ export function Barra() {
 
   // Listener pasivo que solo escribe estado al cruzar el umbral: cambiarlo en
   // cada fotograma provocaría un render por píxel de scroll. El velo no depende
-  // de esto —está siempre puesto—; lo único que cambia es el filete.
+  // de esto —está siempre puesto—; lo único que cambia es el filete inferior.
   useEffect(() => {
     const alDeslizar = () => {
       const pasado = window.scrollY > UMBRAL;
@@ -50,7 +48,7 @@ export function Barra() {
   }, []);
 
   // «Servicios» se enciende cuando su sección está a la vista, no solo por la
-  // ruta: en el home todas las secciones comparten la misma URL.
+  // ruta: en el home todas las secciones comparten URL.
   useEffect(() => {
     const seccion = document.getElementById("servicios");
     if (!seccion) {
@@ -60,10 +58,9 @@ export function Barra() {
       const fotograma = requestAnimationFrame(() => setEnServicios(false));
       return () => cancelAnimationFrame(fotograma);
     }
-    const observador = new IntersectionObserver(
-      ([e]) => setEnServicios(e.isIntersecting),
-      { threshold: 0.15 }
-    );
+    const observador = new IntersectionObserver(([e]) => setEnServicios(e.isIntersecting), {
+      threshold: 0.15,
+    });
     observador.observe(seccion);
     return () => observador.disconnect();
   }, [ruta]);
@@ -96,51 +93,47 @@ export function Barra() {
             <Logo className="h-6 w-auto md:h-7" />
           </Link>
 
-          <nav aria-label="Principal" className="ml-auto hidden md:block">
-            <ul className="mono flex items-center gap-8">
-              {enlaces.map((e) => (
-                <li key={e.clave}>
-                  <Link
-                    href={e.href}
-                    data-activo={esActivo(e)}
-                    aria-current={esActivo(e) ? "page" : undefined}
-                    className="enlace-barra"
-                  >
-                    {e.texto}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* Zona seguible: el filete se mueve en coordenadas de esta caja, así
+              que todo lo que pueda recibirlo tiene que vivir aquí dentro. */}
+          <div
+            ref={zona}
+            onMouseLeave={volverACasa}
+            className="relative ml-auto flex items-center gap-5 md:gap-8"
+          >
+            <nav aria-label="Principal" className="hidden md:block">
+              <ul className="mono flex items-center gap-8">
+                {enlaces.map((e) => (
+                  <li key={e.clave}>
+                    <Link
+                      href={e.href}
+                      data-activo={esActivo(e)}
+                      aria-current={esActivo(e) ? "page" : undefined}
+                      className="enlace-barra"
+                      {...seguible}
+                    >
+                      {e.texto}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
 
-          <div className="mono ml-auto flex items-center gap-1 md:ml-0">
-            {IDIOMAS.map((l) => (
-              <Link
-                key={l.codigo}
-                href={ruta}
-                locale={l.codigo}
-                aria-label={`Cambiar a ${l.etiqueta}`}
-                aria-current={l.codigo === idioma ? "true" : undefined}
-                className="px-1.5 py-1 transition-opacity"
-                style={{
-                  // El lima solo entra cuando hay velo. Sin él, el fondo puede
-                  // ser hueso y lima sobre hueso da 1,5:1 — la misma regla que
-                  // rige toda la paleta, y que aquí se coló igual.
-                  color: l.codigo === idioma && velo ? "var(--lima)" : undefined,
-                  fontWeight: l.codigo === idioma ? 500 : 400,
-                  // 0,55 dejaba los idiomas inactivos en 3,2:1. El peso ya
-                  // distingue el activo; el desvanecido solo los hacía ilegibles.
-                  opacity: l.codigo === idioma ? 1 : 0.86,
-                }}
-              >
-                {l.etiqueta}
-              </Link>
-            ))}
+            <SelectorIdioma {...seguible} />
+
+            <BotonAgenda ref={casa} texto={t("schedule")} className="hidden lg:flex" {...seguible} />
+
+            {/* En móvil la agenda y los enlaces están ocultos, así que la casa
+                del filete mide cero: sin esta guarda se pintaría un elemento
+                invisible de ancho cero en cada render. */}
+            {tramo && tramo.ancho > 0 && (
+              <span
+                aria-hidden="true"
+                className="linea-viva"
+                data-quieto={quieto}
+                style={{ transform: `translateX(${tramo.x}px)`, width: `${tramo.ancho}px` }}
+              />
+            )}
           </div>
-
-          <Link href="/contact" className="mono llamada-barra hidden flex-none lg:inline-flex">
-            {t("schedule")}
-          </Link>
 
           <button
             type="button"
