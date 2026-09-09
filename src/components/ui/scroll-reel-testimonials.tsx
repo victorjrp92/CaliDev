@@ -125,7 +125,6 @@ export function ScrollReelTestimonials({
     return () => clearTimeout(t);
   }, [gira, activo, mover]);
 
-  const actual = testimonials[activo];
   const ancho = 2 * LADO + 2 * HUECO + 1;
   const transicion = still ? "none" : "transform 700ms cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -226,17 +225,43 @@ export function ScrollReelTestimonials({
         <span aria-hidden="true" className="serif block text-6xl leading-none text-[var(--lima)]">
           &ldquo;
         </span>
-        <blockquote
-          // Mientras gira solo, anunciar cada cambio secuestraría el lector de
-          // pantalla cada tres segundos. Solo se anuncia cuando el cambio lo
-          // pidió una persona.
-          aria-live={gira ? "off" : "polite"}
-          className="mt-3 max-w-[46ch] text-[clamp(1.35rem,2.4vw,2rem)] font-semibold leading-[1.28] tracking-[-0.02em]"
-        >
-          {actual.quote}
-        </blockquote>
-        <p className="mono mt-6 text-[var(--lima)]">{actual.author}</p>
-        {actual.role && <p className="mt-1.5 text-[15px] opacity-65">{actual.role}</p>}
+
+        {/*
+          Las tres citas van APILADAS en la misma celda de la rejilla, con las
+          inactivas ocultas por `visibility` —que sigue ocupando sitio— en vez
+          de desmontadas. Así el alto del bloque es siempre el de la cita más
+          larga y no cambia al rotar.
+
+          Sin esto la sección crecía 122 px al entrar la cita larga y encogía al
+          salir, empujando el cierre y el pie arriba y abajo cada tres segundos.
+          Reservar el alto a ojo no valía: la cita más larga no es la misma en
+          los tres idiomas.
+        */}
+        <div className="mt-3 grid">
+          {testimonials.map((t, i) => {
+            const esActivo = i === activo;
+            return (
+              <div
+                key={t.id}
+                className="col-start-1 row-start-1"
+                style={{ visibility: esActivo ? "visible" : "hidden" }}
+                aria-hidden={!esActivo}
+              >
+                <blockquote
+                  // Mientras gira solo, anunciar cada cambio secuestraría el
+                  // lector de pantalla cada tres segundos. Solo se anuncia
+                  // cuando el cambio lo pidió una persona.
+                  aria-live={esActivo && !gira ? "polite" : "off"}
+                  className="max-w-[46ch] text-[clamp(1.35rem,2.4vw,2rem)] font-semibold leading-[1.28] tracking-[-0.02em]"
+                >
+                  {t.quote}
+                </blockquote>
+                <p className="mono mt-6 text-[var(--lima)]">{t.author}</p>
+                {t.role && <p className="mt-1.5 text-[15px] opacity-65">{t.role}</p>}
+              </div>
+            );
+          })}
+        </div>
 
         <div className="mt-9 flex items-center gap-3">
           <button

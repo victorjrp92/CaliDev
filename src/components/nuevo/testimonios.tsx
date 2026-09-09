@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import { ScrollReelTestimonials } from "@/components/ui/scroll-reel-testimonials";
-// TODO: volver a TESTIMONIOS (los reales) antes de fusionar a main.
-import { TESTIMONIOS_DUMMY as TESTIMONIOS } from "@/lib/nuevo/testimonios";
+import { TESTIMONIOS } from "@/lib/nuevo/testimonios";
 
 /**
  * Va justo después de los servicios: primero se ve lo que hacemos, y acto
