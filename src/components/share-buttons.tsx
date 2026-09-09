@@ -1,44 +1,60 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-export function ShareButtons({ title, slug }: { title: string; slug: string }) {
+/**
+ * Compartir el artículo.
+ *
+ * La URL se lee del navegador y no se construye a mano: así incluye el dominio
+ * real y el prefijo de idioma sin tener que pasárselos, y funciona igual en
+ * local que en producción.
+ *
+ * Se pide en el siguiente fotograma y no en el cuerpo del efecto — cambiar
+ * estado ahí mismo encadena un render extra antes de pintar, que es el mismo
+ * patrón que ya usan el reloj del hero y la barra.
+ */
+export function ShareButtons({ title }: { title: string }) {
   const t = useTranslations("blog");
   const [url, setUrl] = useState("");
 
   useEffect(() => {
-    setUrl(window.location.href);
+    const fotograma = requestAnimationFrame(() => setUrl(window.location.href));
+    return () => cancelAnimationFrame(fotograma);
   }, []);
 
-  const shareLinks = [
+  // Sin URL todavía no hay nada que compartir: se espera un fotograma antes de
+  // pintar enlaces que llevarían a una dirección vacía.
+  if (!url) return null;
+
+  const destinos = [
     {
-      name: 'X',
-      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
-    },
-    {
-      name: 'LinkedIn',
+      nombre: "LinkedIn",
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
     },
     {
-      name: 'WhatsApp',
+      nombre: "WhatsApp",
       href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
+    },
+    {
+      nombre: "X",
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
     },
   ];
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-muted-foreground">{t("share")}:</span>
-      {shareLinks.map(link => (
-        <Button
-          key={link.name}
-          variant="outline"
-          size="sm"
-          render={<a href={link.href} target="_blank" rel="noopener noreferrer" />}
-          className="cursor-pointer"
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <span className="mono text-[var(--verde)]">{t("share")}</span>
+      {destinos.map((d) => (
+        <a
+          key={d.nombre}
+          href={d.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="titulo-articulo"
         >
-          {link.name}
-        </Button>
+          {d.nombre}
+        </a>
       ))}
     </div>
   );

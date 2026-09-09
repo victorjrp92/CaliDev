@@ -31,11 +31,14 @@ export function Boton({
   href,
   externo,
   forma = "primario",
+  locale,
   children,
   className = "",
 }: {
   /** Ruta interna: se enruta con el idioma activo. */
   href?: RutaInterna;
+  /** Fuerza otro idioma. Lo usa el blog para mandar a donde sí hay artículos. */
+  locale?: string;
   /** Destino externo o de protocolo (mailto:, https://wa.me/...). */
   externo?: string;
   forma?: FormaBoton;
@@ -58,7 +61,7 @@ export function Boton({
   }
 
   return (
-    <Link href={href ?? "/contact"} className={clases}>
+    <Link href={href ?? "/contact"} locale={locale} className={clases}>
       {children}
     </Link>
   );

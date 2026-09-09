@@ -70,7 +70,10 @@
     "toc": "Inhaltsverzeichnis",
     "related": "Verwandte Artikel",
     "published": "Veröffentlicht",
-    "author": "Autor"
+    "author": "Autor",
+    "vacio_titulo": "Noch keine Artikel auf Deutsch.",
+    "vacio_desc": "Wir schreiben in drei Sprachen und nicht immer gleichzeitig. Bis dahin gibt es die Artikel auf Englisch.",
+    "vacio_boton": "Artikel auf Englisch ansehen"
   },
   "testimonials": {
     "title": "Was unsere Kunden sagen",
@@ -102,11 +105,21 @@
     "email": "E-Mail",
     "message": "Nachricht",
     "send": "Nachricht senden",
-    "success": "Nachricht erfolgreich gesendet!",
+    "success": "Danke. Wir antworten innerhalb von 24 Stunden.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "name_placeholder": "Ihr Name",
     "email_placeholder": "ihre@email.com",
-    "message_placeholder": "Erzählen Sie uns von Ihrem Projekt..."
+    "message_placeholder": "Erzählen Sie uns von Ihrem Projekt...",
+    "sending": "Wird gesendet…",
+    "success_label": "Erhalten",
+    "interes_prefijo": "Ich schreibe wegen {interes}. ",
+    "pasos_titulo": "Wie es weitergeht",
+    "paso1_titulo": "Sie bekommen eine Antwort, kein Formular",
+    "paso1_desc": "Wir antworten innerhalb von 24 Stunden, und es antwortet ein Mensch aus dem Team. Passt Ihr Fall nicht zu uns, sagen wir das sofort.",
+    "paso2_titulo": "Eine halbe Stunde zum Verstehen",
+    "paso2_desc": "Ein kurzes Gespräch, um zu sehen, wo Zeit oder Geld verloren geht. Keine Verkaufspräsentation, keine Verpflichtung.",
+    "paso3_titulo": "Wir sagen Ihnen, was wir tun würden",
+    "paso3_desc": "Und was es kosten würde. Lautet die Antwort, dass Sie nichts brauchen, ist das auch eine Antwort."
   },
   "footer": {
     "rights": "Alle Rechte vorbehalten.",

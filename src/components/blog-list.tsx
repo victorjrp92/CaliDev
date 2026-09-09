@@ -1,94 +1,107 @@
 "use client";
+
 import { useState } from "react";
-import { motion } from "motion/react";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import type { BlogPost } from "@/lib/blog";
 
+/**
+ * Listado del blog en SEÑAL.
+ *
+ * El artículo más reciente ocupa una tarjeta ancha y el resto van en rejilla:
+ * en un blog con pocos artículos, tratarlos todos igual hace que ninguno
+ * destaque y que la página parezca un archivo en vez de una portada.
+ *
+ * Los enlaces del título van en verde con subrayado lima. El lima como texto
+ * sobre hueso da 1,5:1 y no se puede usar; como subrayado sí, porque ahí es una
+ * forma y no un carácter que haya que descifrar.
+ */
 export function BlogList({ posts, categories }: { posts: BlogPost[]; categories: string[] }) {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const t = useTranslations("blog");
+  const [filtro, setFiltro] = useState<string | null>(null);
 
-  const filtered = activeCategory
-    ? posts.filter(p => p.category === activeCategory)
-    : posts;
+  const visibles = filtro ? posts.filter((p) => p.category === filtro) : posts;
+  const [destacado, ...resto] = visibles;
+
+  const fecha = (iso: string) =>
+    new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+
+  if (posts.length === 0) return null;
 
   return (
     <div>
-      {/* Category filters */}
-      <div className="flex flex-wrap gap-2 mb-8 justify-center">
-        <button
-          onClick={() => setActiveCategory(null)}
-          className={`px-4 py-2 rounded-full text-sm cursor-pointer transition-colors duration-200 ${
-            !activeCategory ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          }`}
-        >
-          {t("filter_all")}
-        </button>
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm capitalize cursor-pointer transition-colors duration-200 ${
-              activeCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      {categories.length > 1 && (
+        <div className="mb-14 flex flex-wrap gap-2">
+          <Ficha activa={filtro === null} onClick={() => setFiltro(null)}>
+            {t("filter_all")}
+          </Ficha>
+          {categories.map((c) => (
+            <Ficha key={c} activa={filtro === c} onClick={() => setFiltro(c)}>
+              {c}
+            </Ficha>
+          ))}
+        </div>
+      )}
 
-      {/* Posts grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((post, i) => (
-          <motion.article
-            key={post.slug}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1, duration: 0.4 }}
-          >
-            <Link href={`/blog/${post.slug}`} className="group block">
-              <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                {post.image ? (
-                  <div className="h-48 overflow-hidden">
-                    <img src={post.image} alt={post.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                  </div>
-                ) : (
-                  <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/10" />
-                )}
-                <div className="p-5">
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" />
-                      {post.readingTime}
-                    </span>
-                  </div>
-                  <h2 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors duration-200">
-                    {post.title}
-                  </h2>
-                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                    {post.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {post.tags.slice(0, 3).map(tag => (
-                      <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
-                    ))}
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-primary text-sm font-medium mt-3 group-hover:gap-2 transition-all duration-200">
-                    {t("read_more")} <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </div>
-              </div>
+      {destacado && (
+        <article className="group border-t-2 border-[var(--verde)] pt-8">
+          <p className="mono text-[var(--verde)]">
+            {destacado.category} · {fecha(destacado.date)} · {destacado.readingTime}
+          </p>
+          <h2 className="mt-5 max-w-[20ch] text-[clamp(2rem,4.5vw,3.4rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-balance">
+            <Link href={`/blog/${destacado.slug}`} className="titulo-articulo">
+              {destacado.title}
             </Link>
-          </motion.article>
-        ))}
-      </div>
+          </h2>
+          <p className="mt-5 max-w-[60ch] text-[1.0625rem] leading-[1.7] opacity-75">
+            {destacado.description}
+          </p>
+        </article>
+      )}
+
+      {resto.length > 0 && (
+        <ul className="mt-20 grid gap-14 md:grid-cols-2 md:gap-x-12">
+          {resto.map((p) => (
+            <li key={p.slug} className="border-t border-[var(--linea-tinta)] pt-6">
+              <p className="mono text-[var(--verde)]">
+                {p.category} · {p.readingTime}
+              </p>
+              <h3 className="mt-4 text-[clamp(1.3rem,2.4vw,1.7rem)] font-semibold leading-[1.2] tracking-[-0.025em]">
+                <Link href={`/blog/${p.slug}`} className="titulo-articulo">
+                  {p.title}
+                </Link>
+              </h3>
+              <p className="mt-3 max-w-[52ch] leading-[1.65] opacity-70">{p.description}</p>
+              <p className="mono mt-4 opacity-45">{fecha(p.date)}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
+  );
+}
+
+function Ficha({
+  activa,
+  onClick,
+  children,
+}: {
+  activa: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={activa}
+      className={`mono cursor-pointer rounded-full px-4 py-2 transition-colors ${
+        activa
+          ? "bg-[var(--verde)] text-[var(--hueso)]"
+          : "border border-[var(--linea-tinta)] hover:bg-[var(--tinta)]/6"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

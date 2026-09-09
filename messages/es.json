@@ -70,7 +70,10 @@
     "toc": "Tabla de Contenidos",
     "related": "Artículos Relacionados",
     "published": "Publicado",
-    "author": "Autor"
+    "author": "Autor",
+    "vacio_titulo": "Todavía no hay artículos en español.",
+    "vacio_desc": "Escribimos en tres idiomas y no siempre a la vez. Mientras tanto, los que hay están en inglés.",
+    "vacio_boton": "Ver los artículos en inglés"
   },
   "testimonials": {
     "title": "Lo Que Dicen Nuestros Clientes",
@@ -102,11 +105,21 @@
     "email": "Correo Electrónico",
     "message": "Mensaje",
     "send": "Enviar Mensaje",
-    "success": "¡Mensaje enviado con éxito!",
+    "success": "Gracias. Respondemos en 24 horas.",
     "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "name_placeholder": "Tu nombre",
     "email_placeholder": "tu@correo.com",
-    "message_placeholder": "Cuéntanos sobre tu proyecto..."
+    "message_placeholder": "Cuéntanos sobre tu proyecto...",
+    "sending": "Enviando…",
+    "success_label": "Recibido",
+    "interes_prefijo": "Escribo por {interes}. ",
+    "pasos_titulo": "Qué pasa después",
+    "paso1_titulo": "Lees una respuesta, no un formulario",
+    "paso1_desc": "Contestamos en 24 horas, y contesta una persona del equipo. Si tu caso no es para nosotros, te lo decimos ahí mismo.",
+    "paso2_titulo": "Media hora para entender",
+    "paso2_desc": "Una llamada corta para ver dónde se te va el tiempo o el dinero. Sin presentación de ventas y sin compromiso.",
+    "paso3_titulo": "Te decimos qué haríamos",
+    "paso3_desc": "Y cuánto costaría. Si la respuesta es que no necesitas nada, esa también es una respuesta."
   },
   "footer": {
     "rights": "Todos los derechos reservados.",

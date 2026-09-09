@@ -306,3 +306,150 @@
     0 16px 26px -12px rgba(20, 32, 27, 0.28),
     0 44px 68px -38px rgba(20, 32, 27, 0.5);
 }
+
+/*
+ * Enlaces de título en el blog.
+ *
+ * El subrayado lima crece de izquierda a derecha al acercarse. El lima va como
+ * subrayado y nunca como color de texto sobre claro: sobre hueso da 1,5:1 y
+ * sería ilegible, pero como forma —una barra de 2 px— no hay nada que
+ * descifrar, así que la regla del contraste de texto no aplica.
+ */
+.titulo-articulo {
+  background-image: linear-gradient(var(--lima), var(--lima));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.titulo-articulo:hover,
+.titulo-articulo:focus-visible {
+  background-size: 100% 2px;
+}
+
+/*
+ * Cuerpo de un artículo del blog.
+ *
+ * Las etiquetas las genera MDX, así que no hay dónde colgarles una clase: se
+ * estilan por descendencia desde `.articulo`. Es la única parte del sitio donde
+ * se hace así, y por eso está aquí junta y no repartida.
+ *
+ * Los enlaces van en VERDE con subrayado lima. Lima como color de texto sobre
+ * hueso da 1,5:1 y sería ilegible; como subrayado es una forma, no un carácter
+ * que descifrar.
+ */
+.articulo {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.articulo > * + * {
+  margin-top: 1.5rem;
+}
+
+.articulo h2 {
+  margin-top: 3.5rem;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  scroll-margin-top: 6rem;
+}
+
+.articulo h3 {
+  margin-top: 2.75rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  scroll-margin-top: 6rem;
+}
+
+.articulo h2 a,
+.articulo h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.articulo p {
+  opacity: 0.85;
+}
+
+.articulo a {
+  color: var(--verde);
+  text-decoration: underline;
+  text-decoration-color: var(--lima);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.articulo strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.articulo ul,
+.articulo ol {
+  padding-left: 1.4rem;
+  opacity: 0.85;
+}
+
+.articulo ul { list-style: disc; }
+.articulo ol { list-style: decimal; }
+.articulo li + li { margin-top: 0.6rem; }
+.articulo li::marker { color: var(--verde); }
+
+.articulo blockquote {
+  margin-left: 0;
+  padding-left: 1.6rem;
+  border-left: 3px solid var(--lima);
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  line-height: 1.4;
+  color: var(--verde);
+}
+
+.articulo code {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.9em;
+  background: var(--niebla);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.articulo pre {
+  background: var(--tinta);
+  color: var(--hueso);
+  padding: 1.25rem 1.4rem;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.articulo pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.articulo img {
+  border-radius: 12px;
+}
+
+.articulo table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.articulo th,
+.articulo td {
+  border-bottom: 1px solid var(--linea-tinta);
+  padding: 0.7rem 0.5rem;
+  text-align: left;
+}
+
+.articulo th {
+  font-weight: 600;
+}

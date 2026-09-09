@@ -47,8 +47,19 @@ for (const ruta of rutas(["es"])) {
 
         const estilo = getComputedStyle(el);
         if (estilo.visibility === "hidden" || estilo.display === "none") continue;
-        if (parseFloat(estilo.opacity) < 0.05) continue;
         if (parseFloat(estilo.fontSize) < TAM_MINIMO) continue;
+
+        // La opacidad se ACUMULA por la cadena de padres. Mirar solo la del
+        // elemento era un punto ciego: la tipografía del hero se desvanece
+        // aplicando opacidad al grupo que la contiene, así que cada palabra
+        // sigue diciendo `opacity: 1` cuando ya no se ve nada, y el oráculo
+        // denunciaba que la barra cortaba una palabra invisible.
+        let visible = 1;
+        for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+          visible *= parseFloat(getComputedStyle(n).opacity);
+          if (visible < 0.05) break;
+        }
+        if (visible < 0.05) continue;
 
         const r = el.getBoundingClientRect();
         if (r.width === 0 || r.height === 0) continue;

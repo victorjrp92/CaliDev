@@ -70,7 +70,10 @@
     "toc": "Table of Contents",
     "related": "Related Articles",
     "published": "Published",
-    "author": "Author"
+    "author": "Author",
+    "vacio_titulo": "No articles in English yet.",
+    "vacio_desc": "We write in three languages and not always at once. In the meantime, what's published is in Spanish.",
+    "vacio_boton": "See the Spanish articles"
   },
   "testimonials": {
     "title": "What Our Clients Say",
@@ -102,11 +105,21 @@
     "email": "Email",
     "message": "Message",
     "send": "Send Message",
-    "success": "Message sent successfully!",
+    "success": "Thank you. We reply within 24 hours.",
     "error": "Something went wrong. Please try again.",
     "name_placeholder": "Your name",
     "email_placeholder": "your@email.com",
-    "message_placeholder": "Tell us about your project..."
+    "message_placeholder": "Tell us about your project...",
+    "sending": "Sending…",
+    "success_label": "Received",
+    "interes_prefijo": "I'm writing about {interes}. ",
+    "pasos_titulo": "What happens next",
+    "paso1_titulo": "You get a reply, not a form",
+    "paso1_desc": "We answer within 24 hours, and a person on the team answers. If your case isn't for us, we say so right there.",
+    "paso2_titulo": "Half an hour to understand",
+    "paso2_desc": "A short call to find where your time or money is leaking. No sales deck, no commitment.",
+    "paso3_titulo": "We tell you what we'd do",
+    "paso3_desc": "And what it would cost. If the answer is that you don't need anything, that's an answer too."
   },
   "footer": {
     "rights": "All rights reserved.",

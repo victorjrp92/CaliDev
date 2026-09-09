@@ -19,21 +19,35 @@ export interface BlogPost {
   readingTime: string;
 }
 
+/**
+ * Artículos de un idioma, y solo de ese idioma.
+ *
+ * El filtro faltaba: `getPostBySlug` recibía el idioma y lo usaba únicamente
+ * como valor por defecto, sin descartar nada, así que las tres listas devolvían
+ * los cinco artículos. Un lector alemán veía cuatro textos en inglés y uno en
+ * español presentados como si fueran suyos, que es peor que no tener ninguno:
+ * lo segundo se entiende, lo primero parece un descuido.
+ */
 export function getAllPosts(locale: string = 'en'): BlogPost[] {
   if (!fs.existsSync(contentDir)) return [];
   const files = fs.readdirSync(contentDir).filter(f => f.endsWith('.mdx'));
 
   const posts = files
-    .map(filename => {
-      const slug = filename.replace('.mdx', '');
-      return getPostBySlug(slug, locale);
-    })
-    .filter((post): post is BlogPost => post !== null)
+    .map(filename => getPostBySlug(filename.replace('.mdx', ''), locale))
+    .filter((post): post is BlogPost => post !== null && post.locale === locale)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return posts;
 }
 
+/**
+ * Un artículo por su slug.
+ *
+ * A propósito NO filtra por idioma: quien llega a la URL de un artículo por un
+ * enlace o por un buscador debe poder leerlo aunque su interfaz esté en otro
+ * idioma. Filtrar aquí devolvería un 404 a alguien que tiene el texto delante.
+ * Quien filtra es `getAllPosts`, que es donde se decide qué se ofrece.
+ */
 export function getPostBySlug(slug: string, locale: string = 'en'): BlogPost | null {
   const filePath = path.join(contentDir, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
