@@ -27,8 +27,7 @@ export const TESTIMONIOS: Testimonio[] = [
       "Victor no solo nos hizo una app. Analizó toda nuestra operación, encontró dónde perdíamos dinero y construyó un sistema que nos devolvió 27 horas a la semana.",
     autor: "Deisy Moncayo",
     cargo: "CEO, LimpiaExpress Cali",
-    // Pendiente: Deisy quedó en enviarla.
-    foto: null,
+    foto: "/nuevo/testimonios/deisy.webp",
   },
   {
     id: "nadia",
