@@ -58,11 +58,29 @@
  * de partida y los lleva a 0 con el scroll.
  */
 .hero-pill {
-  /* En móvil la píldora baja para dejar sitio a la línea explicativa y al
-     botón, que van entre la primera palabra y el vídeo. Conserva su altura
-     —46 % de la pantalla— así que solo cambia de posición, no de tamaño. */
-  top: 36%;
-  bottom: 18%;
+  /* En móvil la píldora va justo debajo de la línea explicativa y el botón.
+     `--pildora-arriba` lo mide el componente sobre el bloque real; el 36 % es
+     solo el valor con el que se pinta antes de medir.
+
+     Era un porcentaje fijo del alto y chocaba: el bloque de texto se coloca con
+     medidas absolutas y la píldora con un porcentaje, así que en cuanto la
+     pantalla era baja o el texto ocupaba una línea más, el botón acababa encima
+     del vídeo. En un iPhone SE lo invadía 63 px. Y no se arregla ajustando el
+     número, porque el texto cambia de alto con el idioma. */
+  top: var(--pildora-arriba, 36%);
+
+  /* Y la altura la manda el vídeo, no la pantalla. Antes iba de 36 % a 18 %
+     por abajo y terminaba a sangre completa, es decir una caja vertical de
+     390×664 para un vídeo de 1152×642: se veía el 33 % del ancho. En pantalla
+     salía una espalda y el respaldo de una silla, y era imposible saber que
+     eso es un equipo trabajando con Cali al fondo. En escritorio no se notaba
+     porque la caja final ahí es 1440×900 y conserva el 89 %.
+
+     Con `bottom: auto` + `aspect-ratio` la caja no puede volverse vertical:
+     crece a lo ancho y la altura la saca del vídeo, así que se ve entero en
+     todo el recorrido. */
+  bottom: auto;
+  aspect-ratio: var(--rel-video, 16 / 9);
   left: 5%;
   right: 5%;
   border-radius: 0.75rem;
@@ -74,13 +92,45 @@
     bottom: 18%;
     left: 22%;
     right: 18%;
+    /* Con top y bottom fijos la altura ya es definida y `aspect-ratio` no
+       pinta nada; se apaga para no dejar una regla que engañe al leerla. */
+    aspect-ratio: auto;
   }
 }
 
-/* Con movimiento reducido el vídeo no se expande: se muestra ya a sangre. */
+/* Con movimiento reducido el vídeo no se expande: se muestra ya a lo ancho.
+   En móvil «a sangre» sigue siendo a lo ancho, nunca a pantalla completa, por
+   lo mismo de arriba: llenar un móvil vertical con un vídeo apaisado recorta
+   dos tercios. */
 .hero-pill[data-static="true"] {
-  inset: 0;
+  top: 50%;
+  translate: 0 -50%;
+  left: 0;
+  right: 0;
   border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .hero-pill[data-static="true"] {
+    inset: 0;
+    translate: none;
+  }
+}
+
+/**
+ * «tu». En escritorio cae en la franja libre de la derecha, porque la píldora
+ * termina en el 18 %. En móvil la píldora llega al 5 % y no queda franja: la
+ * palabra se montaba sobre el vídeo. Va al hueco que queda debajo, medido a
+ * partir de dónde termina la píldora de verdad.
+ */
+.hero-tu {
+  top: var(--tu-arriba, 70%);
+}
+
+@media (min-width: 768px) {
+  .hero-tu {
+    top: 38%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

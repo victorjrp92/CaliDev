@@ -131,18 +131,103 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const { formatTime } = useLiveTime();
   const [reduced, setReduced] = useState(false);
+  /**
+   * Proporción real del vídeo, leída de sus metadatos. En móvil la píldora saca
+   * su altura de aquí —ver `.hero-pill` en senal.css— para no recortar. 16/9
+   * es solo el valor con el que se pinta el primer fotograma; en cuanto el
+   * navegador conoce el archivo se corrige.
+   */
+  const [relVideo, setRelVideo] = useState(16 / 9);
+
+  /**
+   * `true` a partir de 768 px, `null` hasta que se sabe. Arranca sin valor a
+   * propósito: si empieza en `true` se crea la línea de tiempo de escritorio,
+   * el efecto la corrige a móvil y se rehace, y los dos anclajes se suman —el
+   * relleno salía de 1461 px, que es 996 de escritorio más 465 de móvil, y el
+   * hero se iba mil píxeles hacia abajo. Sin valor no se crea ninguna hasta
+   * saber cuál toca.
+   */
+  const [ancho, setAncho] = useState<boolean | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
+    const anchoMq = window.matchMedia("(min-width: 768px)");
+    const update = () => {
+      setReduced(mq.matches);
+      setAncho(anchoMq.matches);
+    };
     update();
     mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    anchoMq.addEventListener("change", update);
+    return () => {
+      mq.removeEventListener("change", update);
+      anchoMq.removeEventListener("change", update);
+    };
   }, []);
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.playbackRate = playbackRate;
   }, [playbackRate]);
+
+  /**
+   * La proporción también se lee aquí y no solo en `onLoadedMetadata`: el
+   * navegador puede tener los metadatos antes de que React enganche el
+   * manejador, y entonces el evento ya pasó y la píldora se queda con el 16/9
+   * de reserva en vez de con la del archivo.
+   */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && v.readyState >= 1 && v.videoWidth && v.videoHeight) {
+      setRelVideo(v.videoWidth / v.videoHeight);
+    }
+  }, [videoSrc]);
+
+  /**
+   * Medidas del hero en móvil. La píldora arranca justo debajo del bloque de
+   * texto y «tu» justo debajo de la píldora, las dos calculadas sobre lo que
+   * el bloque ocupa de verdad —que cambia con el idioma y con el ancho— en vez
+   * de sobre porcentajes del alto de pantalla, que es lo que hacía que el botón
+   * acabara encima del vídeo en los móviles bajos.
+   *
+   * `offsetTop`/`offsetHeight` y no `getBoundingClientRect`: GSAP escala el
+   * bloque mientras se desvanece, y el rectángulo incluiría esa escala.
+   */
+  /**
+   * Dónde empieza la píldora en móvil, en píxeles. `null` mientras no se ha
+   * medido o cuando la pantalla es ancha, y entonces manda el CSS.
+   */
+  const [pildoraArriba, setPildoraArriba] = useState<number | null>(null);
+  const [anchoSeccion, setAnchoSeccion] = useState(0);
+
+  useEffect(() => {
+    const seccion = containerRef.current;
+    if (!seccion) return;
+
+    const medir = () => {
+      const ancho = seccion.offsetWidth;
+      if (ancho >= 768) return setPildoraArriba(null);
+      const info = infoRef.current;
+      const arriba = info ? info.offsetTop + info.offsetHeight + 24 : seccion.offsetHeight * 0.36;
+      setPildoraArriba(Math.round(arriba));
+      setAnchoSeccion(ancho);
+    };
+
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(seccion);
+    if (infoRef.current) ro.observe(infoRef.current);
+    return () => ro.disconnect();
+  }, [tagline, ctaTexto]);
+
+  const medidas: React.CSSProperties =
+    pildoraArriba == null
+      ? {}
+      : ({
+          "--pildora-arriba": `${pildoraArriba}px`,
+          // La píldora ocupa el 90 % del ancho (left y right al 5 %) y su alto
+          // sale de la proporción del vídeo. «tu» va justo debajo.
+          "--tu-arriba": `${Math.round(pildoraArriba + (anchoSeccion * 0.9) / relVideo + 20)}px`,
+        } as React.CSSProperties);
 
   const isDirectVideo =
     videoType === "video" ||
@@ -154,35 +239,86 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
 
   useGSAP(
     () => {
-      if (reduced) return;
+      if (reduced || ancho === null) return;
       if (!containerRef.current || !videoWrapperRef.current || !textGroupRef.current) return;
 
+      const seccion = containerRef.current;
+      const pildora = videoWrapperRef.current;
+      const textos = [textGroupRef.current, infoRef.current].filter(Boolean);
+
+      /**
+       * Se elige el recorrido con el estado de la media query, no con
+       * `gsap.matchMedia()`. Aquella registraba su rama dos veces —React monta,
+       * desmonta y vuelve a montar los efectos en desarrollo, y el contexto no
+       * la revertía— y el anclaje acababa con el doble de recorrido: 930 px de
+       * relleno donde tocaban 465, con el hero arrancando 465 px más abajo de
+       * la pantalla. El resto del archivo ya resuelve así `prefers-reduced-motion`.
+       */
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: seccion,
           start: "top top",
-          end: scrollDistance,
+          // En móvil el recorrido es más corto: con 150 % había que bajar
+          // pantalla y media para ver crecer la píldora, y todo ese scroll iba
+          // antes de la primera frase que dice qué vendemos.
+          end: ancho ? scrollDistance : "+=70%",
           scrub: true,
           pin: true,
+          invalidateOnRefresh: true,
         },
       });
 
-      tl.to(
-        videoWrapperRef.current,
-        { top: "0%", left: "0%", bottom: "0%", right: "0%", borderRadius: "0rem", ease: "none" },
-        0
-      ).to(
-        [textGroupRef.current, infoRef.current].filter(Boolean),
+      /**
+       * En móvil se anima SOLO el ancho. Ni `top` ni `bottom`.
+       *
+       * `bottom` porque la altura la fija `aspect-ratio`, y animarlo devolvería
+       * la caja vertical que recortaba el vídeo a un tercio.
+       *
+       * `top` porque la posición la decide una medida del bloque de texto,
+       * escrita en `--pildora-arriba`. GSAP graba el punto de partida al crear
+       * la línea de tiempo y lo escribe en línea, donde gana a la variable; con
+       * la medida llegando después, los dos se peleaban por la misma propiedad
+       * y ganaba el valor viejo. Repartidas, cada uno manda en lo suyo.
+       */
+      const destino = ancho
+        ? { top: "0%", left: "0%", bottom: "0%", right: "0%", borderRadius: "0rem", ease: "none" }
+        : { left: "0%", right: "0%", borderRadius: "0rem", ease: "none" };
+
+      tl.to(pildora, destino, 0).to(
+        textos,
         { opacity: 0, scale: 1.15, filter: "blur(12px)", ease: "none" },
         0
       );
+
+      // Al cambiar de anchura hay que deshacer el anclaje anterior a mano. Si
+      // solo se revierte el contexto, el espaciador se queda y su relleno se
+      // suma al del nuevo.
+      return () => {
+        ScrollTrigger.getAll().forEach((st) => {
+          if (st.trigger === seccion) st.kill(true);
+        });
+      };
     },
-    { scope: containerRef, dependencies: [scrollDistance, reduced] }
+    // `pildoraArriba` NO entra como dependencia: rehacer la línea de tiempo al
+    // medir dejaba el espaciador del anclaje descuadrado y el hero arrancaba
+    // 465 px más abajo de donde debía. Como en móvil la animación ya no toca
+    // `top`, la medida entra sola por la variable CSS y no hay que rehacer nada.
+    { scope: containerRef, dependencies: [scrollDistance, reduced, relVideo, ancho] }
   );
 
   const wordStyle: React.CSSProperties = {
     fontFamily: "var(--font-archivo), system-ui, sans-serif",
-    fontSize: "clamp(3rem, 10.5vw, 10.5rem)",
+    /**
+     * El suelo del tamaño también tiene que depender del ancho. Con 3rem fijos,
+     * «construimos» medía 357 px en una pantalla de 320 y se salía: el móvil
+     * respondía encogiendo la página entera, así que todo se veía alejado y con
+     * la maqueta descuadrada. En inglés no pasaba —«we build» es más corto— y
+     * por eso solo se notaba en español.
+     *
+     * `min(3rem, 12.5vw)` deja el tamaño intacto de 384 px para arriba, que es
+     * donde ya cabía, y lo baja solo en las pantallas donde no.
+     */
+    fontSize: "clamp(min(3rem, 12.5vw), 10.5vw, 10.5rem)",
     fontWeight: 800,
   };
 
@@ -191,6 +327,7 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
       <section
         ref={containerRef}
         className="relative h-screen min-h-[560px] w-full select-none overflow-hidden"
+        style={medidas}
       >
         {/* ── Tipografía cinética ── */}
         <div
@@ -234,7 +371,9 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
                 nada porque el h1 no fija tamaño de letra. */}
             {" "}
 
-            <div className="absolute right-[3%] top-[38%] flex items-center">
+            {/* La posición vertical vive en `.hero-tu` (senal.css): en móvil
+                sale de la medida real de la píldora, no de un porcentaje. */}
+            <div className="hero-tu absolute right-[3%] flex items-center">
               <span
                 className="select-none leading-none tracking-tighter"
                 style={{ ...wordStyle, color: textColor }}
@@ -347,7 +486,12 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
           ref={videoWrapperRef}
           data-static={reduced ? "true" : "false"}
           className="hero-pill absolute z-20 overflow-hidden shadow-2xl"
-          style={reduced ? undefined : { willChange: "top, left, right, bottom, border-radius" }}
+          style={
+            {
+              "--rel-video": relVideo,
+              ...(reduced ? {} : { willChange: "top, left, right, bottom, border-radius" }),
+            } as React.CSSProperties
+          }
         >
           {isDirectVideo ? (
             <video
@@ -359,6 +503,13 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
               loop
               playsInline
               preload="metadata"
+              // La proporción se lee del archivo, no se declara a mano: si
+              // mañana se cambia el vídeo por uno vertical, la píldora se
+              // adapta sola en vez de recortarlo.
+              onLoadedMetadata={(e) => {
+                const v = e.currentTarget;
+                if (v.videoWidth && v.videoHeight) setRelVideo(v.videoWidth / v.videoHeight);
+              }}
               className="h-full w-full object-cover"
             />
           ) : (

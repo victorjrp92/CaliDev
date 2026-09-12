@@ -24,10 +24,21 @@ export interface HorizontalScrollProps {
  * Sección anclada que convierte el scroll vertical en desplazamiento
  * horizontal de sus paneles.
  *
- * En móvil NO se ancla: se degrada a un carrusel nativo con scroll-snap. El
- * anclaje horizontal en táctil pelea con el impulso del navegador y rompe la
- * restauración de posición al volver atrás; el snap nativo es lo que la gente
- * espera en un teléfono. Lo mismo con `prefers-reduced-motion`.
+ * En móvil NO se ancla ni se desplaza en horizontal: los paneles se apilan y
+ * se leen bajando, como cualquier otra sección.
+ *
+ * Antes era un carrusel nativo con scroll-snap, y fue un error grave. Un
+ * teléfono de 390 px mostraba un panel de seis; los otros cinco vivían a
+ * 2340 px a la derecha y solo aparecían si se te ocurría deslizar. Bajando —que
+ * es lo que hace todo el mundo— se pasaba del panel de entrada directo a los
+ * testimonios, así que los cuatro servicios no se veían NUNCA. La página no
+ * llegaba a decir qué se vende a quien entraba desde el móvil, que es casi
+ * todo el mundo. El aviso «Desliza →» estaba, en mono pequeño y al 45 % de
+ * opacidad; nadie lo leyó.
+ *
+ * Una tira horizontal dentro de una página que se lee en vertical solo funciona
+ * si el gesto está anunciado a gritos y aun así pierde gente. Apilar no pierde
+ * a nadie. Lo mismo con `prefers-reduced-motion`.
  */
 export function HorizontalScroll({ children, id, scrub = 1, className = "" }: HorizontalScrollProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -85,7 +96,10 @@ export function HorizontalScroll({ children, id, scrub = 1, className = "" }: Ho
         className={
           pinned
             ? "flex h-screen flex-nowrap will-change-transform"
-            : "flex snap-x snap-mandatory flex-nowrap overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            : // Apilados. `[&>*]:w-full` gana a los `w-screen` de los paneles,
+              // que están puestos para el modo anclado: 100vw incluye el ancho
+              // de la barra de scroll y desbordaría a lo ancho.
+              "flex flex-col [&>*]:w-full"
         }
       >
         {children}

@@ -17,7 +17,10 @@ export function Servicios() {
       {/* Panel de entrada */}
       <article className="flex w-screen flex-none snap-start flex-col justify-center px-7 py-20 md:h-screen md:px-20">
         <p className="mono text-[var(--verde)]">{t("etiqueta")}</p>
-        <h2 className="mt-6 max-w-[15ch] text-[clamp(2.4rem,6.5vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
+        {/* El suelo del tamaño depende del ancho: «automatizaciones» no se
+            puede partir, y a 2.4rem fijos medía 336 px en una pantalla de 320.
+            Por encima de 384 px no cambia nada. */}
+        <h2 className="mt-6 max-w-[15ch] hyphens-auto text-[clamp(min(2.4rem,10vw),6.5vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
           {t("titulo")}
         </h2>
         <p className="mt-7 max-w-[46ch] text-lg leading-relaxed text-[var(--tinta)]/70 md:text-xl">
@@ -28,6 +31,9 @@ export function Servicios() {
             puede contratar — y como «Servicios» del menú entra directo aquí,
             para mucha gente esta es la primera pantalla del sitio. */}
         <p className="mono mt-10 text-[var(--verde)]">{t("lista")}</p>
+        {/* Dos pistas porque el recorrido es distinto: ancho avanza solo con el
+            scroll, móvil apila. La de móvil decía «Desliza →» cuando los
+            paneles vivían en una tira horizontal que nadie deslizaba. */}
         <p className="mono mt-6 text-[var(--tinta)]/45 max-md:hidden">{t("pista_ancha")}</p>
         <p className="mono mt-6 text-[var(--tinta)]/45 md:hidden">{t("pista_movil")}</p>
       </article>
@@ -55,7 +61,11 @@ export function Servicios() {
             <p className="mono" style={{ color: s.realce }}>
               {t("marco", { n: s.n, total: "04" })}
             </p>
-            <h3 className="mt-6 text-[clamp(2.1rem,5.2vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
+            {/* Mismo suelo dependiente del ancho, y partición con guion: el
+                alemán encadena palabras que no caben de ninguna manera
+                —«Verbesserungsplan» medía 311 px en una caja de 264— y sin
+                guion la única salida del navegador es desbordar. */}
+            <h3 className="mt-6 hyphens-auto text-[clamp(min(2.1rem,9vw),5.2vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
               {t(`s${s.n}.linea`)}
             </h3>
             <p className="mt-5 max-w-[24ch] text-[clamp(1.25rem,2.3vw,1.9rem)] font-medium leading-[1.25] tracking-[-0.02em] opacity-90">
@@ -87,7 +97,7 @@ export function Servicios() {
           El acento ya tuvo su momento; aquí gana el contraste (11:1) y la calma. */}
       <article className="flex w-screen flex-none snap-start flex-col justify-center px-7 py-20 md:h-screen md:px-20">
         <p className="mono text-[var(--verde)]">{t("cierre_etiqueta")}</p>
-        <h2 className="mt-6 max-w-[16ch] text-[clamp(2.4rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
+        <h2 className="mt-6 max-w-[16ch] hyphens-auto text-[clamp(min(2.4rem,10vw),6vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
           {t("cierre_titulo")}
         </h2>
         <p className="mt-7 max-w-[44ch] text-lg leading-relaxed text-[var(--tinta)]/70 md:text-xl">
