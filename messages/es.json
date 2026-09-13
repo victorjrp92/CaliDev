@@ -364,30 +364,50 @@
       "titulo": "No hace falta que lo digamos nosotros."
     },
     "flujo": {
-      "reserva": [
-        "Entra una",
-        "reserva"
-      ],
-      "asigna": [
-        "Se asigna",
-        "la persona"
-      ],
-      "cobro": [
-        "Se genera",
-        "el cobro"
-      ],
-      "ruta": [
-        "Sale la ruta",
-        "del día"
-      ],
-      "nomina": [
-        "Entra a",
-        "nómina"
-      ],
-      "reporte": [
-        "Reporte",
-        "del lunes"
-      ]
+      "tipos": {
+        "disparador": "Disparador",
+        "accion": "Acción",
+        "resultado": "Resultado"
+      },
+      "anadir": "Añadir paso",
+      "sinMas": "No quedan pasos",
+      "pista": "Arrastra una tarjeta · o añade un paso",
+      "mover": "Muévela con las flechas",
+      "alt": "Un flujo automático: entra una reserva, se asigna a alguien y se genera la factura en paralelo, y las dos ramas terminan en el informe del lunes",
+      "pasos": {
+        "reserva": {
+          "titulo": "Entra una reserva",
+          "pie": "Por la web o por WhatsApp"
+        },
+        "asigna": {
+          "titulo": "Se asigna a alguien",
+          "pie": "Según carga y zona"
+        },
+        "ruta": {
+          "titulo": "Sale la ruta del día",
+          "pie": "Al móvil de cada persona"
+        },
+        "factura": {
+          "titulo": "Se genera la factura",
+          "pie": "Con los datos de la reserva"
+        },
+        "nomina": {
+          "titulo": "Va a nómina",
+          "pie": "Horas y turnos, sin copiar"
+        },
+        "informe": {
+          "titulo": "Informe del lunes",
+          "pie": "Llega sin que nadie lo pida"
+        },
+        "pedido": {
+          "titulo": "Llega un pedido",
+          "pie": "Por WhatsApp, fuera de horario"
+        },
+        "aviso": {
+          "titulo": "Se avisa al cliente",
+          "pie": "Cuando el servicio termina"
+        }
+      }
     },
     "hero": {
       "palabra1": "construimos",

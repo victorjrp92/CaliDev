@@ -364,30 +364,50 @@
       "titulo": "You don't have to take our word for it."
     },
     "flujo": {
-      "reserva": [
-        "A booking",
-        "comes in"
-      ],
-      "asigna": [
-        "Someone is",
-        "assigned"
-      ],
-      "cobro": [
-        "The charge",
-        "is created"
-      ],
-      "ruta": [
-        "The day's route",
-        "goes out"
-      ],
-      "nomina": [
-        "It enters",
-        "payroll"
-      ],
-      "reporte": [
-        "Monday's",
-        "report"
-      ]
+      "tipos": {
+        "disparador": "Trigger",
+        "accion": "Action",
+        "resultado": "Result"
+      },
+      "anadir": "Add a step",
+      "sinMas": "No steps left",
+      "pista": "Drag a card · or add a step",
+      "mover": "Move it with the arrow keys",
+      "alt": "An automated flow: a booking comes in, someone gets assigned and the invoice is created in parallel, and both branches end in Monday's report",
+      "pasos": {
+        "reserva": {
+          "titulo": "A booking comes in",
+          "pie": "From the site or WhatsApp"
+        },
+        "asigna": {
+          "titulo": "Someone gets assigned",
+          "pie": "By workload and area"
+        },
+        "ruta": {
+          "titulo": "The day's route goes out",
+          "pie": "To each person's phone"
+        },
+        "factura": {
+          "titulo": "The invoice is created",
+          "pie": "From the booking data"
+        },
+        "nomina": {
+          "titulo": "It reaches payroll",
+          "pie": "Hours and shifts, no copying"
+        },
+        "informe": {
+          "titulo": "Monday's report",
+          "pie": "Arrives without anyone asking"
+        },
+        "pedido": {
+          "titulo": "An order arrives",
+          "pie": "On WhatsApp, after hours"
+        },
+        "aviso": {
+          "titulo": "The client is notified",
+          "pie": "When the job is done"
+        }
+      }
     },
     "hero": {
       "palabra1": "we build",

@@ -1,94 +1,130 @@
 /**
- * El grafo del workflow que se anima en el panel de automatizaciones.
+ * El flujo del panel de automatizaciones, como tarjetas que se pueden mover.
  *
- * Es un flujo real de los que construimos, no un adorno: entra una reserva,
- * se ramifica en las dos cosas que pasan a la vez (asignar a alguien y cobrar),
- * y vuelven a converger en el reporte. Cada nodo declara de quién depende, y
- * la animación se deriva de eso — no hay tiempos escritos a mano.
+ * Es un flujo real de los que construimos, no un adorno: entra una reserva, se
+ * ramifica en las dos cosas que pasan a la vez —asignar a alguien y facturar— y
+ * las dos ramas vuelven a converger en el informe del lunes.
  *
- * Las etiquetas van DEBAJO de cada nodo, no dentro: caben enteras y el nodo
- * queda como forma limpia, que es como se lee un diagrama de flujo.
+ * Las coordenadas van en un lienzo fijo de 480 × 548 y el componente lo escala
+ * al ancho que tenga. Se declaran a mano y no se calculan: la posición de cada
+ * tarjeta dice algo —quién va antes, qué pasa en paralelo— y un reparto
+ * automático lo perdería.
  *
- * Ojo con los tonos: este grafo vive sobre el panel lima, así que ningún nodo
- * puede ser lima — desaparecería contra el fondo.
- *
- * Coordenadas en un lienzo de 100 × 62 para que el SVG escale solo.
+ * Ojo con los tonos: este grafo vive sobre el panel lima, así que ninguna
+ * tarjeta puede ser lima. El fondo de todas es hueso y el acento va en el chip
+ * del icono, donde tiene contraste de sobra.
  */
-export type Nodo = {
+export type Tipo = "disparador" | "accion" | "resultado";
+
+export type Paso = {
   id: string;
-  /** La etiqueta va en dos líneas: centrada bajo un nodo, en una sola se
-   *  pisaría con la del nodo vecino. Se declara partida, no se adivina. */
   x: number;
   y: number;
-  /** Nodos que deben encenderse antes que este. */
-  de: string[];
-  /** `entrada` y `salida` se dibujan como círculos; el resto, como tarjetas. */
-  forma: "entrada" | "paso" | "salida";
-  tono: "verde" | "tinta" | "azul" | "hueso";
+  tipo: Tipo;
+  /** Clave del icono en el mapa del componente. */
+  icono: string;
+  /** Color del chip. Nunca lima. */
+  acento: string;
 };
 
-export const NODOS: Nodo[] = [
-  { id: "reserva", x: 14, y: 28, de: [], forma: "entrada", tono: "tinta" },
-  { id: "asigna", x: 37, y: 13, de: ["reserva"], forma: "paso", tono: "hueso" },
-  { id: "cobro", x: 37, y: 43, de: ["reserva"], forma: "paso", tono: "azul" },
-  { id: "ruta", x: 62, y: 13, de: ["asigna"], forma: "paso", tono: "hueso" },
-  { id: "nomina", x: 62, y: 43, de: ["cobro"], forma: "paso", tono: "azul" },
-  { id: "reporte", x: 86, y: 28, de: ["ruta", "nomina"], forma: "salida", tono: "verde" },
+/** Lienzo de diseño. El componente escala a su contenedor. */
+export const LIENZO = { ancho: 480, alto: 548 } as const;
+/** Ancho de tarjeta y alto de reserva mientras no se ha medido la real. */
+export const TARJETA = { ancho: 210, alto: 108 } as const;
+
+const IZQ = 0;
+const DER = 270;
+const FILA = [0, 140, 280, 420] as const;
+
+const VERDE = "#0A3D2E";
+const AZUL = "#0F2233";
+const TINTA = "#14201B";
+const HONDO = "#072A20";
+
+/** La cadena que se ve de entrada. */
+export const PASOS: Paso[] = [
+  { id: "reserva", x: IZQ, y: FILA[0], tipo: "disparador", icono: "calendario", acento: VERDE },
+  { id: "asigna",  x: IZQ, y: FILA[1], tipo: "accion",     icono: "persona",    acento: AZUL },
+  { id: "ruta",    x: IZQ, y: FILA[2], tipo: "accion",     icono: "ruta",       acento: AZUL },
+  { id: "factura", x: DER, y: FILA[1], tipo: "accion",     icono: "recibo",     acento: TINTA },
+  { id: "nomina",  x: DER, y: FILA[2], tipo: "accion",     icono: "monedas",    acento: TINTA },
+  { id: "informe", x: IZQ, y: FILA[3], tipo: "resultado",  icono: "barras",     acento: HONDO },
 ];
 
-/** Radio o media caja de cada forma, en unidades del lienzo. */
-export const MEDIDA = { entrada: 5, paso: 5.5, salida: 6 } as const;
+export const ENLACES: [string, string][] = [
+  ["reserva", "asigna"],
+  ["asigna", "ruta"],
+  ["reserva", "factura"],
+  ["factura", "nomina"],
+  ["ruta", "informe"],
+  ["nomina", "informe"],
+];
 
 /**
- * Profundidad de cada nodo en el grafo. Los que están al mismo nivel se
- * encienden a la vez — que es justo lo que hay que ver: dos cosas pasando
- * en paralelo sin que nadie las empuje.
+ * Lo que añade el botón, en orden. Son dos y se acaban: son los dos huecos que
+ * quedan libres sin que ninguna tarjeta se salga del lienzo, y en cuanto algo
+ * se saliera habría que sacar una barra de scroll dentro de una página que ya
+ * scrollea, que es justo lo que no queremos.
+ *
+ * No son pasos al azar —el componente del que sale la idea mete uno cualquiera
+ * de una lista— sino dos cosas que pasan en cualquier negocio y que se
+ * enganchan donde tienen sentido: `a` es el paso al que alimenta, `de` es el
+ * paso del que cuelga.
  */
-export function nivelDe(id: string, nodos: Nodo[] = NODOS): number {
-  const nodo = nodos.find((n) => n.id === id);
-  if (!nodo || nodo.de.length === 0) return 0;
-  return 1 + Math.max(...nodo.de.map((padre) => nivelDe(padre, nodos)));
+export type Extra = Paso & { de?: string; a?: string };
+
+export const EXTRAS: Extra[] = [
+  { id: "pedido", x: DER, y: FILA[0], tipo: "disparador", icono: "mensaje", acento: VERDE, a: "factura" },
+  { id: "aviso",  x: DER, y: FILA[3], tipo: "accion",     icono: "tarjeta", acento: AZUL,  de: "ruta" },
+];
+
+/**
+ * Une dos tarjetas eligiendo por qué lado sale la línea. Salir siempre por la
+ * derecha da un rulo en cuanto dos tarjetas quedan una encima de otra, y
+ * arrastrándolas eso pasa todo el rato.
+ *
+ * `alto` se pasa medido, no supuesto: en alemán los títulos ocupan una línea
+ * más y las tarjetas crecen.
+ */
+export function curva(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  altoA: number,
+  altoB: number,
+  ancho = TARJETA.ancho
+): string {
+  const ca = { x: a.x + ancho / 2, y: a.y + altoA / 2 };
+  const cb = { x: b.x + ancho / 2, y: b.y + altoB / 2 };
+  const dx = cb.x - ca.x;
+  const dy = cb.y - ca.y;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    const t = dx > 0 ? 1 : -1;
+    const x1 = a.x + (dx > 0 ? ancho : 0);
+    const x2 = b.x + (dx > 0 ? 0 : ancho);
+    const d = Math.max(34, Math.abs(x2 - x1) * 0.5);
+    return `M${x1},${ca.y} C${x1 + d * t},${ca.y} ${x2 - d * t},${cb.y} ${x2},${cb.y}`;
+  }
+
+  const t = dy > 0 ? 1 : -1;
+  const y1 = a.y + (dy > 0 ? altoA : 0);
+  const y2 = b.y + (dy > 0 ? 0 : altoB);
+  const d = Math.max(34, Math.abs(y2 - y1) * 0.5);
+  return `M${ca.x},${y1} C${ca.x},${y1 + d * t} ${cb.x},${y2 - d * t} ${cb.x},${y2}`;
 }
 
-export type Arista = { de: Nodo; a: Nodo; d: string; nivel: number };
-
-/**
- * Aristas ortogonales redondeadas: salen por el borde derecho del nodo padre,
- * giran una vez a mitad de camino y entran por el borde izquierdo del hijo.
- * Arrancan en el borde y no en el centro para que la línea no se dibuje por
- * debajo de la forma.
- */
-export function aristas(nodos: Nodo[] = NODOS): Arista[] {
-  const porId = new Map(nodos.map((n) => [n.id, n]));
-  const salida: Arista[] = [];
-
-  for (const a of nodos) {
-    for (const padreId of a.de) {
-      const de = porId.get(padreId);
-      if (!de) continue;
-
-      const x1 = de.x + MEDIDA[de.forma];
-      const x2 = a.x - MEDIDA[a.forma];
-      const r = 3;
-      const mx = (x1 + x2) / 2;
-      let d: string;
-
-      if (Math.abs(de.y - a.y) < 0.5) {
-        d = `M ${x1} ${de.y} L ${x2} ${a.y}`;
-      } else {
-        const s = a.y > de.y ? 1 : -1;
-        d =
-          `M ${x1} ${de.y} L ${mx - r} ${de.y} ` +
-          `Q ${mx} ${de.y} ${mx} ${de.y + s * r} ` +
-          `L ${mx} ${a.y - s * r} ` +
-          `Q ${mx} ${a.y} ${mx + r} ${a.y} ` +
-          `L ${x2} ${a.y}`;
+/** Todo lo que alcanza la cadena partiendo de un paso. */
+export function alcanzables(desde: string, enlaces: [string, string][]): Set<string> {
+  const vivos = new Set([desde]);
+  let cambio = true;
+  while (cambio) {
+    cambio = false;
+    for (const [de, a] of enlaces) {
+      if (vivos.has(de) && !vivos.has(a)) {
+        vivos.add(a);
+        cambio = true;
       }
-      salida.push({ de, a, d, nivel: nivelDe(a.id, nodos) });
     }
   }
-  return salida;
+  return vivos;
 }
-
-/** Cuántos pasos tiene la cadena completa. */
-export const PROFUNDIDAD = Math.max(...NODOS.map((n) => nivelDe(n.id)));

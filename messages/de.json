@@ -364,30 +364,50 @@
       "titulo": "Sie müssen es uns nicht glauben."
     },
     "flujo": {
-      "reserva": [
-        "Eine Buchung",
-        "kommt an"
-      ],
-      "asigna": [
-        "Jemand wird",
-        "zugeteilt"
-      ],
-      "cobro": [
-        "Die Rechnung",
-        "entsteht"
-      ],
-      "ruta": [
-        "Die Tagesroute",
-        "geht raus"
-      ],
-      "nomina": [
-        "Es geht in die",
-        "Lohnabrechnung"
-      ],
-      "reporte": [
-        "Montags-",
-        "bericht"
-      ]
+      "tipos": {
+        "disparador": "Auslöser",
+        "accion": "Aktion",
+        "resultado": "Ergebnis"
+      },
+      "anadir": "Schritt hinzufügen",
+      "sinMas": "Keine Schritte mehr",
+      "pista": "Karte ziehen · oder Schritt hinzufügen",
+      "mover": "Mit den Pfeiltasten bewegen",
+      "alt": "Ein automatischer Ablauf: eine Buchung kommt an, jemand wird zugeteilt und die Rechnung entsteht parallel, und beide Zweige enden im Montagsbericht",
+      "pasos": {
+        "reserva": {
+          "titulo": "Eine Buchung kommt an",
+          "pie": "Über die Website oder WhatsApp"
+        },
+        "asigna": {
+          "titulo": "Jemand wird zugeteilt",
+          "pie": "Nach Auslastung und Gebiet"
+        },
+        "ruta": {
+          "titulo": "Die Tagesroute geht raus",
+          "pie": "Auf jedes Handy"
+        },
+        "factura": {
+          "titulo": "Die Rechnung entsteht",
+          "pie": "Aus den Buchungsdaten"
+        },
+        "nomina": {
+          "titulo": "Es geht in die Lohnabrechnung",
+          "pie": "Stunden und Schichten, ohne Tippen"
+        },
+        "informe": {
+          "titulo": "Montagsbericht",
+          "pie": "Kommt, ohne dass jemand fragt"
+        },
+        "pedido": {
+          "titulo": "Eine Bestellung kommt rein",
+          "pie": "Per WhatsApp, nach Feierabend"
+        },
+        "aviso": {
+          "titulo": "Der Kunde wird informiert",
+          "pie": "Wenn der Auftrag fertig ist"
+        }
+      }
     },
     "hero": {
       "palabra1": "wir bauen",

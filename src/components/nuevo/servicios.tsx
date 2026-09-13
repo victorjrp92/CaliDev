@@ -85,7 +85,15 @@ export function Servicios() {
               ))}
             </ul>
           </div>
-          <div className="md:w-[38%] md:flex-none">
+          {/* El flujo se corre a la derecha. Puede hacerlo sin quitarle nada al
+              texto: la columna de la izquierda está topada en 52 caracteres y
+              ya no crecía más, así que ese margen era lima vacía. */}
+          <div
+            className={
+              "md:w-[38%] md:flex-none" +
+              (s.visual.tipo === "workflow" ? " md:ml-[clamp(0px,7vw,140px)]" : "")
+            }
+          >
             <PanelVisual visual={s.visual} alt={t(`s${s.n}.alt`)} />
           </div>
           </div>
