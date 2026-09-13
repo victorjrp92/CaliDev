@@ -44,6 +44,11 @@ const ICONO: Record<string, string> = {
  */
 const ANCHO_GRAFO = "(min-width: 1280px)";
 
+/** Lo que ocupa el panel además del lienzo: su margen, el botón y la pista. */
+const MARGEN_VERTICAL = 246;
+/** Un punto por debajo de lo que cabe: el diagrama respira mejor con aire. */
+const MENGUA = 0.95;
+
 type Tarjeta = Extra;
 
 function Icono({ nombre }: { nombre: string }) {
@@ -79,6 +84,12 @@ export function WorkflowAnimado({ className = "" }: { className?: string }) {
   const [escala, setEscala] = useState(1);
   /** `null` hasta saberlo: sin esto se monta el grafo y se reemplaza al instante. */
   const [grafo, setGrafo] = useState<boolean | null>(null);
+  /**
+   * Las luces solo corren cuando el panel se ve. En escritorio los seis paneles
+   * existen a la vez dentro del track horizontal, y dejar animaciones corriendo
+   * fuera de pantalla gasta batería sin que nadie las vea.
+   */
+  const [aLaVista, setALaVista] = useState(false);
 
   /**
    * Alto real de cada tarjeta, en estado y no en un ref: el compilador de React
@@ -101,16 +112,40 @@ export function WorkflowAnimado({ className = "" }: { className?: string }) {
     };
   }, []);
 
-  // El lienzo es fijo y se escala al ancho que haya, para que las posiciones
-  // declaradas en `workflow.ts` signifiquen lo mismo en cualquier pantalla.
+  /**
+   * El lienzo es fijo y se escala a lo que haya, para que las posiciones
+   * declaradas en `workflow.ts` signifiquen lo mismo en cualquier pantalla.
+   *
+   * Manda el ancho O el alto, el que apriete más. Escalando solo por ancho, en
+   * una ventana de 796 px el visual medía 715 donde caben 636: se comía el
+   * margen del panel y el botón acababa pegado a la barra de navegación, que va
+   * fija y se lo tapaba.
+   */
   useEffect(() => {
     const marco = marcoRef.current;
     if (!marco || !grafo) return;
-    const medir = () => setEscala(Math.min(1.15, marco.clientWidth / LIENZO.ancho));
+    const medir = () => {
+      const porAncho = marco.clientWidth / LIENZO.ancho;
+      // El alto del panel menos su margen, el botón de arriba y la pista de abajo.
+      const porAlto = (window.innerHeight - MARGEN_VERTICAL) / LIENZO.alto;
+      setEscala(Math.max(0.6, Math.min(1.15, porAncho, porAlto) * MENGUA));
+    };
     medir();
     const ro = new ResizeObserver(medir);
     ro.observe(marco);
-    return () => ro.disconnect();
+    window.addEventListener("resize", medir);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", medir);
+    };
+  }, [grafo]);
+
+  useEffect(() => {
+    const zona = zonaRef.current;
+    if (!zona) return;
+    const io = new IntersectionObserver(([e]) => setALaVista(e.isIntersecting), { threshold: 0.15 });
+    io.observe(zona);
+    return () => io.disconnect();
   }, [grafo]);
 
   const altoDe = (id: string) => altos[id] ?? TARJETA.alto;
@@ -280,23 +315,59 @@ export function WorkflowAnimado({ className = "" }: { className?: string }) {
             role="img"
             aria-label={t("alt")}
           >
-            {enlaces.map(([de, a]) => {
+            {enlaces.map(([de, a], i) => {
               const A = tarjetas.find((c) => c.id === de);
               const B = tarjetas.find((c) => c.id === a);
               if (!A || !B) return null;
               const vivo = encendido?.has(de) && encendido?.has(a);
+              const d = curva(A, B, altoDe(de), altoDe(a));
+              // Se escalonan para que no vayan todas a la vez, que parecería un
+              // parpadeo en lugar de algo circulando.
+              const retraso = `${(i % 4) * 0.7}s`;
               return (
-                <path
-                  key={`${de}-${a}`}
-                  d={curva(A, B, altoDe(de), altoDe(a))}
-                  fill="none"
-                  stroke="#0A3D2E"
-                  strokeWidth={vivo ? 2.6 : 2}
-                  strokeLinecap="round"
-                  strokeDasharray={vivo ? undefined : "7,6"}
-                  opacity={encendido ? (vivo ? 0.95 : 0.18) : 0.4}
-                  style={{ transition: "opacity .25s, stroke-width .25s" }}
-                />
+                <g key={`${de}-${a}`}>
+                  <path
+                    d={d}
+                    fill="none"
+                    stroke="#0A3D2E"
+                    strokeWidth={vivo ? 2.6 : 2}
+                    strokeLinecap="round"
+                    strokeDasharray={vivo ? undefined : "7,6"}
+                    opacity={encendido ? (vivo ? 0.95 : 0.18) : 0.4}
+                    style={{ transition: "opacity .25s, stroke-width .25s" }}
+                  />
+                  {aLaVista && (
+                    <>
+                      {/* Halo ancho y tenue, y encima el punto de luz. Dos
+                          trazos salen más baratos que un filtro de desenfoque,
+                          que en SVG se rasteriza en cada fotograma. */}
+                      <path
+                        className="chispa"
+                        d={d}
+                        pathLength={1}
+                        fill="none"
+                        stroke="var(--hueso)"
+                        strokeWidth={9}
+                        strokeLinecap="round"
+                        strokeDasharray="0.17 0.83"
+                        opacity={0.34}
+                        style={{ animationDelay: retraso }}
+                      />
+                      <path
+                        className="chispa"
+                        d={d}
+                        pathLength={1}
+                        fill="none"
+                        stroke="var(--hueso)"
+                        strokeWidth={2.8}
+                        strokeLinecap="round"
+                        strokeDasharray="0.1 0.9"
+                        opacity={1}
+                        style={{ animationDelay: retraso }}
+                      />
+                    </>
+                  )}
+                </g>
               );
             })}
           </svg>

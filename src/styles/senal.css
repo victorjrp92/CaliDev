@@ -506,3 +506,38 @@
 .articulo th {
   font-weight: 600;
 }
+
+/**
+ * La luz que recorre las líneas del flujo.
+ *
+ * Es un trazo corto de color hueso que viaja sobre la línea punteada, del paso
+ * de origen al de destino, y cuenta lo que el diagrama quiere decir: que algo
+ * va pasando de una cosa a la siguiente sin que nadie lo empuje.
+ *
+ * Hueso y no lima: el panel donde vive ya es lima y una luz lima sobre lima no
+ * se ve. Con `pathLength: 1` el patrón se mide en fracciones del recorrido, así
+ * que la misma regla vale para una línea corta y para una larga.
+ *
+ * Dos trazos superpuestos: uno ancho y tenue hace el halo, otro fino y opaco es
+ * el punto de luz. Sale más barato que un filtro de desenfoque, que en SVG se
+ * rasteriza en cada fotograma.
+ */
+@keyframes recorre-hilo {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.chispa {
+  animation: recorre-hilo 2.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chispa {
+    animation: none;
+    opacity: 0;
+  }
+}
