@@ -37,24 +37,24 @@ export function ServinomicFaq() {
           <details
             key={item.q}
             open={index === 0}
-            className="group rounded-2xl border border-[#E7E1D7] bg-white px-4 py-[15px]"
+            className="group rounded-2xl border border-[#D8DCD4] bg-white px-4 py-[15px]"
           >
             <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-[15px] font-bold [&::-webkit-details-marker]:hidden">
               {item.q}
               <span
                 aria-hidden="true"
-                className="text-lg font-extrabold leading-none text-[#0E7A5F] group-open:hidden"
+                className="text-lg font-extrabold leading-none text-[#0A3D2E] group-open:hidden"
               >
                 +
               </span>
               <span
                 aria-hidden="true"
-                className="hidden text-lg font-extrabold leading-none text-[#0E7A5F] group-open:block"
+                className="hidden text-lg font-extrabold leading-none text-[#0A3D2E] group-open:block"
               >
                 −
               </span>
             </summary>
-            <p className="mt-2.5 text-[14.5px] leading-relaxed text-[#4A5A53]">
+            <p className="mt-2.5 text-[14.5px] leading-relaxed text-[#46554D]">
               {item.a}
             </p>
           </details>

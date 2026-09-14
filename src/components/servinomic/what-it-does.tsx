@@ -44,7 +44,7 @@ export function ServinomicWhatItDoes() {
       <h2 className="text-2xl font-extrabold leading-tight tracking-tight">
         No es una app de nómina
       </h2>
-      <p className="mt-2.5 text-base text-[#4A5A53]">
+      <p className="mt-2.5 text-base text-[#46554D]">
         Pagar al equipo es apenas una de las cuatro cosas que resuelve.
       </p>
 
@@ -52,10 +52,10 @@ export function ServinomicWhatItDoes() {
         {FEATURES.map(({ title, body, before, Preview }) => (
           <article key={title}>
             <h3 className="text-[17px] font-bold leading-snug">{title}</h3>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-[#4A5A53]">
+            <p className="mt-1.5 text-[15px] leading-relaxed text-[#46554D]">
               {body}
             </p>
-            <p className="mt-2 text-[12.5px] font-semibold text-[#B8791F]">
+            <p className="mt-2 text-[12.5px] font-semibold text-[#8A5B12]">
               {before}
             </p>
             <div className="mt-3.5">

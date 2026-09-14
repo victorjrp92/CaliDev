@@ -18,13 +18,13 @@ export function CountrySelect({
 }) {
   return (
     <label className="mt-3 block">
-      <span className="text-sm font-semibold text-[#4A5A53]">
+      <span className="text-sm font-semibold text-[#46554D]">
         ¿Cuál país?
       </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1.5 h-14 w-full cursor-pointer rounded-2xl border-[1.5px] border-[#E7E1D7] bg-white px-4 text-[15px] outline-none transition-colors focus:border-[#0E7A5F]"
+        className="mt-1.5 h-14 w-full cursor-pointer rounded-2xl border-[1.5px] border-[#D8DCD4] bg-white px-4 text-[15px] outline-none transition-colors focus:border-[#0A3D2E]"
       >
         <option value="">Selecciona tu país</option>
         {countries.map((country) => (

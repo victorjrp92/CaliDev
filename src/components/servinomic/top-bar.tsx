@@ -10,7 +10,7 @@ import type { Campaign } from "@/lib/campaigns";
  */
 export function ServinomicTopBar({ campaign }: { campaign: Campaign }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E7E1D7] bg-[#FBF8F3]/93 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[#D8DCD4] bg-[#FAFAF7]/93 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-xl items-center justify-between px-5">
         <div className="flex items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white">
@@ -26,7 +26,7 @@ export function ServinomicTopBar({ campaign }: { campaign: Campaign }) {
         </div>
 
         {campaign.referrer && (
-          <span className="rounded-full bg-[#E6F4EF] px-2.5 py-1.5 text-[11px] font-semibold text-[#0E7A5F]">
+          <span className="rounded-full bg-[#E6E8E3] px-2.5 py-1.5 text-[11px] font-semibold text-[#0A3D2E]">
             ★ {campaign.referrer}
           </span>
         )}

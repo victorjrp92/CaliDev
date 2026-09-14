@@ -28,13 +28,13 @@ export function ServinomicHero({ campaign }: { campaign: Campaign }) {
         {before}
         {/* background-color explícito: <mark> trae amarillo por defecto del
             navegador y se asomaría por la parte transparente del gradiente. */}
-        <mark className="bg-[linear-gradient(transparent_62%,#FFE28A_62%)] px-0.5 text-inherit [background-color:transparent]">
+        <mark className="bg-[linear-gradient(transparent_60%,var(--lima)_60%)] px-0.5 text-inherit [background-color:transparent]">
           {campaign.headlineHighlight}
         </mark>
         {after}
       </h1>
 
-      <p className="mt-4 text-[17px] leading-relaxed text-[#4A5A53]">
+      <p className="mt-4 text-[17px] leading-relaxed text-[#46554D]">
         {campaign.subhead}
       </p>
 
@@ -55,23 +55,23 @@ export function ServinomicHero({ campaign }: { campaign: Campaign }) {
           height={896}
           priority
           sizes="(max-width: 640px) 100vw, 576px"
-          className="h-[230px] w-full object-cover object-top sm:h-[280px]"
+          className="aspect-[25/14] w-full object-cover object-top"
         />
         <figcaption className="absolute inset-x-0 bottom-0 bg-[linear-gradient(transparent,rgba(10,25,20,0.86))] px-4 pb-3.5 pt-10 text-[13px] font-semibold text-white">
           {campaign.teamPhoto.caption}
         </figcaption>
       </figure>
 
-      <figure className="mt-7 rounded-3xl border border-[#E7E1D7] bg-white p-5 shadow-[0_3px_14px_rgba(21,33,28,0.05)]">
+      <figure className="mt-7 rounded-3xl border border-[#D8DCD4] bg-white p-5 shadow-[0_3px_14px_rgba(21,33,28,0.05)]">
         <figcaption className="flex items-center gap-3">
-          <span className="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-[linear-gradient(140deg,#0E7A5F,#5FBFA3)] text-lg font-extrabold text-white">
+          <span className="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-[linear-gradient(140deg,#0A3D2E,#5FBFA3)] text-lg font-extrabold text-white">
             {campaign.quoteAuthor.charAt(0)}
           </span>
           <span>
             <span className="block text-[15px] font-bold">
               {campaign.quoteAuthor}
             </span>
-            <span className="block text-[13px] text-[#87938C]">
+            <span className="block text-[13px] text-[#77847C]">
               {campaign.quoteRole}
             </span>
           </span>
@@ -81,7 +81,7 @@ export function ServinomicHero({ campaign }: { campaign: Campaign }) {
           &ldquo;{campaign.quote}&rdquo;
         </blockquote>
 
-        <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[#0E7A5F]">
+        <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[#0A3D2E]">
           <span aria-hidden="true">✓</span>
           {campaign.quoteMeta}
         </p>

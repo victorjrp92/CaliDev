@@ -2,7 +2,7 @@ import { PreviewShell, PreviewLabel } from "@/components/servinomic/previews/she
 
 /** Todo inventado: proporciones ilustrativas, nunca cifras de un cliente real. */
 const BREAKDOWN = [
-  { label: "Servicios", pct: 72, tone: "bg-[#0E7A5F]" },
+  { label: "Servicios", pct: 72, tone: "bg-[#0A3D2E]" },
   { label: "Insumos y kits", pct: 18, tone: "bg-[#5FBFA3]" },
   { label: "Otros", pct: 10, tone: "bg-[#CFE7DE]" },
 ];
@@ -11,12 +11,12 @@ const BREAKDOWN = [
 export function MoneyPreview() {
   return (
     <PreviewShell title="Reporte del mes">
-      <div className="rounded-lg bg-[#E6F4EF] px-3 py-2.5">
+      <div className="rounded-lg bg-[#E6E8E3] px-3 py-2.5">
         <PreviewLabel>Punto de equilibrio</PreviewLabel>
-        <p className="mt-0.5 font-mono text-base font-bold text-[#0E7A5F]">
-          223 <span className="text-[#87938C]">/ 212</span>
+        <p className="mt-0.5 font-mono text-base font-bold text-[#0A3D2E]">
+          223 <span className="text-[#77847C]">/ 212</span>
         </p>
-        <p className="text-[9px] text-[#4A5A53]">
+        <p className="text-[9px] text-[#46554D]">
           Ya superaste los servicios que necesitas para no perder
         </p>
       </div>
@@ -36,7 +36,7 @@ export function MoneyPreview() {
           {BREAKDOWN.map((item) => (
             <li key={item.label} className="flex items-center gap-1.5">
               <span className={`h-1.5 w-1.5 rounded-full ${item.tone}`} />
-              <span className="flex-1 text-[9.5px] text-[#4A5A53]">
+              <span className="flex-1 text-[9.5px] text-[#46554D]">
                 {item.label}
               </span>
               <span className="font-mono text-[9.5px] font-bold">
@@ -47,7 +47,7 @@ export function MoneyPreview() {
         </ul>
       </div>
 
-      <p className="mt-2.5 rounded-lg bg-[#F5F2EC] px-2.5 py-1.5 text-[9px] text-[#4A5A53]">
+      <p className="mt-2.5 rounded-lg bg-[#F5F2EC] px-2.5 py-1.5 text-[9px] text-[#46554D]">
         38 facturas del mes ya cargadas y clasificadas
       </p>
     </PreviewShell>

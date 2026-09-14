@@ -17,9 +17,9 @@ import type { Campaign } from "@/lib/campaigns";
  */
 export function ServinomicProof({ campaign }: { campaign: Campaign }) {
   return (
-    <section className="border-y border-[#E7E1D7] bg-white py-7">
+    <section className="border-y border-[#D8DCD4] bg-white py-7">
       <div className="mx-auto max-w-xl px-5">
-        <p className="mb-5 text-center text-xs font-semibold uppercase tracking-[0.06em] text-[#87938C]">
+        <p className="mb-5 text-center text-xs font-semibold uppercase tracking-[0.06em] text-[#77847C]">
           Lo que cambió en {campaign.clientName}
         </p>
 
@@ -28,10 +28,10 @@ export function ServinomicProof({ campaign }: { campaign: Campaign }) {
             <div key={stat.label}>
               <dt className="sr-only">{stat.label}</dt>
               <dd>
-                <span className="block text-[27px] font-extrabold tracking-tight text-[#0E7A5F]">
+                <span className="block text-[27px] font-extrabold tracking-tight text-[#0A3D2E]">
                   {stat.value}
                 </span>
-                <span className="mt-0.5 block text-[13px] leading-snug text-[#4A5A53]">
+                <span className="mt-0.5 block text-[13px] leading-snug text-[#46554D]">
                   {stat.label}
                 </span>
               </dd>
@@ -40,13 +40,13 @@ export function ServinomicProof({ campaign }: { campaign: Campaign }) {
         </dl>
 
         {campaign.clientSite && (
-          <p className="mt-6 border-t border-[#E7E1D7] pt-4 text-center text-[13.5px] leading-relaxed text-[#4A5A53]">
+          <p className="mt-6 border-t border-[#D8DCD4] pt-4 text-center text-[13.5px] leading-relaxed text-[#46554D]">
             {campaign.clientSite.intro}{" "}
             <a
               href={campaign.clientSite.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-[#0E7A5F] underline underline-offset-2"
+              className="font-semibold text-[#0A3D2E] underline underline-offset-2"
             >
               {campaign.clientSite.label}
             </a>

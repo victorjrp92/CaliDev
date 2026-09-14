@@ -63,7 +63,7 @@ export function ServinomicFitCheck() {
       <h2 className="text-2xl font-extrabold leading-tight tracking-tight">
         ¿Esto es para ti?
       </h2>
-      <p className="mt-2.5 text-base text-[#4A5A53]">
+      <p className="mt-2.5 text-base text-[#46554D]">
         Preferimos decírtelo de una vez que hacerte llenar un formulario en vano.
       </p>
 
@@ -71,20 +71,20 @@ export function ServinomicFitCheck() {
         {SECTORS.map(({ Icon, title, body }) => (
           <article
             key={title}
-            className="rounded-2xl border border-[#E7E1D7] bg-white p-4"
+            className="rounded-2xl border border-[#D8DCD4] bg-white p-4"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E6F4EF] text-[#0E7A5F]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E6E8E3] text-[#0A3D2E]">
               <Icon />
             </span>
             <h3 className="mt-3 text-[15px] font-bold leading-snug">{title}</h3>
-            <p className="mt-1 text-[13.5px] leading-relaxed text-[#4A5A53]">
+            <p className="mt-1 text-[13.5px] leading-relaxed text-[#46554D]">
               {body}
             </p>
           </article>
         ))}
       </div>
 
-      <p className="mt-3.5 text-[14px] leading-relaxed text-[#87938C]">
+      <p className="mt-3.5 text-[14px] leading-relaxed text-[#77847C]">
         …y cualquier empresa que mande gente a prestar un servicio: catering,
         seguridad, lavandería, mudanzas.
       </p>
@@ -110,14 +110,14 @@ function Row({ text, fits }: { text: string; fits: boolean }) {
     <li
       className={`flex items-start gap-3 rounded-2xl border px-4 py-3.5 ${
         fits
-          ? "border-[#E7E1D7] bg-white"
-          : "border-dashed border-[#E7E1D7] opacity-70"
+          ? "border-[#D8DCD4] bg-white"
+          : "border-dashed border-[#D8DCD4] opacity-70"
       }`}
     >
       <span
         aria-hidden="true"
         className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold text-white ${
-          fits ? "bg-[#0E7A5F]" : "bg-[#C9BFB2]"
+          fits ? "bg-[#0A3D2E]" : "bg-[#C6CCC3]"
         }`}
       >
         {fits ? "✓" : "✕"}

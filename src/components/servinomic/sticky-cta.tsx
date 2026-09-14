@@ -31,7 +31,7 @@ export function StickyCta({ slots }: { slots: number }) {
   return (
     <div
       aria-hidden={hidden}
-      className={`fixed inset-x-0 bottom-0 z-50 border-t border-[#E7E1D7] bg-[#FBF8F3]/96 px-5 pb-[calc(11px+env(safe-area-inset-bottom))] pt-[11px] backdrop-blur-md transition-transform duration-300 ${
+      className={`fixed inset-x-0 bottom-0 z-50 border-t border-[#D8DCD4] bg-[#FAFAF7]/96 px-5 pb-[calc(11px+env(safe-area-inset-bottom))] pt-[11px] backdrop-blur-md transition-transform duration-300 ${
         hidden ? "pointer-events-none translate-y-full" : "translate-y-0"
       }`}
     >
@@ -39,12 +39,12 @@ export function StickyCta({ slots }: { slots: number }) {
         <a
           href="#registro"
           tabIndex={hidden ? -1 : undefined}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#0E7A5F] text-base font-bold text-white shadow-[0_6px_18px_rgba(14,122,95,0.26)] transition-transform active:translate-y-px"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--lima)] text-base font-bold text-[var(--tinta)] shadow-[0_6px_18px_rgba(10,61,46,0.22)] transition-transform active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--verde)]"
         >
           {CTA_LABEL}
           <span aria-hidden="true">→</span>
         </a>
-        <p className="mt-[7px] text-center text-[11.5px] text-[#87938C]">
+        <p className="mt-[7px] text-center text-[11.5px] text-[#77847C]">
           Quedan {slots} cupos · Revisamos cada caso a mano
         </p>
       </div>

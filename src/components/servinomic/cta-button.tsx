@@ -20,12 +20,21 @@ export function CtaButton({
   variant?: "solid" | "ghost";
   reassurance?: string;
 }) {
+  /**
+   * El principal va en lima con tinta encima: 12,8:1 de contraste y es el color
+   * con el que se reconoce el sitio. La regla del lima se cumple —relleno con
+   * texto oscuro, nunca letra lima sobre claro— y sobre el hueso de la página
+   * no hay nada que compita con él, que es lo que tiene que pasar cuando solo
+   * hay una acción posible.
+   */
   const base =
-    "flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-base font-bold transition-transform active:translate-y-px";
+    "flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-base font-bold " +
+    "transition-transform active:translate-y-px focus-visible:outline focus-visible:outline-2 " +
+    "focus-visible:outline-offset-2 focus-visible:outline-[var(--verde)]";
   const styles =
     variant === "solid"
-      ? "bg-[#0E7A5F] text-white shadow-[0_6px_18px_rgba(14,122,95,0.26)]"
-      : "border-[1.5px] border-[#0E7A5F] bg-white text-[#0E7A5F]";
+      ? "bg-[var(--lima)] text-[var(--tinta)] shadow-[0_6px_18px_rgba(10,61,46,0.22)]"
+      : "border-[1.5px] border-[var(--verde)] bg-[var(--hueso)] text-[var(--verde)]";
 
   return (
     <div>
@@ -34,7 +43,7 @@ export function CtaButton({
         <span aria-hidden="true">→</span>
       </a>
       {reassurance && (
-        <p className="mt-3 text-center text-[13px] text-[#87938C]">
+        <p className="mt-3 text-center text-[13px] text-[#77847C]">
           {reassurance}
         </p>
       )}

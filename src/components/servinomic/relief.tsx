@@ -13,7 +13,7 @@ import type { Campaign } from "@/lib/campaigns";
 export function ServinomicRelief({ campaign }: { campaign: Campaign }) {
   return (
     <section className="mx-auto max-w-xl px-5 py-10">
-      <div className="rounded-3xl bg-[#0E7A5F] p-6 text-white sm:p-8">
+      <div className="rounded-3xl bg-[#0A3D2E] p-6 text-white sm:p-8">
         <h2 className="text-[26px] font-extrabold leading-[1.15] tracking-tight sm:text-3xl">
           {campaign.reliefTitle}
         </h2>

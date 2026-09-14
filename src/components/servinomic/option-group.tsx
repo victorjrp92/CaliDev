@@ -24,7 +24,7 @@ export function OptionGroup({
         {question.label}
       </legend>
       {question.help && (
-        <p className="mt-1.5 text-sm text-[#87938C]">{question.help}</p>
+        <p className="mt-1.5 text-sm text-[#77847C]">{question.help}</p>
       )}
 
       <div className="mt-4 flex flex-col gap-2.5">
@@ -38,15 +38,15 @@ export function OptionGroup({
               aria-pressed={selected}
               className={`flex min-h-[52px] w-full cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] px-4 py-3.5 text-left text-[15px] transition-colors ${
                 selected
-                  ? "border-[#0E7A5F] bg-[#E6F4EF]"
-                  : "border-[#E7E1D7] bg-white"
+                  ? "border-[#0A3D2E] bg-[#E6E8E3]"
+                  : "border-[#D8DCD4] bg-white"
               }`}
             >
               <span
                 className={`h-5 w-5 flex-shrink-0 rounded-full border-2 ${
                   selected
-                    ? "border-[#0E7A5F] bg-[#0E7A5F] shadow-[inset_0_0_0_3px_#fff]"
-                    : "border-[#CFC7BB]"
+                    ? "border-[#0A3D2E] bg-[#0A3D2E] shadow-[inset_0_0_0_3px_#fff]"
+                    : "border-[#C6CCC3]"
                 }`}
               />
               {option.label}

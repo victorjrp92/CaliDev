@@ -13,7 +13,63 @@ import {
 type Phase = "filtro" | "contacto" | "diagnostico" | "listo" | "referido";
 
 const inputClass =
-  "h-14 w-full rounded-2xl border-[1.5px] border-[#E7E1D7] bg-white px-4 text-[15px] outline-none transition-colors placeholder:text-[#A79C8E] focus:border-[#0E7A5F]";
+  "h-14 w-full rounded-2xl border-[1.5px] border-[#D8DCD4] bg-white px-4 text-[16px] outline-none transition-colors placeholder:text-[#8C948D] focus:border-[var(--verde)] focus:ring-2 focus:ring-[var(--verde)]/25";
+
+/**
+ * Campo con etiqueta VISIBLE encima, no solo marcador de posición.
+ *
+ * Con solo el marcador, en cuanto la persona escribe la etiqueta desaparece: ya
+ * no puede comprobar qué puso en cada casilla, y quien vuelve a revisar antes
+ * de enviar se encuentra cuatro cajas con texto y ninguna pista. En un móvil,
+ * que es de donde llega este tráfico, es de los motivos más comunes de
+ * abandono a mitad de formulario.
+ *
+ * El obligatorio se marca fuera del marcador por lo mismo: dentro se borra.
+ *
+ * `autoComplete` no es un detalle. El teléfono ofrece rellenar nombre, WhatsApp
+ * y correo de un toque, y eso convierte tres campos en uno.
+ *
+ * 16px de letra y no 15: por debajo de eso iOS hace zoom al enfocar el campo y
+ * descoloca la página entera.
+ */
+function Campo({
+  id,
+  etiqueta,
+  obligatorio = false,
+  ayuda,
+  ...props
+}: {
+  id: string;
+  etiqueta: string;
+  obligatorio?: boolean;
+  ayuda?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1.5 block text-[13.5px] font-semibold">
+        {etiqueta}
+        {obligatorio && (
+          <span className="ml-1 text-[var(--verde)]" aria-hidden="true">
+            *
+          </span>
+        )}
+        {obligatorio && <span className="sr-only"> (obligatorio)</span>}
+      </label>
+      <input
+        id={id}
+        required={obligatorio}
+        aria-describedby={ayuda ? `${id}-ayuda` : undefined}
+        className={inputClass}
+        {...props}
+      />
+      {ayuda && (
+        <p id={`${id}-ayuda`} className="mt-1.5 text-[12.5px] text-[#77847C]">
+          {ayuda}
+        </p>
+      )}
+    </div>
+  );
+}
 
 /**
  * Formulario de tres fases.
@@ -135,20 +191,28 @@ export function LeadForm({ campaign, slots }: { campaign: string; slots: number 
           <h2 className="text-2xl font-extrabold leading-tight tracking-tight">
             Pidamos tu diagnóstico
           </h2>
-          <p className="mt-2.5 text-base text-[#4A5A53]">
+          <p className="mt-2.5 text-base text-[#46554D]">
             Tres preguntas rápidas. Sin datos personales todavía.
           </p>
         </>
       )}
 
-      <div className="mt-5 rounded-3xl border border-[#E7E1D7] bg-white p-5 shadow-[0_4px_20px_rgba(21,33,28,0.06)] sm:p-6">
+      <div className="mt-5 rounded-3xl border border-[#D8DCD4] bg-white p-5 shadow-[0_4px_20px_rgba(21,33,28,0.06)] sm:p-6">
         {phase !== "listo" && phase !== "referido" && (
-          <div className="mb-5 flex gap-1.5" aria-hidden="true">
+          <div
+            className="mb-5 flex gap-1.5"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={3}
+            aria-valuenow={stepIndex}
+            aria-label={`Paso ${stepIndex} de 3`}
+          >
             {[1, 2, 3].map((n) => (
               <span
                 key={n}
+                aria-hidden="true"
                 className={`h-1 flex-1 rounded-full ${
-                  n <= stepIndex ? "bg-[#0E7A5F]" : "bg-[#E7E1D7]"
+                  n <= stepIndex ? "bg-[var(--verde)]" : "bg-[#D8DCD4]"
                 }`}
               />
             ))}
@@ -200,28 +264,42 @@ export function LeadForm({ campaign, slots }: { campaign: string; slots: number 
               title="ServiNomic es para quien dirige la operación"
               subtitle="Si conoces a alguien con una empresa de servicios, déjanos por dónde contactarlo. Si se vuelve cliente, hablamos de agradecértelo."
             />
-            <div className="mt-5 flex flex-col gap-3">
-              <input
-                className={inputClass}
-                placeholder="Tu nombre"
+            <div className="mt-5 flex flex-col gap-4">
+              <Campo
+                id="referido-nombre"
+                etiqueta="Tu nombre"
+                autoComplete="name"
+                placeholder="María Gómez"
                 value={contact.name}
                 onChange={(e) => setContact({ ...contact, name: e.target.value })}
               />
-              <input
-                className={inputClass}
+              <Campo
+                id="referido-whatsapp"
+                etiqueta="Tu WhatsApp"
+                type="tel"
                 inputMode="tel"
-                placeholder="Tu WhatsApp"
+                autoComplete="tel"
+                placeholder="+57 300 000 0000"
                 value={contact.whatsapp}
                 onChange={(e) =>
                   setContact({ ...contact, whatsapp: e.target.value })
                 }
               />
-              <textarea
-                className={`${inputClass} h-auto min-h-24 resize-none py-3.5`}
-                placeholder="Nombre de la empresa y cómo contactarla"
-                value={referral}
-                onChange={(e) => setReferral(e.target.value)}
-              />
+              <div>
+                <label
+                  htmlFor="referido-empresa"
+                  className="mb-1.5 block text-[13.5px] font-semibold"
+                >
+                  ¿A quién conoces?
+                </label>
+                <textarea
+                  id="referido-empresa"
+                  className={`${inputClass} h-auto min-h-24 resize-none py-3.5`}
+                  placeholder="Nombre de la empresa y cómo contactarla"
+                  value={referral}
+                  onChange={(e) => setReferral(e.target.value)}
+                />
+              </div>
             </div>
             {error && <ErrorLine text={error} />}
             <Primary
@@ -240,34 +318,47 @@ export function LeadForm({ campaign, slots }: { campaign: string; slots: number 
               title="¿A dónde te escribimos?"
               subtitle={`Te contactamos nosotros. Hay ${slots} cupos abiertos y revisamos cada caso a mano.`}
             />
-            <div className="mt-5 flex flex-col gap-3">
-              <input
-                className={inputClass}
-                placeholder="Tu nombre *"
+            <div className="mt-5 flex flex-col gap-4">
+              <Campo
+                id="contacto-nombre"
+                etiqueta="Tu nombre"
+                obligatorio
+                autoComplete="name"
+                placeholder="María Gómez"
                 value={contact.name}
                 onChange={(e) => setContact({ ...contact, name: e.target.value })}
               />
-              <input
-                className={inputClass}
-                placeholder="Nombre de tu empresa"
+              <Campo
+                id="contacto-empresa"
+                etiqueta="Nombre de tu empresa"
+                autoComplete="organization"
+                placeholder="Servicios del Valle"
                 value={contact.company}
                 onChange={(e) =>
                   setContact({ ...contact, company: e.target.value })
                 }
               />
-              <input
-                className={inputClass}
+              <Campo
+                id="contacto-whatsapp"
+                etiqueta="WhatsApp"
+                obligatorio
+                type="tel"
                 inputMode="tel"
-                placeholder="WhatsApp *"
+                autoComplete="tel"
+                ayuda="Con indicativo del país. Te escribimos por ahí, no llamamos sin avisar."
+                placeholder="+57 300 000 0000"
                 value={contact.whatsapp}
                 onChange={(e) =>
                   setContact({ ...contact, whatsapp: e.target.value })
                 }
               />
-              <input
-                className={inputClass}
+              <Campo
+                id="contacto-correo"
+                etiqueta="Correo electrónico"
                 type="email"
-                placeholder="Correo electrónico"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="maria@empresa.com"
                 value={contact.email}
                 onChange={(e) => setContact({ ...contact, email: e.target.value })}
               />
@@ -283,7 +374,7 @@ export function LeadForm({ campaign, slots }: { campaign: string; slots: number 
             >
               {sending ? "Guardando…" : "Continuar"}
             </Primary>
-            <p className="mt-3 text-center text-xs text-[#87938C]">
+            <p className="mt-3 text-center text-xs text-[#77847C]">
               * Obligatorio. No compartimos tus datos con nadie.
             </p>
           </>
@@ -315,13 +406,13 @@ export function LeadForm({ campaign, slots }: { campaign: string; slots: number 
 
         {phase === "listo" && (
           <div className="py-6 text-center">
-            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#E6F4EF] text-3xl text-[#0E7A5F]">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#E6E8E3] text-3xl text-[#0A3D2E]">
               ✓
             </span>
             <h2 className="mt-5 text-2xl font-extrabold tracking-tight">
               Recibimos tu solicitud
             </h2>
-            <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-[#4A5A53]">
+            <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-[#46554D]">
               Revisamos cada caso uno por uno y contactamos primero a las
               empresas donde el sistema hace más diferencia. Si es tu caso, te
               escribimos por WhatsApp.
@@ -344,14 +435,14 @@ function Header({
 }) {
   return (
     <div>
-      <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#0E7A5F]">
+      <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#0A3D2E]">
         {step}
       </span>
       <h3 className="mt-2 text-xl font-extrabold leading-tight tracking-tight">
         {title}
       </h3>
       {subtitle && (
-        <p className="mt-1.5 text-sm leading-relaxed text-[#87938C]">
+        <p className="mt-1.5 text-sm leading-relaxed text-[#77847C]">
           {subtitle}
         </p>
       )}
@@ -373,13 +464,21 @@ function Primary({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="mt-6 h-14 w-full cursor-pointer rounded-2xl bg-[#0E7A5F] text-base font-bold text-white shadow-[0_6px_18px_rgba(14,122,95,0.26)] transition-opacity disabled:cursor-not-allowed disabled:opacity-30 disabled:shadow-none"
+      className="mt-6 h-14 w-full cursor-pointer rounded-2xl bg-[var(--lima)] text-base font-bold text-[var(--tinta)] shadow-[0_6px_18px_rgba(10,61,46,0.22)] transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--verde)] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
     >
       {children}
     </button>
   );
 }
 
+/**
+ * `role="alert"` para que un lector de pantalla lo anuncie al aparecer. Sin eso
+ * quien no ve la pantalla pulsa enviar, no pasa nada aparente y se va.
+ */
 function ErrorLine({ text }: { text: string }) {
-  return <p className="mt-4 text-sm font-medium text-red-600">{text}</p>;
+  return (
+    <p role="alert" className="mt-4 text-sm font-medium text-[#B42318]">
+      {text}
+    </p>
+  );
 }

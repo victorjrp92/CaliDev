@@ -8,9 +8,9 @@ const SERVICES = [
 ];
 
 const STATE_STYLE: Record<string, string> = {
-  "en curso": "bg-[#E6F4EF] text-[#0E7A5F]",
-  programado: "bg-[#F5F2EC] text-[#87938C]",
-  supervisión: "bg-[#FFF3DC] text-[#B8791F]",
+  "en curso": "bg-[#E6E8E3] text-[#0A3D2E]",
+  programado: "bg-[#F5F2EC] text-[#77847C]",
+  supervisión: "bg-[#FFF3DC] text-[#8A5B12]",
 };
 
 /** Agenda del día: quién va dónde, sin buscar en el cuaderno ni en WhatsApp. */
@@ -19,7 +19,7 @@ export function SchedulePreview() {
     <PreviewShell title="Servicios de hoy">
       <div className="flex items-center justify-between">
         <PreviewLabel>Jueves · 18 servicios</PreviewLabel>
-        <span className="text-[9px] font-bold text-[#0E7A5F]">
+        <span className="text-[9px] font-bold text-[#0A3D2E]">
           Todas asignadas
         </span>
       </div>
@@ -30,14 +30,14 @@ export function SchedulePreview() {
             key={service.time}
             className="flex items-start gap-2.5 rounded-lg border border-[#F0EBE2] px-2.5 py-2"
           >
-            <span className="font-mono text-[10px] font-bold text-[#0E7A5F]">
+            <span className="font-mono text-[10px] font-bold text-[#0A3D2E]">
               {service.time}
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[11px] font-semibold">
                 {service.who}
               </span>
-              <span className="block truncate text-[9.5px] text-[#87938C]">
+              <span className="block truncate text-[9.5px] text-[#77847C]">
                 {service.where}
               </span>
             </span>
@@ -50,7 +50,7 @@ export function SchedulePreview() {
         ))}
       </ul>
 
-      <p className="mt-2.5 rounded-lg bg-[#F5F2EC] px-2.5 py-1.5 text-[9px] text-[#4A5A53]">
+      <p className="mt-2.5 rounded-lg bg-[#F5F2EC] px-2.5 py-1.5 text-[9px] text-[#46554D]">
         Disponibilidad de la semana ya cargada · 4 cupos libres el sábado
       </p>
     </PreviewShell>

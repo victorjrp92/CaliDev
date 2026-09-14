@@ -36,15 +36,15 @@ export function ServinomicProcess({ slots }: { slots: number }) {
             {index < STEPS.length - 1 && (
               <span
                 aria-hidden="true"
-                className="absolute bottom-0.5 left-4 top-9 w-0.5 bg-[#E7E1D7]"
+                className="absolute bottom-0.5 left-4 top-9 w-0.5 bg-[#D8DCD4]"
               />
             )}
-            <span className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#E6F4EF] text-sm font-extrabold text-[#0E7A5F]">
+            <span className="z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#E6E8E3] text-sm font-extrabold text-[#0A3D2E]">
               {index + 1}
             </span>
             <div>
               <h3 className="text-base font-bold">{step.title}</h3>
-              <p className="mt-1 text-[14.5px] leading-relaxed text-[#4A5A53]">
+              <p className="mt-1 text-[14.5px] leading-relaxed text-[#46554D]">
                 {step.body}
               </p>
             </div>
@@ -52,7 +52,7 @@ export function ServinomicProcess({ slots }: { slots: number }) {
         ))}
       </ol>
 
-      <p className="mt-5 rounded-2xl bg-[#E6F4EF] p-4 text-[14.5px] leading-relaxed text-[#0A5A46]">
+      <p className="mt-5 rounded-2xl bg-[#E6E8E3] p-4 text-[14.5px] leading-relaxed text-[#072A20]">
         Acompañamos{" "}
         <strong className="font-bold">{slots} empresas a la vez</strong> para dar
         el mejor servicio y el más personalizado.
@@ -60,8 +60,8 @@ export function ServinomicProcess({ slots }: { slots: number }) {
 
       {/* La audiencia del anuncio es un tercio internacional. Sin este mensaje,
           quien no está en Colombia se auto-descarta al ver el formulario. */}
-      <p className="mt-3 rounded-2xl border border-[#E7E1D7] bg-white p-4 text-[14.5px] leading-relaxed text-[#4A5A53]">
-        <strong className="font-bold text-[#15211C]">
+      <p className="mt-3 rounded-2xl border border-[#D8DCD4] bg-white p-4 text-[14.5px] leading-relaxed text-[#46554D]">
+        <strong className="font-bold text-[#14201B]">
           ¿No estás en Colombia?
         </strong>{" "}
         También trabajamos con empresas de México, Perú, España, Estados Unidos

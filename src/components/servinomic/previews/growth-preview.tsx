@@ -12,7 +12,7 @@ export function GrowthPreview() {
   return (
     <PreviewShell title="Necesita tu atención">
       <div className="flex items-start gap-2 rounded-lg bg-[#FFF3DC] px-3 py-2.5">
-        <span className="mt-0.5 h-2 w-2 flex-shrink-0 rounded-full bg-[#B8791F]" />
+        <span className="mt-0.5 h-2 w-2 flex-shrink-0 rounded-full bg-[#8A5B12]" />
         <p className="text-[10.5px] leading-snug text-[#7A5312]">
           <strong className="font-bold">14 clientes</strong> llevan más tiempo
           del habitual sin pedir servicio
@@ -26,13 +26,13 @@ export function GrowthPreview() {
             <li key={zone.name}>
               <div className="flex items-baseline justify-between">
                 <span className="text-[10px] font-semibold">{zone.name}</span>
-                <span className="font-mono text-[9.5px] text-[#87938C]">
+                <span className="font-mono text-[9.5px] text-[#77847C]">
                   {zone.services} servicios
                 </span>
               </div>
               <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#F0EBE2]">
                 <span
-                  className="block h-full rounded-full bg-[#0E7A5F]"
+                  className="block h-full rounded-full bg-[#0A3D2E]"
                   style={{ width: `${zone.share}%` }}
                 />
               </div>
@@ -43,16 +43,16 @@ export function GrowthPreview() {
 
       <div className="mt-2.5 flex gap-1.5">
         <span className="flex-1 rounded-md bg-[#F5F2EC] px-2 py-1.5 text-center">
-          <span className="block font-mono text-[11px] font-bold text-[#0E7A5F]">
+          <span className="block font-mono text-[11px] font-bold text-[#0A3D2E]">
             94%
           </span>
-          <span className="block text-[8px] text-[#87938C]">Retención</span>
+          <span className="block text-[8px] text-[#77847C]">Retención</span>
         </span>
         <span className="flex-1 rounded-md bg-[#F5F2EC] px-2 py-1.5 text-center">
-          <span className="block font-mono text-[11px] font-bold text-[#0E7A5F]">
+          <span className="block font-mono text-[11px] font-bold text-[#0A3D2E]">
             Referidos
           </span>
-          <span className="block text-[8px] text-[#87938C]">Mejor canal</span>
+          <span className="block text-[8px] text-[#77847C]">Mejor canal</span>
         </span>
       </div>
     </PreviewShell>

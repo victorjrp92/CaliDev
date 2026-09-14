@@ -1,9 +1,26 @@
 import "@/app/globals.css";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import "@/styles/senal.css";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 
-const jakarta = Plus_Jakarta_Sans({
+/**
+ * Las mismas dos tipografías del sitio: Archivo para todo y Plex Mono para los
+ * rótulos. La landing la abre alguien que acaba de ver un video y muchos
+ * llegarán después a calidev.dev; si las dos páginas no se parecen, la segunda
+ * visita se siente otra empresa.
+ *
+ * Instrument Serif no entra: aquí no hay tipografía cinética, y es una fuente
+ * menos que descargar en un móvil con datos.
+ */
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+const plex = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex",
   display: "swap",
 });
 
@@ -15,7 +32,8 @@ const jakarta = Plus_Jakarta_Sans({
  * Tampoco hay ThemeProvider — la landing se ve igual para todo el mundo y no
  * depende de la preferencia de tema del visitante.
  *
- * El padding inferior deja espacio para la barra fija de CTA.
+ * `senal` trae los tokens de la paleta; el padding inferior deja espacio para
+ * la barra fija de CTA.
  */
 export default function ServinomicLayout({
   children,
@@ -23,8 +41,8 @@ export default function ServinomicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={jakarta.variable}>
-      <body className="bg-[#FBF8F3] pb-[104px] font-sans text-[#15211C] antialiased">
+    <html lang="es" className={`${archivo.variable} ${plex.variable}`}>
+      <body className="senal bg-[var(--hueso)] pb-[104px] font-[family-name:var(--font-archivo)] text-[var(--tinta)] antialiased">
         {children}
       </body>
     </html>
