@@ -43,7 +43,14 @@ export type Campaign = {
   /** Otro trabajo hecho para el mismo cliente. Prueba verificable adicional. */
   clientSite: { intro: string; label: string; href: string } | null;
 
-  /** Foto del equipo del cliente. Personas reales, no stock. */
+  /**
+   * Foto del equipo del cliente. Personas reales, no stock.
+   *
+   * Hoy el hero enseña el clip del servicio en su lugar. Se conserva a
+   * propósito: es la única prueba de que el equipo existe y son veinte, y si
+   * algún día el clip se cae o se quiere volver atrás, el dato y su texto
+   * alternativo ya están escritos.
+   */
   teamPhoto: { src: string; alt: string; caption: string };
 
   /** Cifras del caso. Solo relativas — ver REGLA DE DATOS arriba. */

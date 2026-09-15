@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ClipHero } from "@/components/servinomic/clip-hero";
 import { CtaButton } from "@/components/servinomic/cta-button";
 import type { Campaign } from "@/lib/campaigns";
 
@@ -12,9 +12,10 @@ import type { Campaign } from "@/lib/campaigns";
  * El CTA va antes del testimonio, no después: quien ya venía convencido del
  * anuncio no debería tener que leer nada para poder actuar.
  *
- * La foto es el equipo real del cliente, no stock. Además de credibilidad hace
- * un trabajo concreto: muestra literalmente qué es "personal operativo", que es
- * el concepto que decide si la visitante califica o no.
+ * El clip enseña el servicio: tres personas trabajando en una casa. Es una
+ * recreación, no una grabación real, así que va sin pie de foto que lo
+ * presente como documental. Los datos ciertos del equipo están en la ficha de
+ * Deisy, justo debajo.
  */
 export function ServinomicHero({ campaign }: { campaign: Campaign }) {
   const [before, after] = splitHeadline(
@@ -53,29 +54,18 @@ export function ServinomicHero({ campaign }: { campaign: Campaign }) {
         ))}
       </ul>
 
-      {/* El CTA va antes de la foto para que quepa arriba del pliegue en móvil:
-          la foto mide 230px y lo empujaba fuera de vista, dejándolo pegado a la
-          barra fija. La foto queda como recompensa al primer scroll. */}
+      {/* El CTA va antes del clip para que quepa arriba del pliegue en móvil,
+          que es de donde llega casi todo el tráfico. El clip queda como
+          recompensa al primer scroll. */}
       <div className="mt-6">
         <CtaButton reassurance="Toma 1 minuto · No pedimos datos personales al inicio">
           {campaign.heroCta}
         </CtaButton>
       </div>
 
-      <figure className="relative mt-7 overflow-hidden rounded-3xl">
-        <Image
-          src={campaign.teamPhoto.src}
-          alt={campaign.teamPhoto.alt}
-          width={1600}
-          height={896}
-          priority
-          sizes="(max-width: 640px) 100vw, 576px"
-          className="aspect-[25/14] w-full object-cover object-top"
-        />
-        <figcaption className="absolute inset-x-0 bottom-0 bg-[linear-gradient(transparent,rgba(10,25,20,0.86))] px-4 pb-3.5 pt-10 text-[13px] font-semibold text-white">
-          {campaign.teamPhoto.caption}
-        </figcaption>
-      </figure>
+      <div className="mt-7">
+        <ClipHero />
+      </div>
 
       <figure className="mt-7 rounded-3xl border border-[#D8DCD4] bg-white p-5 shadow-[0_3px_14px_rgba(21,33,28,0.05)]">
         <figcaption className="flex items-center gap-3">
