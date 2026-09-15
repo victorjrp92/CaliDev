@@ -34,9 +34,24 @@ export function ServinomicHero({ campaign }: { campaign: Campaign }) {
         {after}
       </h1>
 
-      <p className="mt-4 text-[17px] leading-relaxed text-[#46554D]">
+      <p className="mt-4 text-[17px] leading-snug text-[#46554D]">
         {campaign.subhead}
       </p>
+
+      {/* En renglones y no en párrafo. Quien llega de un video no lee prosa:
+          recorre la lista buscando algo que le suene a su semana, y en dos
+          segundos sabe si esta página va con ella. */}
+      <ul className="mt-4 flex flex-col gap-2.5">
+        {campaign.bullets.map((linea) => (
+          <li key={linea} className="flex items-start gap-3 text-[16px] leading-snug">
+            <span
+              aria-hidden="true"
+              className="mt-[0.62em] h-[3px] w-4 flex-none rounded-full bg-[var(--verde)]"
+            />
+            <span>{linea}</span>
+          </li>
+        ))}
+      </ul>
 
       {/* El CTA va antes de la foto para que quepa arriba del pliegue en móvil:
           la foto mide 230px y lo empujaba fuera de vista, dejándolo pegado a la

@@ -3,21 +3,21 @@ import { CtaButton } from "@/components/servinomic/cta-button";
 const STEPS = [
   {
     title: "Contestas 6 preguntas",
-    body: "Sobre tu operación. Menos de un minuto y no hay que agendar nada.",
+    body: "Un minuto. No hay que agendar nada.",
   },
   {
     title: "Revisamos tu caso a mano",
-    body: "Miramos cada registro y priorizamos las empresas donde el sistema hace más diferencia.",
+    body: "Uno por uno. Priorizamos donde el sistema cambia más.",
   },
   {
     title: "Te escribimos por WhatsApp",
-    body: "Si encajamos, agendamos 30 minutos y te entregamos el diagnóstico. Sin pitch: te decimos honestamente si te sirve o no.",
+    body: "Si encajamos, 30 minutos y te damos el diagnóstico. Sin presentación de ventas.",
   },
 ];
 
 /**
  * El recorrido explicado antes de recorrerlo, para quitar el miedo a lo
- * desconocido — que es la objeción real detrás de un formulario abandonado.
+ * desconocido, que es la objeción real detrás de un formulario abandonado.
  *
  * Decir que el contacto lo inicia CaliDev y que hay revisión manual es lo que
  * convierte la espera en señal de selección en vez de en abandono. El CTA #3 va

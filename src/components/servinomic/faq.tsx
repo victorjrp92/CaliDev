@@ -1,19 +1,19 @@
 const QUESTIONS = [
   {
     q: "¿Cuánto cuesta?",
-    a: "Depende del tamaño de tu operación. Te lo decimos en la llamada, con el número completo y sin letra menuda. Si no te sirve, te lo decimos antes de que gastes un peso.",
+    a: "Depende del tamaño de tu operación. Te damos el número completo en la llamada. Si no te sirve, te lo decimos antes de que gastes un peso.",
   },
   {
     q: "Mi empresa es pequeña, ¿igual aplica?",
-    a: "Si tienes al menos 3 o 4 personas en operación, sí. Por debajo de eso normalmente te decimos que todavía no lo necesitas — y te ahorramos la llamada.",
+    a: "Con 3 o 4 personas en operación, sí. Por debajo solemos decirte que todavía no lo necesitas.",
   },
   {
     q: "No soy buena con la tecnología",
-    a: "La mayoría de nuestros clientes tampoco lo son. Nosotros lo dejamos configurado y acompañamos al equipo hasta que esté funcionando. Si tu gente usa WhatsApp, puede usar esto.",
+    a: "La mayoría de nuestros clientes tampoco. Lo dejamos configurado y acompañamos al equipo. Si tu gente usa WhatsApp, puede usar esto.",
   },
   {
     q: "¿Y si estoy fuera de Colombia?",
-    a: "Regístrate igual. El sistema base está hecho para la ley colombiana, pero construimos versiones a medida para otros países.",
+    a: "Regístrate igual. El sistema base sigue la ley colombiana; para otros países construimos a medida.",
   },
 ];
 

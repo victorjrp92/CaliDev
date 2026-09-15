@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Skills instaladas con `npx skills add`. Son herramientas de trabajo, no parte
+# del sitio: se reinstalan con el comando y no tienen por qué viajar en el repo.
+.agents/
+.claude/
+skills-lock.json

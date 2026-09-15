@@ -11,7 +11,7 @@ export function ServinomicClosing() {
           Tu operación ya te está diciendo dónde duele
         </h2>
         <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-[#46554D]">
-          Cuéntanos cómo trabajas hoy y te decimos si ServiNomic te sirve — o si
+          Cuéntanos cómo trabajas hoy. Te decimos si ServiNomic te sirve, o si
           tu problema se resuelve de otra forma.
         </p>
       </section>

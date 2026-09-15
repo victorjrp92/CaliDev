@@ -22,6 +22,13 @@ export type Campaign = {
   /** Fragmento del titular que va resaltado. Debe existir dentro de `headline`. */
   headlineHighlight: string;
   subhead: string;
+  /**
+   * Lo que deja de hacerse a mano, en renglones sueltos.
+   *
+   * Sustituye al párrafo de entrada. Quien llega de un video no lee prosa: mira
+   * si algo de esto le pasa a ella, y en una lista lo sabe en dos segundos.
+   */
+  bullets: string[];
   /** Texto del primer botón, arriba del pliegue. */
   heroCta: string;
 
@@ -58,10 +65,15 @@ const LIMPIAEXPRESS: Campaign = {
   // hace que la lectora sienta que no le hablan a ella. El dolor que sí es
   // universal en una empresa de servicios es que la operación entera depende
   // de la memoria del dueño.
-  headline: "Tu empresa depende de que tú te acuerdes de todo.",
-  headlineHighlight: "de que tú te acuerdes de todo.",
-  subhead:
-    "De cuatro horas planeando el día a diez minutos: eso es lo que cambió en LimpiaExpress. Quién trabaja dónde, cuánto le debes a cada quien, qué cliente no ha vuelto, en qué se te fue la plata. ServiNomic no es una app de nómina — es el sistema que recuerda, calcula y te avisa por ti.",
+  headline: "Cuatro horas al día organizando. Hoy, diez minutos.",
+  headlineHighlight: "Hoy, diez minutos.",
+  subhead: "Le pasó a LimpiaExpress Cali. Esto es lo que dejaron de hacer a mano:",
+  bullets: [
+    "Cuadrar la nómina y la seguridad social",
+    "Armar la ruta del día y repartir al equipo",
+    "Sumar ingresos, gastos y margen por servicio",
+    "Buscar en cuarenta chats quién atendió qué",
+  ],
   heroCta: "Ver si aplica a mi empresa",
 
   quote:
@@ -95,7 +107,7 @@ const LIMPIAEXPRESS: Campaign = {
 
   reliefTitle: "Antes no descansaba ni los domingos.",
   reliefBody:
-    "Cuadrar la seguridad social y los pagos de la semana le tomaba dieciséis horas. Sumado a registrar cada servicio en la agenda, buscar direcciones, ubicar a quién supervisar, sumar ingresos y gastos a mano, y archivar facturas una por una, la operación se comía más de 40 horas semanales — un empleado de tiempo completo invisible. Hoy Deisy dirige una empresa más grande y se toma un día a la semana para descansar.",
+    "Dieciséis horas por semana cuadrando pagos. Cada servicio anotado a mano. Cada dirección buscada una por una. Más de cuarenta horas a la semana en total: un empleado de tiempo completo que nadie ve. Hoy Deisy dirige una empresa más grande y descansa un día a la semana.",
 
   slots: 3,
 };
@@ -105,8 +117,7 @@ const DIRECTO: Campaign = {
   ...LIMPIAEXPRESS,
   slug: "directo",
   referrer: null,
-  subhead:
-    "ServiNomic no es una app de nómina. Es el sistema con el que las empresas de servicios coordinan a su equipo, controlan sus servicios y saben dónde crecer.",
+  subhead: "Lo que las empresas de servicios dejan de hacer a mano:",
 };
 
 export const CAMPAIGNS: Record<string, Campaign> = {
