@@ -29,7 +29,7 @@ const FEATURES = [
     lines: [
       "Ingresos, gastos e insumos en un solo lugar",
       "Margen por servicio, no por corazonada",
-      "Cuántos servicios faltan para no perder este mes",
+      "El punto de equilibrio, para saber desde cuándo ganas",
     ],
     before: "Antes: sumar a mano y archivar facturas una por una",
     Preview: MoneyPreview,

@@ -76,6 +76,7 @@ const LIMPIAEXPRESS: Campaign = {
     "Armar la ruta del día y repartir al equipo",
     "Sumar ingresos, gastos y margen por servicio",
     "Buscar en cuarenta chats quién atendió qué",
+    "Responder los mismos mensajes de Instagram",
   ],
   heroCta: "Ver si aplica a mi empresa",
 

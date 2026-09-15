@@ -24,9 +24,9 @@ type Fila = {
   role: string | null;
   staff: string | null;
   country: string | null;
-  payment_model: string | null;
-  payroll_hours: string | null;
-  services_month: string | null;
+  herramientas: string | null;
+  repetitivo: string | null;
+  freno: string | null;
   urgency: string | null;
   score_value: number;
   score_intent: number;
@@ -239,8 +239,9 @@ export default async function PanelLeads({
                     "Empresa",
                     "Contacto",
                     "Equipo",
-                    "Cómo paga",
-                    "Horas de nómina",
+                    "Con qué trabaja",
+                    "Horas repetitivas",
+                    "Qué la frena",
                     "Urgencia",
                     "Puntaje",
                     "Entró",
@@ -290,10 +291,13 @@ export default async function PanelLeads({
                       </td>
                       <td className="px-3.5 py-3 text-[#46554D]">{labelFor("staff", fila.staff)}</td>
                       <td className="px-3.5 py-3 text-[#46554D]">
-                        {labelFor("payment_model", fila.payment_model)}
+                        {labelFor("herramientas", fila.herramientas)}
                       </td>
                       <td className="px-3.5 py-3 text-[#46554D]">
-                        {labelFor("payroll_hours", fila.payroll_hours)}
+                        {labelFor("repetitivo", fila.repetitivo)}
+                      </td>
+                      <td className="px-3.5 py-3 text-[#46554D]">
+                        {labelFor("freno", fila.freno)}
                       </td>
                       <td className="px-3.5 py-3 text-[#46554D]">
                         {labelFor("urgency", fila.urgency)}

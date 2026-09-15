@@ -2,7 +2,7 @@ import { CtaButton } from "@/components/servinomic/cta-button";
 
 const STEPS = [
   {
-    title: "Contestas 6 preguntas",
+    title: "Contestas 7 preguntas",
     body: "Un minuto. No hay que agendar nada.",
   },
   {

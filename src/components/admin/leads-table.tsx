@@ -13,9 +13,9 @@ type Lead = {
   role: string | null;
   staff: string | null;
   country: string | null;
-  payment_model: string | null;
-  payroll_hours: string | null;
-  services_month: string | null;
+  herramientas: string | null;
+  repetitivo: string | null;
+  freno: string | null;
   urgency: string | null;
   score_value: number;
   score_intent: number;
@@ -151,9 +151,9 @@ export function LeadsTable() {
                       <dl className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
                         <Detail label="Rol" value={labelFor("role", lead.role)} />
                         <Detail label="País" value={labelFor("country", lead.country)} />
-                        <Detail label="Cómo paga" value={labelFor("payment_model", lead.payment_model)} />
-                        <Detail label="Horas en cerrar pagos" value={labelFor("payroll_hours", lead.payroll_hours)} />
-                        <Detail label="Servicios/mes" value={labelFor("services_month", lead.services_month)} />
+                        <Detail label="Cómo paga" value={labelFor("herramientas", lead.herramientas)} />
+                        <Detail label="Horas en cerrar pagos" value={labelFor("repetitivo", lead.repetitivo)} />
+                        <Detail label="Servicios/mes" value={labelFor("freno", lead.freno)} />
                         <Detail label="Urgencia" value={labelFor("urgency", lead.urgency)} />
                         <Detail label="Email" value={lead.email || "—"} />
                         <Detail

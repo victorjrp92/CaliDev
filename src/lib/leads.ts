@@ -2,8 +2,15 @@
  * Filtro y scoring de leads de ServiNomic.
  *
  * Dos ejes deliberadamente separados:
- *  - VALOR    (0-100): cuánto vale el lead si cierra — tamaño, volumen, autoridad, país.
- *  - INTENCIÓN(0-100): qué tan cerca está de comprar — dolor actual y urgencia.
+ *  - VALOR    (0-100): cuánto vale el contacto si cierra. Tamaño y autoridad.
+ *  - INTENCIÓN(0-100): qué tan cerca está de moverse. Dolor actual y urgencia.
+ *
+ * Lo que se pregunta cambió cuando la oferta dejó de ser solo ServiNomic. Con
+ * páginas web, marca, flujos de trabajo y asesoría encima de la mesa, cabe casi
+ * cualquier empresa, así que el rubro y el modelo de pago dejaron de separar al
+ * buen contacto del perdido. Lo que sí lo separa es el momento: estancada,
+ * trabajando de más, repitiendo tareas, con libretas y Excel, y con ganas de
+ * cambiarlo.
  *
  * El puntaje final es VALOR × INTENCIÓN / 100 en vez de un promedio: multiplicar
  * castiga el desequilibrio, así una empresa grande que "está explorando" no
@@ -28,9 +35,9 @@ export type LeadAnswerKey =
   | "role"
   | "staff"
   | "country"
-  | "payment_model"
-  | "payroll_hours"
-  | "services_month"
+  | "herramientas"
+  | "repetitivo"
+  | "freno"
   | "urgency";
 
 export type LeadAnswers = Partial<Record<LeadAnswerKey, string>>;
@@ -76,44 +83,47 @@ export const STEP_1_QUESTIONS: Question[] = [
 /** Paso 3: enmarcado como "para preparar tu diagnóstico", ya con el contacto guardado. */
 export const STEP_3_QUESTIONS: Question[] = [
   {
-    key: "payment_model",
+    key: "herramientas",
     step: 3,
-    label: "¿Cómo le pagas hoy a tu equipo?",
+    label: "¿Con qué manejas la operación hoy?",
+    help: "Lo que de verdad usas todos los días, no lo que te gustaría usar.",
     options: [
-      { value: "prestacion", label: "Por horas o por servicio (prestación de servicios)", points: 20 },
-      { value: "nomina", label: "Nómina fija mensual", points: 5 },
-      { value: "mezcla", label: "Una mezcla de las dos", points: 25 },
-      { value: "informal", label: "Sin un sistema definido", points: 30 },
+      { value: "libretas", label: "Libretas, papel y memoria", points: 35 },
+      { value: "excel", label: "Excel y WhatsApp", points: 32 },
+      { value: "sueltos", label: "Varios programas que no se hablan entre sí", points: 28 },
+      { value: "software", label: "Un software, pero no me sirve del todo", points: 18 },
+      { value: "bien", label: "Todo funciona bien como está", points: 0 },
     ],
   },
   {
-    key: "payroll_hours",
+    key: "repetitivo",
     step: 3,
-    label: "¿Cuánto tiempo te toma cerrar los pagos cada periodo?",
-    help: "Contando cuadrar horas, calcular descuentos y responder reclamos.",
+    label: "¿Cuánto tiempo a la semana se te va en tareas que se repiten?",
+    help: "Responder los mismos mensajes, pasar datos de un lado a otro, armar el mismo informe.",
     options: [
-      { value: "lt1", label: "Menos de 1 hora", points: 5 },
-      { value: "2-4", label: "Entre 2 y 4 horas", points: 15 },
+      { value: "lt2", label: "Menos de 2 horas", points: 5 },
+      { value: "2-5", label: "Entre 2 y 5 horas", points: 18 },
       { value: "5-10", label: "Entre 5 y 10 horas", points: 30 },
       { value: "gt10", label: "Más de 10 horas", points: 40 },
-      { value: "nomedido", label: "Nunca lo he medido", points: 10 },
+      { value: "nomedido", label: "No lo he medido, pero es mucho", points: 25 },
     ],
   },
   {
-    key: "services_month",
+    key: "freno",
     step: 3,
-    label: "¿Cuántos servicios atiendes al mes?",
+    label: "¿Qué te está frenando hoy?",
     options: [
-      { value: "lt50", label: "Menos de 50", points: 5 },
-      { value: "50-200", label: "Entre 50 y 200", points: 12 },
-      { value: "201-500", label: "Entre 201 y 500", points: 20 },
-      { value: "500+", label: "Más de 500", points: 25 },
+      { value: "nodoyabasto", label: "No doy abasto con lo que ya tengo", points: 25 },
+      { value: "desorden", label: "Crecí y se me desordenó todo", points: 25 },
+      { value: "plata", label: "No sé por dónde se me va la plata", points: 22 },
+      { value: "dependedemi", label: "Todo depende de mí", points: 25 },
+      { value: "pocosclientes", label: "Me buscan poco, necesito que me encuentren", points: 18 },
     ],
   },
   {
     key: "urgency",
     step: 3,
-    label: "¿Cuándo quisieras tenerlo funcionando?",
+    label: "¿Cuándo quisieras empezar a cambiarlo?",
     options: [
       { value: "ya", label: "Ya, es urgente", points: 30 },
       { value: "1-3m", label: "En los próximos 1 a 3 meses", points: 18 },
@@ -125,8 +135,8 @@ export const STEP_3_QUESTIONS: Question[] = [
 export const ALL_QUESTIONS: Question[] = [...STEP_1_QUESTIONS, ...STEP_3_QUESTIONS];
 
 /** Qué preguntas alimentan cada eje. */
-const VALUE_KEYS: LeadAnswerKey[] = ["staff", "services_month", "role", "country"];
-const INTENT_KEYS: LeadAnswerKey[] = ["payroll_hours", "payment_model", "urgency"];
+const VALUE_KEYS: LeadAnswerKey[] = ["staff", "role", "country"];
+const INTENT_KEYS: LeadAnswerKey[] = ["herramientas", "repetitivo", "freno", "urgency"];
 
 function pointsFor(key: LeadAnswerKey, value: string | undefined): number {
   if (!value) return 0;
@@ -149,25 +159,27 @@ export type LeadScore = {
 };
 
 /**
- * ServiNomic como producto solo aplica en Colombia: el motor de nómina tiene
- * cableado el régimen colombiano (IBC, salud, pensión, ARL, caja) y el modelo
- * de prestación de servicios. Fuera de ese encaje el lead va a track servicio,
- * que es a medida — y más caro, así que no se pierde.
+ * A qué se parece el encaje. Ya no decide si el contacto sirve, solo por dónde
+ * empezaría la conversación.
+ *
+ * `descartado` es para quien no dirige nada y para quien dice que todo le
+ * funciona bien: sin nada que arreglar no hay proyecto, y llamarla es gastarle
+ * el tiempo a las dos partes.
+ *
+ * `producto` es donde ServiNomic encaja tal cual: Colombia, equipo de verdad y
+ * la operación todavía a mano. El motor de nómina tiene cableado el régimen
+ * colombiano, así que fuera de ahí se construye a medida, que es `servicio` —
+ * más caro, no peor.
  */
 export function routeTrack(answers: LeadAnswers): Track {
   if (answers.role === "empleado" || answers.role === "ninguna") return "descartado";
+  if (answers.herramientas === "bien") return "descartado";
 
-  const isColombia = answers.country === "co";
+  const enColombia = answers.country === "co";
+  const equipoDeVerdad = answers.staff !== "1-3";
+  const todaviaAMano = answers.herramientas === "libretas" || answers.herramientas === "excel";
 
-  // "informal" también encaja: una operación sin sistema definido en Colombia
-  // adopta prestación de servicios AL entrar a ServiNomic — es el mejor
-  // candidato al producto listo, no a un proyecto a medida que no puede pagar.
-  // El que no encaja es "nomina" (nómina fija mensual): otro régimen legal que
-  // el motor no calcula.
-  const fitsPayrollEngine = answers.payment_model !== "nomina";
-  const tooBigForOffTheShelf = answers.staff === "26-50" || answers.staff === "50+";
-
-  if (isColombia && fitsPayrollEngine && !tooBigForOffTheShelf) return "producto";
+  if (enColombia && equipoDeVerdad && todaviaAMano) return "producto";
   return "servicio";
 }
 

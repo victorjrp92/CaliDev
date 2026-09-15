@@ -49,9 +49,9 @@ function answerColumns(answers: LeadAnswers) {
     role: get("role"),
     staff: get("staff"),
     country: get("country"),
-    payment_model: get("payment_model"),
-    payroll_hours: get("payroll_hours"),
-    services_month: get("services_month"),
+    herramientas: get("herramientas"),
+    repetitivo: get("repetitivo"),
+    freno: get("freno"),
     urgency: get("urgency"),
   };
 }
@@ -87,13 +87,13 @@ export async function POST(request: Request) {
       INSERT INTO leads (
         campaign, name, company, whatsapp, email,
         role, staff, country, country_other,
-        payment_model, payroll_hours, services_month, urgency,
+        herramientas, repetitivo, freno, urgency,
         score_value, score_intent, score_total, track, qualified,
         completed, referral_contact
       ) VALUES (
         ${campaign}, ${name}, ${company}, ${whatsapp}, ${email},
         ${cols.role}, ${cols.staff}, ${cols.country}, ${countryOther},
-        ${cols.payment_model}, ${cols.payroll_hours}, ${cols.services_month}, ${cols.urgency},
+        ${cols.herramientas}, ${cols.repetitivo}, ${cols.freno}, ${cols.urgency},
         ${score.value}, ${score.intent}, ${score.total}, ${score.track}, ${score.qualified},
         ${isComplete(answers)}, ${referralContact}
       )
@@ -143,9 +143,9 @@ export async function PATCH(request: Request) {
 
     await sql`
       UPDATE leads SET
-        payment_model = ${cols.payment_model},
-        payroll_hours = ${cols.payroll_hours},
-        services_month = ${cols.services_month},
+        herramientas = ${cols.herramientas},
+        repetitivo = ${cols.repetitivo},
+        freno = ${cols.freno},
         urgency = ${cols.urgency},
         score_value = ${score.value},
         score_intent = ${score.intent},
