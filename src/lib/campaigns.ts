@@ -60,13 +60,16 @@ export type Campaign = {
 const LIMPIAEXPRESS: Campaign = {
   slug: "limpiaexpress",
   referrer: "Vienes del video de Deisy",
-  // El titular no describe la herramienta de nadie en particular (agenda de
-  // papel, Excel, WhatsApp): cada empresa se organiza distinto y decirlo mal
-  // hace que la lectora sienta que no le hablan a ella. El dolor que sí es
-  // universal en una empresa de servicios es que la operación entera depende
-  // de la memoria del dueño.
-  headline: "Cuatro horas al día organizando. Hoy, diez minutos.",
-  headlineHighlight: "Hoy, diez minutos.",
+  /**
+   * El titular nombra el problema tal como ella lo vive: la empresa camina,
+   * pero se para si ella se va. Es lo que Deisy describe en el video cuando
+   * dice que el negocio la tenía ocupada doce horas al día.
+   *
+   * Va en dos frases cortas y no en una larga. Quien llega de un video no
+   * arranca leyendo una oración de veinte palabras.
+   */
+  headline: "Tu empresa funciona. Pero solo cuando tú estás.",
+  headlineHighlight: "Pero solo cuando tú estás.",
   subhead: "Le pasó a LimpiaExpress Cali. Esto es lo que dejaron de hacer a mano:",
   bullets: [
     "Cuadrar la nómina y la seguridad social",
