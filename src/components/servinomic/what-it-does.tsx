@@ -12,9 +12,10 @@ import { MoneyPreview } from "@/components/servinomic/previews/money-preview";
  * dicen más: se ve el alcance y además se lee como una historia y no como un
  * catálogo.
  *
- * El segundo bloque es el que más trabaja. «Flujo de trabajo» no lo entiende
- * casi nadie, así que no se nombra: se enseña. Un link, tres datos, y el
- * servicio aparece solo en la agenda.
+ * El segundo bloque lista los flujos y el visual enseña uno entero. «Flujo de
+ * trabajo» no lo entiende casi nadie leyéndolo, así que debajo va el de
+ * agendamiento paso a paso: un link, tres datos, y el servicio aparece solo en
+ * la agenda. Un ejemplo completo explica la categoría mejor que una definición.
  */
 const TRABAJOS = [
   {
@@ -22,17 +23,18 @@ const TRABAJOS = [
     lines: [
       "Página web propia, con su marca",
       "Perfil de Google montado y verificado",
-      "Los clientes agendan desde ahí, no por chat",
+      "Los clientes la encuentran y llegan desde ahí",
     ],
     Visual: WebVisual,
   },
   {
-    title: "Después, que la agenda se llenara sola",
+    title: "Flujo de trabajo en ServiNomic",
     lines: [
-      "El cliente entra por un link",
-      "Deja nombre, teléfono y dirección",
-      "Escoge servicio, fecha y hora",
-      "Queda en la agenda sin que nadie lo escriba",
+      "Datos y agendamiento de clientes, por link",
+      "Disponibilidad del equipo, por link",
+      "Medición de inventario: ¿está por acabarse, hay que comprar?",
+      "Control de calidad, con supervisión del servicio",
+      "Y los que la operación vaya pidiendo",
     ],
     Visual: AgendaPreview,
   },

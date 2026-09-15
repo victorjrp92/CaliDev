@@ -9,16 +9,20 @@ import { PreviewShell } from "@/components/servinomic/previews/shell";
  *
  * Los pasos salen de la página real de LimpiaExpress: nombre y teléfono, luego
  * servicio con fecha y hora, luego dirección. No es un ejemplo inventado.
+ *
+ * De dónde sale el link no se dice. El agendamiento ocurre porque ella lo pide,
+ * no porque el cliente lo encuentre navegando, y afirmar una cosa por la otra
+ * sería inventar.
  */
 const PASOS = [
-  { n: "1", titulo: "Entra por el link", detalle: "Desde la web o desde Instagram" },
+  { n: "1", titulo: "Abre el link", detalle: "Sin instalar nada ni crear cuenta" },
   { n: "2", titulo: "Deja sus datos", detalle: "Nombre, teléfono y dirección" },
   { n: "3", titulo: "Escoge el servicio", detalle: "Con fecha y hora" },
 ];
 
 export function AgendaPreview() {
   return (
-    <PreviewShell title="Agendamiento">
+    <PreviewShell title="Flujo: agendamiento de cliente">
       <div className="p-3.5">
         <ol className="flex flex-col">
           {PASOS.map((paso, i) => (
