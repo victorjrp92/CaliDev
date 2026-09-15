@@ -14,7 +14,7 @@ export function PayrollPreview() {
       <div className="flex items-center justify-between rounded-lg bg-[#E6E8E3] px-3 py-2">
         <PreviewLabel>Listo para pagar</PreviewLabel>
         <span className="text-[10px] font-bold text-[#0A3D2E]">
-          22 colaboradoras ✓
+          20 colaboradoras ✓
         </span>
       </div>
 
