@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { ShareButtons } from '@/components/share-buttons';
 import { Panel } from '@/components/senal/panel';
 import { Link } from '@/i18n/routing';
+import { alternatesDe, urlCanonica } from '@/lib/canonica';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -14,18 +15,41 @@ export async function generateStaticParams() {
   return posts.map(post => ({ slug: post.slug }));
 }
 
+/**
+ * El canonical apunta al idioma del ARTÍCULO, no al de la URL, y aquí NO se
+ * emite grupo hreflang.
+ *
+ * Es el único sitio del sitio donde no vale el canonical autorreferente: hay un
+ * solo archivo MDX por slug y `getPostBySlug` lo sirve bajo los tres idiomas a
+ * propósito, para que quien llegue de un enlace pueda leerlo. Eso significa que
+ * `/en/blog/x`, `/es/blog/x` y `/de/blog/x` devuelven exactamente el mismo
+ * texto: tres canonical autorreferentes le dirían a un buscador que indexe tres
+ * copias del mismo artículo. Apuntando los tres al idioma real del post, las
+ * tres URLs siguen abriéndose para quien las visita y solo se indexa una.
+ *
+ * Y por eso mismo `idiomas: false`. Un grupo hreflang dice «esto es el mismo
+ * contenido traducido, sirve a cada quien el suyo», y aquí no hay traducción
+ * ninguna: hay un texto servido tres veces. Declararlo sería falso, y además se
+ * daría de bruces con el canonical de arriba —Google exige que cada miembro de
+ * un grupo hreflang sea autocanónico, y dos de los tres no lo son—, lo que tira
+ * el grupo entero. Las otras cuatro familias de rutas (home, about, blog,
+ * contact) sí están traducidas de verdad y sí lo declaran.
+ */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   const post = getPostBySlug(slug, locale);
   if (!post) return { title: 'Post Not Found' };
+  const ruta = `/blog/${slug}`;
   return {
     title: post.title,
     description: post.description,
     authors: [{ name: post.author }],
+    alternates: alternatesDe(post.locale, ruta, { idiomas: false }),
     openGraph: {
       title: post.title,
       description: post.description,
       type: 'article',
+      url: urlCanonica(post.locale, ruta),
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,

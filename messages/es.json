@@ -88,7 +88,7 @@
     "t1_text": "Victor transformó toda nuestra infraestructura digital. La app personalizada que construyó redujo nuestros costos operativos en un 40%.",
     "t2_name": "Thomas Mueller",
     "t2_company": "Innovate GmbH",
-    "t2_text": "Las soluciones de automatización implementadas por Victor Ramos BE nos ahorraron 20 horas por semana. ROI excepcional.",
+    "t2_text": "Las soluciones de automatización nos ahorraron 20 horas por semana. ROI excepcional.",
     "t3_name": "Laura Martinez",
     "t3_company": "Global Commerce Co",
     "t3_text": "Profesional, estratégico y orientado a resultados. Nuestra plataforma de e-commerce vio un aumento del 65% en conversiones."
@@ -415,6 +415,13 @@
       "palabra3": "ventaja",
       "linea": "Páginas web, aplicaciones y automatizaciones para pymes que quieren vender más y trabajar menos a mano.",
       "cta": "Ver qué podemos hacer"
+    }
+  },
+  "meta": {
+    "home": {
+      "titulo": "Páginas web, aplicaciones y automatizaciones",
+      "descripcion": "Desarrollo web, aplicaciones a medida y automatización de procesos para pymes. Vemos dónde se pierde tiempo y construimos el sistema que lo arregla.",
+      "og_titulo": "CaliDev — Construimos tu ventaja"
     }
   }
 }

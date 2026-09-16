@@ -6,6 +6,7 @@ import { routing } from '@/i18n/routing';
 import { Barra } from '@/components/senal/barra';
 import { Pie } from '@/components/senal/pie';
 import { JsonLd } from '@/components/json-ld';
+import { SITIO } from '@/lib/sitio';
 import '@/styles/senal.css';
 
 const archivo = Archivo({
@@ -68,7 +69,10 @@ export default async function LocaleLayout({
     name: 'CaliDev',
     description:
       'Consultoría de estrategia digital y de negocio: sistemas de operaciones, aplicaciones, sitios web y automatizaciones.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://calidev.dev',
+    // Este `url` es el que ata la marca a un dominio, y leyendo la variable
+    // a pelo salía con el tabulador que alguien dejó delante en el panel de
+    // producción. `SITIO` ya la recorta y le quita la barra final.
+    url: SITIO,
     serviceType: [
       'Business Strategy Consulting',
       'App Development',

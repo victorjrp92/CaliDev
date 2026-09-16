@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { alternatesDe, urlCanonica } from '@/lib/canonica';
 import { WorkPageHero } from '@/components/ui/work-page-hero';
 import { Servicios } from '@/components/nuevo/servicios';
 import { Testimonios } from '@/components/nuevo/testimonios';
@@ -7,18 +9,41 @@ import { Herramientas } from '@/components/nuevo/herramientas';
 import { Cierre } from '@/components/senal/cierre';
 import { SaltoAncla } from '@/components/senal/salto-a-ancla';
 
-export const metadata: Metadata = {
-  title: 'CaliDev — Construimos tu ventaja',
-  description:
-    'Consultoría de estrategia digital y de negocio. Analizamos la operación, encontramos dónde se pierde tiempo y dinero, y construimos el sistema que lo arregla.',
-  openGraph: {
-    title: 'CaliDev — Construimos tu ventaja',
-    description:
-      'Analizamos la operación, encontramos dónde se pierde tiempo y dinero, y construimos el sistema que lo arregla.',
-    type: 'website',
-    images: ['/hero/poster.jpg'],
-  },
-};
+/**
+ * Los metadatos de la home eran una constante en español, y por tanto `/en` y
+ * `/de` se anunciaban en Google en español: el resto del sitio ya traducía sus
+ * títulos y solo esta página se quedaba fuera, que es la que más visitas
+ * recibe. Ahora salen de `meta.home`, como cualquier otro texto del sitio.
+ *
+ * El título ya no empieza por «CaliDev». La plantilla del layout raíz añade
+ * « | CaliDev» a todo, así que el nombre salía dos veces y se comía diez de los
+ * sesenta caracteres que un buscador enseña; los diez que valen son los que
+ * dicen a qué nos dedicamos con las palabras que la gente escribe al buscar.
+ * En Open Graph sí va la marca —ahí no hay plantilla ni resultado que recortar,
+ * hay una tarjeta compartida—, y por eso ese título va como `absolute`: sin esa
+ * marca, la plantilla también se le aplicaría y volvería el nombre repetido.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'meta.home' });
+
+  return {
+    title: t('titulo'),
+    description: t('descripcion'),
+    alternates: alternatesDe(locale, '/'),
+    openGraph: {
+      title: { absolute: t('og_titulo') },
+      description: t('descripcion'),
+      type: 'website',
+      url: urlCanonica(locale, '/'),
+      images: ['/hero/poster.jpg'],
+    },
+  };
+}
 
 /**
  * Home: el hero con el vídeo que se expande, los servicios avanzando en

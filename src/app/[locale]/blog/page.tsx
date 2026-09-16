@@ -4,11 +4,16 @@ import { BlogList } from '@/components/blog-list';
 import { OtrosIdiomas } from '@/components/otros-idiomas';
 import { Panel } from '@/components/senal/panel';
 import { Titular } from '@/components/senal/titular';
+import { alternatesDe } from '@/lib/canonica';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'blog' });
-  return { title: t('title'), description: t('subtitle') };
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: alternatesDe(locale, '/blog'),
+  };
 }
 
 /**

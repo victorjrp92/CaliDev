@@ -4,11 +4,16 @@ import { useTranslations } from 'next-intl';
 import { ContactForm } from '@/components/contact-form';
 import { Panel } from '@/components/senal/panel';
 import { Relojes } from '@/components/senal/relojes';
+import { alternatesDe } from '@/lib/canonica';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
-  return { title: t('title'), description: t('subtitle') };
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: alternatesDe(locale, '/contact'),
+  };
 }
 
 /**

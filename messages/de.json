@@ -88,7 +88,7 @@
     "t1_text": "Victor hat unsere gesamte digitale Infrastruktur transformiert. Die maßgeschneiderte App, die er entwickelt hat, reduzierte unsere Betriebskosten um 40%.",
     "t2_name": "Thomas Mueller",
     "t2_company": "Innovate GmbH",
-    "t2_text": "Die von Victor Ramos BE implementierten Automatisierungslösungen sparten uns 20 Stunden pro Woche. Außergewöhnlicher ROI.",
+    "t2_text": "Die Automatisierungslösungen sparten uns 20 Stunden pro Woche. Außergewöhnlicher ROI.",
     "t3_name": "Laura Martinez",
     "t3_company": "Global Commerce Co",
     "t3_text": "Professionell, strategisch und ergebnisorientiert. Unsere E-Commerce-Plattform verzeichnete einen Anstieg der Conversions um 65%."
@@ -415,6 +415,13 @@
       "palabra3": "Vorsprung",
       "linea": "Websites, Apps und Automatisierung für KMU, die mehr verkaufen und weniger von Hand machen wollen.",
       "cta": "Sehen, was wir können"
+    }
+  },
+  "meta": {
+    "home": {
+      "titulo": "Websites, Apps und Prozessautomatisierung",
+      "descripcion": "Webentwicklung, individuelle Apps und Prozessautomatisierung für KMU. Wir finden, wo Zeit verloren geht, und bauen das System, das es löst.",
+      "og_titulo": "CaliDev — Wir bauen Ihren Vorsprung"
     }
   }
 }

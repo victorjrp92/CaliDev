@@ -201,6 +201,14 @@ export async function POST(request: Request) {
   }
 
   // Seed testimonials
+  // OJO: estos tres son datos de DEMOSTRACIÓN, no clientes. Los nombres, las
+  // empresas y las cifras son inventados; los testimonios reales viven en
+  // src/lib/nuevo/testimonios.ts (personas con nombre y apellido) y son los
+  // únicos que renderiza la home.
+  // Por eso ninguna de estas frases nombra a la marca: atribuirle a CaliDev un
+  // «ROI excepcional» en boca de una empresa que no existe sería fabricar
+  // respaldo social, y encima quedaría escrito en base de datos. Sin nombre de
+  // marca la frase se queda en lo que es: relleno de arranque.
   await sql`DELETE FROM testimonials_i18n`;
   await sql`DELETE FROM testimonials`;
 
@@ -217,9 +225,9 @@ export async function POST(request: Request) {
       de: "Victor hat unsere gesamte digitale Infrastruktur transformiert. Die maßgeschneiderte App, die er entwickelt hat, reduzierte unsere Betriebskosten um 40%.",
     },
     1: {
-      en: "The automation solutions implemented by Victor Ramos BE saved us 20 hours per week. Exceptional ROI.",
-      es: "Las soluciones de automatización implementadas por Victor Ramos BE nos ahorraron 20 horas por semana. ROI excepcional.",
-      de: "Die von Victor Ramos BE implementierten Automatisierungslösungen sparten uns 20 Stunden pro Woche. Außergewöhnlicher ROI.",
+      en: "The automation solutions saved us 20 hours per week. Exceptional ROI.",
+      es: "Las soluciones de automatización nos ahorraron 20 horas por semana. ROI excepcional.",
+      de: "Die Automatisierungslösungen sparten uns 20 Stunden pro Woche. Außergewöhnlicher ROI.",
     },
     2: {
       en: "Professional, strategic, and results-driven. Our e-commerce platform saw a 65% increase in conversions.",

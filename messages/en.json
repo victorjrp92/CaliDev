@@ -88,7 +88,7 @@
     "t1_text": "Victor transformed our entire digital infrastructure. The custom app he built reduced our operational costs by 40%.",
     "t2_name": "Thomas Mueller",
     "t2_company": "Innovate GmbH",
-    "t2_text": "The automation solutions implemented by Victor Ramos BE saved us 20 hours per week. Exceptional ROI.",
+    "t2_text": "The automation solutions saved us 20 hours per week. Exceptional ROI.",
     "t3_name": "Laura Martinez",
     "t3_company": "Global Commerce Co",
     "t3_text": "Professional, strategic, and results-driven. Our e-commerce platform saw a 65% increase in conversions."
@@ -415,6 +415,13 @@
       "palabra3": "edge",
       "linea": "Websites, apps and automation for small companies that want to sell more and do less by hand.",
       "cta": "See what we can do"
+    }
+  },
+  "meta": {
+    "home": {
+      "titulo": "Websites, apps and process automation",
+      "descripcion": "Web development, custom apps and process automation for small businesses. We find where time is lost in your operation and build the system that fixes it.",
+      "og_titulo": "CaliDev — We build your edge"
     }
   }
 }
