@@ -381,7 +381,7 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
               style={{ top: "max(2%, calc(var(--alto-barra) + 0.5rem))" }}
             >
               <span
-                className="select-none text-center leading-none tracking-tighter"
+                className="hero-relieve select-none text-center leading-none tracking-tighter"
                 style={{
                   ...wordStyle,
                   color: accentColor,
@@ -406,7 +406,7 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
                 sale de la medida real de la píldora, no de un porcentaje. */}
             <div className="hero-tu absolute right-[3%] flex items-center">
               <span
-                className="select-none leading-none tracking-tighter"
+                className="hero-relieve select-none leading-none tracking-tighter"
                 style={{ ...wordStyle, color: textColor }}
               >
                 {rightWord}
@@ -416,7 +416,7 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
 
             <div className="absolute inset-x-0 bottom-[2%] flex justify-center">
               <span
-                className="select-none text-center leading-none"
+                className="hero-relieve select-none text-center leading-none"
                 style={{
                   color: accentColor,
                   fontSize: "clamp(3.6rem, 13vw, 12.5rem)",

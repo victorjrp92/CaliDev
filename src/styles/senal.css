@@ -127,6 +127,36 @@
   top: var(--tu-arriba, 70%);
 }
 
+/**
+ * El relieve de las palabras del hero: salen de la pantalla.
+ *
+ * Cinco copias desplazadas en diagonal forman el canto macizo de la letra y una
+ * sexta sombra, larga y difusa, la apoya sobre el fondo. La luz viene de arriba
+ * a la izquierda, que es la convención que el ojo lee sin pensar.
+ *
+ * Las medidas van en `em` y no en píxeles porque la letra va de 48 px en un
+ * móvil estrecho a 168 en escritorio —`clamp(min(3rem,12.5vw), 10.5vw, 10.5rem)`—
+ * y una extrusión de 5 px fija sería un canto correcto arriba y un borrón abajo.
+ * En `em` la proporción se mantiene sola: 0.03em son 5 px a 168 y 1,4 a 48.
+ *
+ * El color del canto es verde-hondo y no negro. Un canto neutro sobre el verde
+ * de marca lo ensucia hacia el gris; el mismo verde más oscuro lee como sombra
+ * propia de la letra y no como un contorno pegado encima.
+ *
+ * Va en los tres `span` y NUNCA en el grupo que los contiene: GSAP anima
+ * `filter: blur()` sobre ese grupo al hacer scroll, y `filter` es una sola
+ * propiedad —una sombra puesta ahí se la llevaría por delante la animación—.
+ */
+.hero-relieve {
+  text-shadow:
+    0.006em 0.006em 0 rgba(7, 42, 32, 0.55),
+    0.012em 0.012em 0 rgba(7, 42, 32, 0.45),
+    0.018em 0.018em 0 rgba(7, 42, 32, 0.34),
+    0.024em 0.024em 0 rgba(7, 42, 32, 0.24),
+    0.03em 0.03em 0 rgba(7, 42, 32, 0.14),
+    0 0.107em 0.226em rgba(20, 32, 27, 0.34);
+}
+
 @media (min-width: 768px) {
   .hero-tu {
     top: 38%;
