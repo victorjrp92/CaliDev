@@ -81,8 +81,28 @@ export function HorizontalScroll({ children, id, scrub = 1, className = "" }: Ho
           anticipatePin: 1,
         },
       });
+
+      // El anclaje anterior hay que matarlo a mano y con `true`: revertir el
+      // contexto mata la animación pero deja el espaciador puesto, y su relleno
+      // se suma al del siguiente.
+      return () => {
+        ScrollTrigger.getAll().forEach((st) => {
+          if (st.trigger === section) st.kill(true);
+        });
+      };
     },
-    { scope: sectionRef, dependencies: [pinned, scrub] }
+    /**
+     * `revertOnUpdate: true`, por lo mismo que en el hero.
+     *
+     * `useGSAP` con una lista de dependencias no vacía y sin esta opción calcula
+     * `deferCleanup` y solo revierte al DESMONTAR: entre cambios de dependencia
+     * no deshace nada. Aquí `pinned` cambia de verdad —al cruzar los 768 px o al
+     * activar «reducir movimiento»— y cada paso por `true` creaba un anclaje
+     * nuevo sin matar el anterior. Medido antes de arreglarlo: al estrechar la
+     * ventana a 600 px y volver a 1366, el relleno de esta sección pasaba de
+     * 6830 px a 13660 y el documento de 13 000 px a 21 813.
+     */
+    { scope: sectionRef, revertOnUpdate: true, dependencies: [pinned, scrub] }
   );
 
   return (

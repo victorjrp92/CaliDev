@@ -290,20 +290,51 @@ export const WorkPageHero: React.FC<WorkPageHeroProps> = ({
         0
       );
 
-      // Al cambiar de anchura hay que deshacer el anclaje anterior a mano. Si
-      // solo se revierte el contexto, el espaciador se queda y su relleno se
-      // suma al del nuevo.
+      // Al rehacer la línea de tiempo hay que deshacer el anclaje anterior a
+      // mano. Si solo se revierte el contexto, el espaciador se queda y su
+      // relleno se suma al del nuevo.
       return () => {
         ScrollTrigger.getAll().forEach((st) => {
           if (st.trigger === seccion) st.kill(true);
         });
       };
     },
-    // `pildoraArriba` NO entra como dependencia: rehacer la línea de tiempo al
-    // medir dejaba el espaciador del anclaje descuadrado y el hero arrancaba
-    // 465 px más abajo de donde debía. Como en móvil la animación ya no toca
-    // `top`, la medida entra sola por la variable CSS y no hay que rehacer nada.
-    { scope: containerRef, dependencies: [scrollDistance, reduced, relVideo, ancho] }
+    /**
+     * `revertOnUpdate: true` es obligatorio, no una preferencia.
+     *
+     * Sin él, `useGSAP` calcula `deferCleanup = dependencies.length &&
+     * !revertOnUpdate` y, cuando sale verdadero, solo revierte el contexto al
+     * DESMONTAR: entre cambios de dependencia no revierte nada y la función de
+     * limpieza de aquí arriba no llega a ejecutarse nunca. Es decir, el arreglo
+     * que describe ese comentario era código muerto.
+     *
+     * Lo que provocaba: el hero se construía dos veces sin matar el primer
+     * anclaje, los dos espaciadores sumaban su relleno —1317 px cada uno, 2634
+     * en total— y la sección quedaba fija 1317 px por debajo del borde de la
+     * pantalla. Resultado visible: se entraba al inicio y el hero no estaba;
+     * aparecía al bajar y volver a subir, porque eso fuerza a ScrollTrigger a
+     * medir otra vez. Se reproducía en CUALQUIER navegación de cliente al home
+     * —cambiar de idioma, pulsar INICIO desde otra página—, nunca en una carga
+     * directa.
+     *
+     * `relVideo` fuera de la lista: la línea de tiempo no lo usa. La proporción
+     * del vídeo solo alimenta la variable CSS `--tu-arriba`, que es CSS puro.
+     * Estando en la lista, el orden en que llegan los metadatos del vídeo y la
+     * media query decidía si la línea de tiempo se construía una vez o dos —una
+     * carrera que la carga directa ganaba y la navegación de cliente perdía,
+     * porque ahí el vídeo ya está en caché y responde un tic más tarde que la
+     * medida del ancho—.
+     *
+     * `pildoraArriba` tampoco entra: rehacer la línea de tiempo al medir dejaba
+     * el espaciador descuadrado y el hero arrancaba 465 px más abajo. Como en
+     * móvil la animación ya no toca `top`, la medida entra sola por la variable
+     * CSS y no hay que rehacer nada.
+     */
+    {
+      scope: containerRef,
+      revertOnUpdate: true,
+      dependencies: [scrollDistance, reduced, ancho],
+    }
   );
 
   const wordStyle: React.CSSProperties = {
