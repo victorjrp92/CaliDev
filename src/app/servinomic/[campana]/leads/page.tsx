@@ -28,6 +28,7 @@ type Fila = {
   repetitivo: string | null;
   freno: string | null;
   urgency: string | null;
+  aspiracion: string | null;
   score_value: number;
   score_intent: number;
   score_total: number;
@@ -205,6 +206,31 @@ export default async function PanelLeads({
                     {b.pista} · {labelFor("staff", fila.staff)} ·{" "}
                     {labelFor("urgency", fila.urgency)}
                   </p>
+
+                  {/* Con qué abrir la conversación: lo que le duele y lo que
+                      haría si recupera el tiempo. Citarle sus propias palabras
+                      en el primer mensaje es la diferencia entre que lea una
+                      venta y que lea a alguien que la escuchó. */}
+                  {(fila.freno || fila.aspiracion) && (
+                    <dl className="mt-2.5 flex flex-col gap-1 rounded-xl bg-[#F4F6F2] px-3 py-2.5 text-[12.5px] leading-snug">
+                      {fila.freno && (
+                        <div>
+                          <dt className="inline font-semibold text-[#46554D]">Le duele: </dt>
+                          <dd className="inline text-[#46554D]">
+                            {labelFor("freno", fila.freno)}
+                          </dd>
+                        </div>
+                      )}
+                      {fila.aspiracion && (
+                        <div>
+                          <dt className="inline font-semibold text-[var(--verde)]">Quiere: </dt>
+                          <dd className="inline text-[var(--verde)]">
+                            {labelFor("aspiracion", fila.aspiracion)}
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+                  )}
 
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <a

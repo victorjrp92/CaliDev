@@ -149,6 +149,28 @@ export async function initDatabase() {
   await sql`CREATE INDEX IF NOT EXISTS leads_score_idx ON leads (score_total DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS leads_campaign_idx ON leads (campaign)`;
 
+  /**
+   * Columnas del filtro que este archivo no declaraba.
+   *
+   * Las tres primeras se añadieron a mano en producción cuando el filtro dejó
+   * de preguntar por el modelo de pago y pasó a preguntar por herramientas,
+   * horas repetidas y freno. Funcionaban, pero solo en esa base: quien
+   * recreara el esquema desde este archivo obtenía una tabla sin ellas y una
+   * captura de leads que fallaba al primer INSERT. Un esquema que no está
+   * escrito es un esquema que existe una sola vez.
+   *
+   * `aspiracion` es nueva: qué haría la persona con el tiempo que recupere. No
+   * puntúa; es con lo que se abre el WhatsApp.
+   *
+   * `freno` y `herramientas` guardan ahora varias respuestas separadas por
+   * coma. Siguen siendo TEXT, así que no hay conversión: lo que ya estaba
+   * guardado con un solo valor se lee igual.
+   */
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS herramientas TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS repetitivo TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS freno TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS aspiracion TEXT`;
+
   // Add columns that may not exist yet
   await sql`ALTER TABLE hero_content ADD COLUMN IF NOT EXISTS photo_position TEXT DEFAULT '50% 25%'`;
   await sql`ALTER TABLE services ADD COLUMN IF NOT EXISTS image_url TEXT`;

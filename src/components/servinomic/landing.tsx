@@ -37,7 +37,11 @@ export function ServinomicLanding({ campaign }: { campaign: Campaign }) {
         <ServinomicFitCheck />
         <ServinomicProcess slots={campaign.slots} />
         <ServinomicFaq />
-        <LeadForm campaign={campaign.slug} slots={campaign.slots} />
+        <LeadForm
+          campaign={campaign.slug}
+          slots={campaign.slots}
+          referencia={campaign.quoteAuthor.split(" ")[0]}
+        />
         <ServinomicClosing />
       </main>
       <StickyCta slots={campaign.slots} />

@@ -2,7 +2,7 @@ import { CtaButton } from "@/components/servinomic/cta-button";
 
 const STEPS = [
   {
-    title: "Contestas 7 preguntas",
+    title: "Contestas 6 preguntas",
     body: "Un minuto. No hay que agendar nada.",
   },
   {
@@ -11,7 +11,7 @@ const STEPS = [
   },
   {
     title: "Te escribimos por WhatsApp",
-    body: "Si encajamos, 30 minutos y te damos el diagnóstico. Sin presentación de ventas.",
+    body: "En 24 horas tienes respuesta, encajemos o no. Si encajamos, 30 minutos y te damos el diagnóstico.",
   },
 ];
 
@@ -66,7 +66,7 @@ export function ServinomicProcess({ slots }: { slots: number }) {
         </strong>{" "}
         También trabajamos con empresas de México, Perú, España, Estados Unidos
         y el resto de Latinoamérica. Adaptamos el sistema a las reglas de tu
-        país — dinos cuál en el formulario.
+        país — elige tu indicativo en el formulario y listo.
       </p>
 
       <div className="mt-5">
