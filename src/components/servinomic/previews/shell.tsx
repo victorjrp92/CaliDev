@@ -1,10 +1,15 @@
 /**
- * Marco común de las ilustraciones de ServiNomic.
+ * Marco de la ilustración del flujo de agendamiento.
  *
- * Son recreaciones de la interfaz real con datos inventados, no capturas: la
- * app de producción tiene nombres de colaboradoras, direcciones y cifras del
- * cliente que no pueden salir publicadas. Recrearlas además se ve nítido en
- * cualquier pantalla y no pesa nada.
+ * Es una recreación con datos inventados, no una captura: la app de producción
+ * tiene nombres de colaboradoras, direcciones y cifras del cliente que no
+ * pueden salir publicadas.
+ *
+ * Antes lo compartían tres ilustraciones. Las otras dos —liquidación y reporte—
+ * las reemplazó el vídeo de la app funcionando, que enseña lo mismo sin tener
+ * que dibujarlo: ver el producto de verdad convence donde una recreación, por
+ * buena que sea, solo ilustra. Queda esta porque un flujo de trabajo es una
+ * secuencia de pasos y eso se explica mejor con un diagrama que con un vídeo.
  */
 export function PreviewShell({
   title,
@@ -25,14 +30,5 @@ export function PreviewShell({
       </div>
       <div className="p-3.5">{children}</div>
     </div>
-  );
-}
-
-/** Etiqueta pequeña en mayúsculas, como las de la app. */
-export function PreviewLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[8.5px] font-bold uppercase tracking-[0.08em] text-[#8C948D]">
-      {children}
-    </p>
   );
 }

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { AgendaPreview } from "@/components/servinomic/previews/agenda-preview";
-import { PayrollPreview } from "@/components/servinomic/previews/payroll-preview";
-import { MoneyPreview } from "@/components/servinomic/previews/money-preview";
+import { Clip } from "@/components/servinomic/clip";
 
 /**
  * Lo que se le construyó a LimpiaExpress, en el orden en que pasó.
@@ -68,13 +67,33 @@ function WebVisual() {
   );
 }
 
-/** Dos pantallas y no cuatro: alcanzan para que se entienda qué es la app. */
+/**
+ * La app de verdad, en vídeo, en vez de dos maquetas.
+ *
+ * Aquí había dos pantallas dibujadas a mano en React —liquidación y reporte—.
+ * Se veían bien y eran mentira: reproducían la app, no eran la app. Este bloque
+ * cierra la sección diciendo «toda la operación en un solo sitio», y ese es
+ * justo el sitio donde una maqueta se nota y una grabación convence.
+ *
+ * El clip recorre tres pantallas reales en cinco segundos: el panel de dinero,
+ * el inventario y el resumen. Lleva dentro su propia insignia de «DEMO · DATOS
+ * FICTICIOS», que es la verdad y además evita el problema de siempre: las
+ * cifras de un cliente no se publican.
+ *
+ * El pie lo repite en grande porque en un móvil esa insignia mide tres píxeles.
+ */
 function ServinomicVisual() {
   return (
-    <div className="flex flex-col gap-3">
-      <PayrollPreview />
-      <MoneyPreview />
-    </div>
+    <figure className="overflow-hidden rounded-2xl border border-[#D8DCD4] bg-white">
+      <Clip
+        src="/servinomic/app-servinomic.mp4"
+        poster="/servinomic/app-servinomic-poster.webp"
+        descripcion="La aplicación ServiNomic en un portátil: recorre el panel con ingresos, gastos y utilidad del periodo, después el inventario de productos con sus costos y cantidades, y termina en el resumen del negocio"
+      />
+      <figcaption className="border-t border-[#F0EBE2] px-3.5 py-2.5 text-[11.5px] text-[#77847C]">
+        ServiNomic funcionando · datos de demostración, no de un cliente
+      </figcaption>
+    </figure>
   );
 }
 
