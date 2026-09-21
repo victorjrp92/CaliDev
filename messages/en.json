@@ -409,6 +409,16 @@
         }
       }
     },
+    "diferenciales": {
+      "pastillas": [
+        "It won't break in six months",
+        "The code stays yours",
+        "Your data, protected",
+        "International experience"
+      ],
+      "quienes": "Deisy, Nadia and Laura — their words, further down",
+      "nota": "{media} from {personas} clients"
+    },
     "hero": {
       "palabra1": "we build",
       "palabra2": "your",

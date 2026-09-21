@@ -409,6 +409,16 @@
         }
       }
     },
+    "diferenciales": {
+      "pastillas": [
+        "No se rompe a los seis meses",
+        "El código queda tuyo",
+        "Tus datos, protegidos",
+        "Experiencia internacional"
+      ],
+      "quienes": "Deisy, Nadia y Laura — sus palabras, más abajo",
+      "nota": "{media} de {personas} clientas"
+    },
     "hero": {
       "palabra1": "construimos",
       "palabra2": "tu",

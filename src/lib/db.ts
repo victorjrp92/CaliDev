@@ -171,6 +171,30 @@ export async function initDatabase() {
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS freno TEXT`;
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS aspiracion TEXT`;
 
+  /**
+   * Opiniones de clientas: la nota que hoy no existe.
+   *
+   * La banda del home enseña estrellas solo si hay una media real. Esta tabla
+   * es de dónde sale. Se recoge por un enlace privado que se manda a cada
+   * clienta, no por un formulario público: tres personas, no un buzón abierto.
+   *
+   * `permiso` no tiene valor por defecto a propósito. Publicar el nombre de una
+   * clienta junto a una nota es algo que se pregunta y se guarda, no algo que
+   * se asume; sin un sí explícito, la opinión cuenta para la media y el nombre
+   * no sale.
+   */
+  await sql`
+    CREATE TABLE IF NOT EXISTS opiniones (
+      id SERIAL PRIMARY KEY,
+      nombre TEXT NOT NULL,
+      empresa TEXT,
+      nota INT NOT NULL CHECK (nota BETWEEN 1 AND 5),
+      frase TEXT,
+      permiso BOOLEAN NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
   // Add columns that may not exist yet
   await sql`ALTER TABLE hero_content ADD COLUMN IF NOT EXISTS photo_position TEXT DEFAULT '50% 25%'`;
   await sql`ALTER TABLE services ADD COLUMN IF NOT EXISTS image_url TEXT`;

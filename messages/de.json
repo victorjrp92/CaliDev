@@ -409,6 +409,16 @@
         }
       }
     },
+    "diferenciales": {
+      "pastillas": [
+        "Bricht nicht nach sechs Monaten",
+        "Der Code gehört Ihnen",
+        "Ihre Daten, geschützt",
+        "Internationale Erfahrung"
+      ],
+      "quienes": "Deisy, Nadia und Laura — ihre Worte, weiter unten",
+      "nota": "{media} von {personas} Kundinnen"
+    },
     "hero": {
       "palabra1": "wir bauen",
       "palabra2": "Ihren",
