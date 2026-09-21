@@ -3,7 +3,6 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { alternatesDe, urlCanonica } from '@/lib/canonica';
 import { WorkPageHero } from '@/components/ui/work-page-hero';
-import { Diferenciales } from '@/components/senal/diferenciales';
 import { Servicios } from '@/components/nuevo/servicios';
 import { Testimonios } from '@/components/nuevo/testimonios';
 import { Herramientas } from '@/components/nuevo/herramientas';
@@ -80,10 +79,6 @@ export default function HomePage() {
           { tz: 'Australia/Sydney', label: 'SÍDNEY' },
         ]}
       />
-
-      {/* Justo al salir del anclaje del hero: el primer respiro después de que
-          el vídeo termina de abrirse, y antes de entrar a los servicios. */}
-      <Diferenciales />
 
       <Servicios />
       <Testimonios />

@@ -417,7 +417,7 @@
         "Internationale Erfahrung"
       ],
       "quienes": "Deisy, Nadia und Laura — ihre Worte, weiter unten",
-      "nota": "{media} von {personas} Kundinnen"
+      "nota": "{media} · {personas, plural, one {# Bewertung} other {# Bewertungen}}"
     },
     "hero": {
       "palabra1": "wir bauen",

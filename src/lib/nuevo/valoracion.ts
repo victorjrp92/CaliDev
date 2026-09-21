@@ -1,19 +1,20 @@
+import { sql } from "@/lib/db";
+
 /**
  * La nota que las clientas le pusieron a Cali Dev.
  *
- * `null` mientras no haya ninguna de verdad, y ese es todo el punto de que esto
- * viva en un archivo aparte: la banda del home enseña estrellas SOLO si aquí
- * hay un número, así que no hay forma de publicar una puntuación inventada por
- * descuido.
+ * Sale de la tabla `opiniones`, que se llena por el enlace privado de
+ * `/opinion`. Antes era una constante en este archivo y eso tenía un fallo
+ * evidente en cuanto llegó la primera nota: había que acordarse de venir a
+ * cambiarla a mano. Leyéndola de la base, la banda se actualiza sola según
+ * vayan contestando.
  *
- * Deisy, Nadia y Laura escribieron una cita cada una; ninguna puso una nota.
- * Una cita elogiosa no es un cinco: el cinco lo pone quien califica, no quien
- * lo lee. Y aquí las caras y los nombres son reales, así que una nota que nadie
- * dio no es un adorno optimista — es ponerle palabras a una clienta.
+ * Solo cuentan las que dieron permiso para publicar. Quien califica sin marcar
+ * la casilla nos está diciendo lo que piensa, no autorizando a enseñarlo.
  *
- * Se llena cuando contesten el formulario de /opinion, con la media REAL y el
- * número de personas al lado. Si sale 4,7 se publica 4,7: un cinco perfecto sin
- * fuente se lee como inventado, y un 4,7 con el número de personas se cree.
+ * Si la consulta falla —base caída, tabla que todavía no existe— devuelve
+ * `null` y la banda se queda sin estrellas. Una portada no se cae porque no se
+ * pueda leer una nota.
  */
 export type Valoracion = {
   /** Media real, un decimal. */
@@ -22,4 +23,26 @@ export type Valoracion = {
   personas: number;
 };
 
-export const VALORACION: Valoracion | null = null;
+/**
+ * Se revalida cada hora. Las notas llegan de tres personas a lo largo de unos
+ * días: consultar la base en cada visita sería pagar un viaje por cada carga de
+ * la portada para un número que casi nunca cambia.
+ */
+export const revalidate = 3600;
+
+export async function obtenerValoracion(): Promise<Valoracion | null> {
+  try {
+    const r = await sql`
+      SELECT ROUND(AVG(nota)::numeric, 1) AS media, COUNT(*)::int AS personas
+      FROM opiniones
+      WHERE permiso = TRUE
+    `;
+    const fila = r.rows[0];
+    const personas = Number(fila?.personas ?? 0);
+    const media = Number(fila?.media ?? 0);
+    if (!personas || !media) return null;
+    return { media, personas };
+  } catch {
+    return null;
+  }
+}

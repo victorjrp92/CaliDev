@@ -1,8 +1,10 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { HorizontalScroll } from "@/components/ui/horizontal-scroll";
 import { SERVICIOS } from "@/lib/nuevo/servicios";
 import { PanelVisual } from "@/components/nuevo/panel-visual";
+import { Diferenciales } from "@/components/senal/diferenciales";
+import { PruebaSocial } from "@/components/senal/prueba-social";
 
 /**
  * Los servicios como paneles que avanzan en horizontal. El primer panel es la
@@ -11,31 +13,43 @@ import { PanelVisual } from "@/components/nuevo/panel-visual";
  */
 export function Servicios() {
   const t = useTranslations("senal.servicios");
+  const locale = useLocale();
 
   return (
     <HorizontalScroll id="servicios" className="bg-[var(--hueso)]">
-      {/* Panel de entrada */}
+      {/* Panel de entrada. Dos columnas en escritorio: el texto ocupaba la
+          mitad izquierda y la derecha quedaba en blanco, así que ahí van las
+          pastillas y la prueba social. En móvil se apilan debajo. */}
       <article className="flex w-screen flex-none snap-start flex-col justify-center px-7 py-20 md:h-screen md:px-20">
-        <p className="mono text-[var(--verde)]">{t("etiqueta")}</p>
-        {/* El suelo del tamaño depende del ancho: «automatizaciones» no se
-            puede partir, y a 2.4rem fijos medía 336 px en una pantalla de 320.
-            Por encima de 384 px no cambia nada. */}
-        <h2 className="mt-6 max-w-[15ch] hyphens-auto text-[clamp(min(2.4rem,10vw),6.5vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
-          {t("titulo")}
-        </h2>
-        <p className="mt-7 max-w-[46ch] text-lg leading-relaxed text-[var(--tinta)]/70 md:text-xl">
-          {t("entrada")}
-        </p>
-        {/* Los cuatro, nombrados antes del recorrido. El panel de entrada
-            gastaba una pantalla entera en explicar el método sin decir qué se
-            puede contratar — y como «Servicios» del menú entra directo aquí,
-            para mucha gente esta es la primera pantalla del sitio. */}
-        <p className="mono mt-10 text-[var(--verde)]">{t("lista")}</p>
-        {/* Dos pistas porque el recorrido es distinto: ancho avanza solo con el
-            scroll, móvil apila. La de móvil decía «Desliza →» cuando los
-            paneles vivían en una tira horizontal que nadie deslizaba. */}
-        <p className="mono mt-6 text-[var(--tinta)]/45 max-md:hidden">{t("pista_ancha")}</p>
-        <p className="mono mt-6 text-[var(--tinta)]/45 md:hidden">{t("pista_movil")}</p>
+        <div className="mx-auto flex w-full max-w-[1500px] flex-col gap-12 md:flex-row md:items-center md:gap-20">
+          <div className="md:flex-1">
+            <p className="mono text-[var(--verde)]">{t("etiqueta")}</p>
+            {/* El suelo del tamaño depende del ancho: «automatizaciones» no se
+                puede partir, y a 2.4rem fijos medía 336 px en una pantalla de
+                320. Por encima de 384 px no cambia nada. */}
+            <h2 className="mt-6 max-w-[15ch] hyphens-auto text-[clamp(min(2.4rem,10vw),6vw,4.8rem)] font-extrabold leading-[0.98] tracking-[-0.035em]">
+              {t("titulo")}
+            </h2>
+            <p className="mt-7 max-w-[46ch] text-lg leading-relaxed text-[var(--tinta)]/70 md:text-xl">
+              {t("entrada")}
+            </p>
+            {/* Los cuatro, nombrados antes del recorrido. El panel de entrada
+                gastaba una pantalla entera en explicar el método sin decir qué
+                se puede contratar — y como «Servicios» del menú entra directo
+                aquí, para mucha gente esta es la primera pantalla del sitio. */}
+            <p className="mono mt-10 text-[var(--verde)]">{t("lista")}</p>
+            {/* Dos pistas porque el recorrido es distinto: ancho avanza solo con
+                el scroll, móvil apila. La de móvil decía «Desliza →» cuando los
+                paneles vivían en una tira horizontal que nadie deslizaba. */}
+            <p className="mono mt-6 text-[var(--tinta)]/45 max-md:hidden">{t("pista_ancha")}</p>
+            <p className="mono mt-6 text-[var(--tinta)]/45 md:hidden">{t("pista_movil")}</p>
+          </div>
+
+          <div className="flex flex-col gap-8 md:flex-1 md:max-w-[30rem]">
+            <Diferenciales />
+            <PruebaSocial locale={locale} />
+          </div>
+        </div>
       </article>
 
       {SERVICIOS.map((s) => (
