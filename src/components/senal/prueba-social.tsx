@@ -27,10 +27,14 @@ export async function PruebaSocial({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "senal.diferenciales" });
   const valoracion = await obtenerValoracion();
 
+  /* Centrados bajo el eje de las pastillas, pero solo en escritorio. En móvil
+     la columna es única y todo lo de arriba —rótulo, titular, entradilla— va
+     alineado a la izquierda: centrar ahí solo estas dos cosas se leería como un
+     descuido, no como una decisión. */
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-7 md:items-center">
       {valoracion && (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2.5 md:items-center">
           <Estrellas media={valoracion.media} />
           <p className="mono text-[var(--tinta)]/55">
             {t("nota", { media: formatear(valoracion.media, locale), personas: valoracion.personas })}
@@ -38,7 +42,7 @@ export async function PruebaSocial({ locale }: { locale: string }) {
         </div>
       )}
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2.5 md:items-center">
         <ul className="flex items-center">
           {TESTIMONIOS.map((persona, i) => (
             <li
@@ -52,7 +56,9 @@ export async function PruebaSocial({ locale }: { locale: string }) {
             </li>
           ))}
         </ul>
-        <p className="text-[14px] leading-snug text-[var(--tinta)]/55">{t("quienes")}</p>
+        <p className="text-[14px] leading-snug text-[var(--tinta)]/55 md:text-center">
+          {t("quienes")}
+        </p>
       </div>
     </div>
   );
