@@ -53,6 +53,21 @@ export async function generateMetadata({
  * secciones ancladas por GSAP, que es lo que descoloca el salto nativo del
  * navegador.
  */
+/**
+ * La portada se regenera cada cinco minutos.
+ *
+ * Sin esto la página se construye una vez en el despliegue y ahí se queda: la
+ * nota de las clientas quedaba congelada en lo que fuera cierto al desplegar, y
+ * una calificación nueva no aparecía hasta el siguiente `deploy`. El
+ * `revalidate` estaba escrito en `lib/nuevo/valoracion.ts`, donde Next ni lo
+ * mira — solo lo lee de páginas, layouts y rutas.
+ *
+ * Cinco minutos y no una hora: las notas llegan a rachas de tres o cuatro
+ * cuando se manda el enlace, y esperar una hora para verlas aparecer hace
+ * pensar que algo está roto.
+ */
+export const revalidate = 300;
+
 export default function HomePage() {
   const t = useTranslations('senal.hero');
 

@@ -9,8 +9,16 @@ import { sql } from "@/lib/db";
  * cambiarla a mano. Leyéndola de la base, la banda se actualiza sola según
  * vayan contestando.
  *
- * Solo cuentan las que dieron permiso para publicar. Quien califica sin marcar
- * la casilla nos está diciendo lo que piensa, no autorizando a enseñarlo.
+ * Cuentan TODAS las notas, con permiso o sin él, y eso no es un descuido: es lo
+ * que el formulario promete con estas palabras — «si no lo marcas, tu nota
+ * cuenta igual y tu nombre no sale». La primera versión filtraba por permiso y
+ * contradecía esa frase; de tres clientas que pusieron cinco, la página
+ * enseñaba una. Prometer una cosa en el formulario y hacer otra en la consulta
+ * es mentir en la letra pequeña.
+ *
+ * El permiso gobierna el NOMBRE, que es lo que se preguntó: publicar «Laura
+ * Sánchez, 5 estrellas» necesita su sí; contar su cinco dentro de una media
+ * anónima, no.
  *
  * Si la consulta falla —base caída, tabla que todavía no existe— devuelve
  * `null` y la banda se queda sin estrellas. Una portada no se cae porque no se
@@ -23,19 +31,11 @@ export type Valoracion = {
   personas: number;
 };
 
-/**
- * Se revalida cada hora. Las notas llegan de tres personas a lo largo de unos
- * días: consultar la base en cada visita sería pagar un viaje por cada carga de
- * la portada para un número que casi nunca cambia.
- */
-export const revalidate = 3600;
-
 export async function obtenerValoracion(): Promise<Valoracion | null> {
   try {
     const r = await sql`
       SELECT ROUND(AVG(nota)::numeric, 1) AS media, COUNT(*)::int AS personas
       FROM opiniones
-      WHERE permiso = TRUE
     `;
     const fila = r.rows[0];
     const personas = Number(fila?.personas ?? 0);

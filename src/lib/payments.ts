@@ -64,12 +64,20 @@ export async function getNextReceiptNumber(): Promise<string> {
   return `CD-${year}-${num.toString().padStart(3, "0")}`;
 }
 
+/**
+ * Los datos que salen en recibos y facturas.
+ *
+ * La tabla `business_info` está vacía en producción, así que en la práctica
+ * manda este valor de reserva — no es un caso raro, es el único caso. Por eso
+ * el correo de aquí es el que un cliente ve al recibir su comprobante, y el
+ * único sitio del sitio donde hoy se publica una dirección nuestra.
+ */
 export async function getBusinessInfo() {
   const result = await sql`SELECT * FROM business_info LIMIT 1`;
   return result.rows[0] || {
-    name: "CaliDev",
+    name: "Cali Dev",
     address: "",
-    email: "appprojectscali@gmail.com",
+    email: "calidevdev@gmail.com",
     phone: "",
     tax_id: "",
     tax_note: "Kleinunternehmer gemäß § 19 UStG – No VAT charged",
