@@ -172,6 +172,34 @@ export async function initDatabase() {
   await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS aspiracion TEXT`;
 
   /**
+   * Formulario «Quiero empezar a delegar» (lib/delegar/*).
+   *
+   * Todas son columnas nuevas y opcionales: los leads del formulario anterior
+   * no las tienen y se siguen leyendo igual. `variante` separa unos de otros en
+   * el panel. `role`, `staff`, `herramientas`, `company` y `email` se reutilizan
+   * con los valores del formulario nuevo; `variante` dice cuál diccionario usar
+   * para leerlos.
+   *
+   * `token` es lo que autoriza completar o corregir un lead desde el navegador:
+   * sin él, cualquiera que adivinara un id podría reescribir el lead de otra
+   * persona.
+   *
+   * La prioridad se guarda con su motivo en palabras, para que el panel diga
+   * por qué un lead va primero y la regla se pueda revisar.
+   */
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS variante TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS token TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS actividad TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS dolor TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS dolor_otro TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS herramientas_otro TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS busca TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS plazo TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS prioridad TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS prioridad_motivo TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm TEXT`;
+
+  /**
    * Opiniones de clientas: la nota que hoy no existe.
    *
    * La banda del home enseña estrellas solo si hay una media real. Esta tabla

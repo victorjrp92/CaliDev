@@ -6,6 +6,7 @@ import { labelFor } from "@/lib/leads";
 import { panelAbierto, panelConfigurado } from "@/lib/panel-leads";
 import { Puerta } from "./puerta";
 import { Salir } from "./salir";
+import { LeadsDelegar, type FilaDelegar } from "./leads-delegar";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,8 @@ type Fila = {
   referral_contact: string | null;
   /** Lo calcula la base: su reloj es el bueno, no el del navegador. */
   reciente: boolean;
+  /** `null` en los leads del formulario anterior; los del nuevo van aparte. */
+  variante?: string | null;
 };
 
 /**
@@ -111,7 +114,7 @@ export default async function PanelLeads({
 
   if (!(await panelAbierto())) return <Puerta />;
 
-  let filas: Fila[] = [];
+  let todas: Fila[] = [];
   let fallo: string | null = null;
   try {
     const resultado = await sql<Fila>`
@@ -120,14 +123,21 @@ export default async function PanelLeads({
       WHERE campaign = ${campana}
       ORDER BY qualified DESC, score_total DESC, created_at DESC
     `;
-    filas = resultado.rows;
+    todas = resultado.rows;
   } catch {
     fallo = "No pudimos leer la base de datos.";
   }
 
+  // Los del formulario «delegar» se leen con otro diccionario: van en su
+  // propia sección. El resumen de arriba cuenta todos.
+  const delegar = todas.filter((f) => f.variante) as unknown as FilaDelegar[];
+  const filas = todas.filter((f) => !f.variante);
+
   const calificados = filas.filter((f) => f.qualified);
-  const calientes = calificados.filter((f) => f.completed && f.score_total >= 40);
-  const recientes = filas.filter((f) => f.reciente);
+  const calientes =
+    calificados.filter((f) => f.completed && f.score_total >= 40).length +
+    delegar.filter((f) => f.prioridad === "alta").length;
+  const recientes = todas.filter((f) => f.reciente);
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
@@ -144,9 +154,9 @@ export default async function PanelLeads({
       {/* Resumen. Tres números y no diez: lo que hay que saber antes de llamar. */}
       <dl className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { n: filas.length, t: "Leads en total" },
-          { n: calificados.length, t: "Califican" },
-          { n: calientes.length, t: "Para llamar ya" },
+          { n: todas.length, t: "Leads en total" },
+          { n: calificados.length + delegar.length, t: "Califican" },
+          { n: calientes, t: "Para llamar ya" },
           { n: recientes.length, t: "Últimos 7 días" },
         ].map((dato) => (
           <div
@@ -165,7 +175,9 @@ export default async function PanelLeads({
         </p>
       )}
 
-      {!fallo && filas.length === 0 && (
+      <LeadsDelegar filas={delegar} />
+
+      {!fallo && todas.length === 0 && (
         <div className="mt-8 rounded-3xl border border-dashed border-[#C6CCC3] bg-white p-10 text-center">
           <p className="text-[17px] font-semibold">Todavía no hay leads</p>
           <p className="mx-auto mt-2 max-w-sm text-[15px] leading-relaxed text-[#46554D]">

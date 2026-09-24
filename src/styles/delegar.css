@@ -1,0 +1,25 @@
+/*
+ * Latido del botón de play del video de la landing «delegar».
+ *
+ * Es la única animación de la página: invita a pulsar sin moverse de sitio.
+ * Con movimiento reducido el botón se queda quieto.
+ */
+@keyframes delegar-latido {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.delegar-latido {
+  animation: delegar-latido 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delegar-latido {
+    animation: none;
+  }
+}
