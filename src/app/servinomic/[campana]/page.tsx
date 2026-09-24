@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { LandingDelegar } from "@/components/delegar/landing";
 import { CAMPAIGNS, campaignSlugs, getCampaign } from "@/lib/campaigns";
 
+// La nota de clientes del hero sale de la base: se regenera cada cinco minutos.
+export const revalidate = 300;
+
 export function generateStaticParams() {
   return campaignSlugs().map((campana) => ({ campana }));
 }

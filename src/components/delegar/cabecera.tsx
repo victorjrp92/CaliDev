@@ -9,7 +9,7 @@ import Image from "next/image";
 export function Cabecera({ referencia }: { referencia?: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[#D8DCD4] bg-[#FAFAF7]/93 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
+      <div className="mx-auto flex h-14 max-w-xl items-center justify-between px-5">
         <div className="flex items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white">
             <Image src="/logo.png" alt="" width={28} height={28} className="h-5 w-auto" />

@@ -1,20 +1,22 @@
 import { BotonCta } from "@/components/delegar/boton-cta";
 import { VideoIntro } from "@/components/delegar/video-intro";
+import { NotaCalidev } from "@/components/delegar/nota-calidev";
 
 /**
  * Hero: la propuesta, quién la hace, el botón y el video.
  *
- * En móvil el orden es titular → Víctor → botón → video: el video vertical es
- * alto, y si fuera antes el botón quedaría a dos pantallas. En escritorio el
- * texto va a la izquierda y el video a la derecha, a su ancho natural.
+ * Una sola columna, en el teléfono y en el computador: titular → Víctor →
+ * nota de clientes → botón → video. El video vertical es alto; si fuera antes,
+ * el botón quedaría a dos pantallas. En escritorio se mantiene el mismo formato
+ * vertical a propósito, para que la página se lea igual en los dos.
  *
  * El texto explica el servicio solo, sin necesidad de ver el video.
  */
 export function Hero() {
   return (
-    <section className="mx-auto max-w-5xl px-5 pb-10 pt-7 md:grid md:grid-cols-[1fr_380px] md:items-center md:gap-14 md:pb-16 md:pt-14">
+    <section className="mx-auto max-w-xl px-5 pb-10 pt-7 md:pt-12">
       <div>
-        <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-tight [text-wrap:balance] md:text-[52px]">
+        <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-tight [text-wrap:balance] md:text-[44px]">
           Tu negocio puede crecer sin que todo dependa de ti.
         </h1>
         <p className="mt-4 text-[17px] font-bold text-[var(--verde)] md:text-[19px]">
@@ -24,12 +26,13 @@ export function Hero() {
           Te ayudo a crear procesos, software y sistemas para que tu equipo sepa qué hacer, tú
           puedas delegar y tengas espacio para dirigir, crecer y descansar.
         </p>
-        <BotonCta className="mt-6 md:max-w-sm" />
+        <NotaCalidev />
+        <BotonCta className="mt-5" />
         <p className="mt-2.5 text-[14px] text-[#46554D]">
           Cuéntanos sobre tu negocio. La revisión inicial es gratuita.
         </p>
       </div>
-      <div className="mt-8 md:mt-0">
+      <div className="mt-8">
         <VideoIntro />
       </div>
     </section>
