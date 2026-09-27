@@ -7,7 +7,7 @@
  */
 
 /** Todos los CTA de entrada. Los botones internos del formulario tienen los suyos. */
-export const CTA_DELEGAR = "Quiero empezar a delegar";
+export const CTA_DELEGAR = "Agendar consulta gratuita";
 
 /**
  * Plazo de respuesta. `null` mientras no esté confirmado que se puede cumplir
