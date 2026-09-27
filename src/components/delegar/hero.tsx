@@ -27,7 +27,7 @@ export function Hero() {
           puedas delegar y tengas espacio para dirigir, crecer y descansar.
         </p>
         <NotaCalidev />
-        <BotonCta className="mt-5" />
+        <BotonCta id="cta-hero" className="mt-5" />
         <p className="mt-2.5 text-[14px] text-[#46554D]">
           Cuéntanos sobre tu negocio. La revisión inicial es gratuita.
         </p>

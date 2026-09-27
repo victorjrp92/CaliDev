@@ -23,7 +23,7 @@ export function VideoIntro() {
   const video = useRef<HTMLVideoElement>(null);
 
   return (
-    <div className="relative mx-auto aspect-[9/16] w-full max-w-[380px] overflow-hidden rounded-[22px] bg-[#101513] shadow-[0_14px_40px_rgba(20,32,27,0.22)]">
+    <div id="video-intro" className="relative mx-auto aspect-[9/16] w-full max-w-[380px] overflow-hidden rounded-[22px] bg-[#101513] shadow-[0_14px_40px_rgba(20,32,27,0.22)]">
       {activo ? (
         <video
           ref={video}

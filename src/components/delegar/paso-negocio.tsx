@@ -49,7 +49,7 @@ export const PasoNegocio = forwardRef<
         </div>
         <GrupoOpciones id="d-tamano" pregunta={TAMANO} valor={r.tamano} error={errores["d-tamano"]} onChange={(v) => onRespuesta("tamano", v)} />
       </div>
-      <BotonesPaso principal="Continuar" onPrincipal={onContinuar} />
+      <BotonesPaso id="form-paso1-continuar" principal="Continuar" onPrincipal={onContinuar} />
     </>
   );
 });

@@ -73,7 +73,7 @@ export const PasoCambio = forwardRef<
         />
       </div>
       {errorServidor && <ErrorServidor texto={errorServidor} />}
-      <BotonesPaso principal="Enviar mi solicitud" enviando={enviando} onPrincipal={onEnviar} onAtras={onAtras} />
+      <BotonesPaso id="form-paso3-enviar" principal="Enviar mi solicitud" enviando={enviando} onPrincipal={onEnviar} onAtras={onAtras} />
     </>
   );
 });

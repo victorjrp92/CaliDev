@@ -70,6 +70,7 @@ export const PasoContacto = forwardRef<
       </p>
       {errorServidor && <ErrorServidor texto={errorServidor} />}
       <BotonesPaso
+        id="form-paso2-guardar"
         principal={corrigiendo ? "Guardar el cambio" : "Guardar mis datos y continuar"}
         enviando={enviando}
         onPrincipal={onGuardar}
