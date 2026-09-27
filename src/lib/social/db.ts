@@ -80,6 +80,10 @@ async function crear() {
       mes TEXT NOT NULL, servicio TEXT NOT NULL, llamadas INT NOT NULL DEFAULT 0,
       PRIMARY KEY (mes, servicio))`;
   await sql`
+    CREATE TABLE IF NOT EXISTS social_entradas (
+      igsid TEXT NOT NULL, media_id TEXT NOT NULL, comment_id TEXT, desde TIMESTAMPTZ DEFAULT NOW(),
+      PRIMARY KEY (igsid, media_id))`;
+  await sql`
     CREATE TABLE IF NOT EXISTS social_conversaciones (
       igsid TEXT PRIMARY KEY, conversation_id TEXT NOT NULL, usuario TEXT,
       actualizado_ig TIMESTAMPTZ, mensajes_hasta TIMESTAMPTZ, sincronizado TIMESTAMPTZ DEFAULT NOW())`;

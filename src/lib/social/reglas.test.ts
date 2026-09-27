@@ -64,3 +64,17 @@ test("la clave sola rescata un dudoso", () => {
   assert.equal(accionFinal("revision", "Ayuda!", c), "contacto");
   assert.equal(accionFinal("revision", "no sé si ayuda o no esto la verdad", c), "revision");
 });
+
+import { debeAbrirConversacion } from "./reglas";
+
+test("el mensaje se abre una vez por publicación, no una vez por persona", () => {
+  // nunca ha entrado: se le escribe
+  assert.equal(debeAbrirConversacion(false, null), true);
+  // seguidor que ya pasó por OTRO video: se le vuelve a escribir por este
+  assert.equal(debeAbrirConversacion(false, "asesoria_enviada"), true);
+  assert.equal(debeAbrirConversacion(false, "esperando_boton"), true);
+  // ya entró por ESTA publicación: no se repite aunque comente otra vez
+  assert.equal(debeAbrirConversacion(true, "esperando_boton"), false);
+  // Victor la está atendiendo a mano: el agente no la toca
+  assert.equal(debeAbrirConversacion(false, "revision"), false);
+});

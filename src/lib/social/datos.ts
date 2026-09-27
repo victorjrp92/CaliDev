@@ -129,6 +129,31 @@ export async function persona(igsid: string): Promise<Persona | null> {
   return rows[0] ? aPersona(rows[0]) : null;
 }
 
+/** ¿Esta persona ya recibió el mensaje por ESTA publicación? */
+export async function entroPorPublicacion(igsid: string, mediaId: string): Promise<boolean> {
+  const { rows } = await sql`SELECT 1 FROM social_entradas WHERE igsid = ${igsid} AND media_id = ${mediaId}`;
+  return rows.length > 0;
+}
+
+/**
+ * Registra la entrada al flujo por una publicación y deja a la persona
+ * esperando el botón. Si ya existía (vino de otro video), se le apunta a la
+ * publicación nueva conservando su código, que es lo que liga sus visitas a la
+ * landing.
+ */
+export async function registrarEntrada(p: {
+  igsid: string; usuario: string | null; codigo: string; mediaId: string; commentId: string;
+}) {
+  await sql`INSERT INTO social_entradas (igsid, media_id, comment_id) VALUES (${p.igsid}, ${p.mediaId}, ${p.commentId})
+    ON CONFLICT (igsid, media_id) DO NOTHING`;
+  await sql`
+    INSERT INTO social_personas (igsid, usuario, codigo, media_id, comment_id, paso, desde)
+    VALUES (${p.igsid}, ${p.usuario}, ${p.codigo}, ${p.mediaId}, ${p.commentId}, 'esperando_boton', NOW())
+    ON CONFLICT (igsid) DO UPDATE SET usuario = COALESCE(EXCLUDED.usuario, social_personas.usuario),
+      media_id = EXCLUDED.media_id, comment_id = EXCLUDED.comment_id, paso = 'esperando_boton',
+      rama = NULL, desde = NOW(), actualizado = NOW()`;
+}
+
 export async function crearPersona(p: Omit<Persona, "rama" | "ultimoMensajeDeElla">) {
   await sql`
     INSERT INTO social_personas (igsid, usuario, codigo, media_id, comment_id, paso, desde)

@@ -1,4 +1,4 @@
-import type { Accion, Boton, Modo, TipoComentario } from "./tipos";
+import type { Accion, Boton, Modo, Paso, TipoComentario } from "./tipos";
 
 const H = 3600_000;
 
@@ -69,4 +69,21 @@ export function accionFinal(
   if (accion === "contacto" && !c.detectarInteres && !tieneClave) return "ia";
   if (accion === "revision" && tieneClave && normalizar(texto).split(" ").length <= 3) return "contacto";
   return accion;
+}
+
+/**
+ * ¿Se le abre conversación por mensaje directo a quien comentó?
+ *
+ * Una vez por persona Y POR PUBLICACIÓN: un seguidor que ya comentó otro video
+ * debe volver a recibirlo, porque cada publicación tiene su propia landing. Lo
+ * que no se repite es el mensaje a quien ya entró por ESTA misma publicación,
+ * por muchas veces que comente en ella.
+ *
+ * Excepción: si Victor pausó a esa persona (paso "revision"), el agente no la
+ * toca; su conversación la lleva él.
+ */
+export function debeAbrirConversacion(yaEntroPorEstaPublicacion: boolean, pasoActual: Paso | null): boolean {
+  if (yaEntroPorEstaPublicacion) return false;
+  if (pasoActual === "revision") return false;
+  return true;
 }

@@ -5,7 +5,7 @@ import { codigoPersona } from "./enlaces";
 import * as ig from "./instagram";
 import { clasificarComentario } from "./jev";
 import { redactar } from "./redactor";
-import { accionFinal, decidir, puedeRespuestaPrivada, siguienteRevision, fechaIg } from "./reglas";
+import { accionFinal, debeAbrirConversacion, decidir, puedeRespuestaPrivada, siguienteRevision, fechaIg } from "./reglas";
 import type { Accion, Automatizacion } from "./tipos";
 
 const CUENTA = "calidevdev";
@@ -62,13 +62,17 @@ async function procesar(c: ig.ComentarioIg, a: Automatizacion, acc: Acciones, r:
 
   try {
     await acc.responderComentario(c.id, respuesta!);
-    if (accion === "contacto" && igsid && puedeRespuestaPrivada(c.timestamp) && !(await datos.persona(igsid))) {
-      await acc.respuestaPrivada(c.id, a.textos.pregunta, [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado]);
-      if (!acc.simulacion) {
-        await datos.crearPersona({
-          igsid, usuario, codigo: codigoPersona(igsid, process.env.SOCIAL_SAL ?? "calidev"),
-          mediaId: a.mediaId, commentId: c.id, paso: "esperando_boton", desde: new Date().toISOString(),
-        });
+    if (accion === "contacto" && igsid && puedeRespuestaPrivada(c.timestamp)) {
+      const yaEntro = await datos.entroPorPublicacion(igsid, a.mediaId);
+      const previa = await datos.persona(igsid);
+      if (debeAbrirConversacion(yaEntro, previa?.paso ?? null)) {
+        await acc.respuestaPrivada(c.id, a.textos.pregunta, [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado]);
+        if (!acc.simulacion) {
+          await datos.registrarEntrada({
+            igsid, usuario, codigo: codigoPersona(igsid, process.env.SOCIAL_SAL ?? "calidev"),
+            mediaId: a.mediaId, commentId: c.id,
+          });
+        }
       }
     }
     await datos.confirmarComentario(c.id, acc.simulacion ? "simulado" : "respondido");
