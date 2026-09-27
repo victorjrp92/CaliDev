@@ -24,7 +24,7 @@ export function Detalle() {
         <p className="mt-3 text-[16px] leading-relaxed text-[#2C3A33]">
           En LimpiaExpress usamos ServiNomic, una de las herramientas que construimos.
         </p>
-        <figure className="mt-5">
+        <figure id="captura-caso" className="mt-5">
           <Clip
             src="/servinomic/app-servinomic.mp4"
             poster="/servinomic/app-servinomic-poster.webp"

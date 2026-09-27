@@ -21,7 +21,7 @@ export function Caso() {
       <h2 className="text-[26px] font-extrabold leading-tight tracking-tight">
         El cambio que viste en LimpiaExpress
       </h2>
-      <ul className="mt-5 grid grid-cols-3 gap-2.5">
+      <ul id="cifras-caso" className="mt-5 grid grid-cols-3 gap-2.5">
         {CIFRAS.map((c) => (
           <li key={c.texto} className="rounded-2xl border border-[#D8DCD4] bg-white px-3 py-4">
             <span className="block text-[24px] font-extrabold leading-none tracking-tight text-[var(--verde)] tabular-nums">
@@ -31,7 +31,7 @@ export function Caso() {
           </li>
         ))}
       </ul>
-      <blockquote className="mt-6 border-l-[3px] border-[var(--verde)] pl-4">
+      <blockquote id="cita-caso" className="mt-6 border-l-[3px] border-[var(--verde)] pl-4">
         <p className="text-[17px] leading-relaxed text-[#2C3A33]">
           «Cali Dev entendió que mi problema no era de ventas, era de tiempo y herramientas. Pasé de
           planear por horas a dirigir en minutos.»

@@ -77,6 +77,7 @@ export function CtaFija() {
     >
       <div className="mx-auto max-w-xl">
         <a
+          id="cta-fija"
           href="#registro"
           tabIndex={oculta ? -1 : undefined}
           className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--lima)] text-base font-bold text-[var(--tinta)] shadow-[0_6px_18px_rgba(10,61,46,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--verde)]"

@@ -7,13 +7,17 @@
  * se muestran los errores y el foco va al primero. Un botón gris sin
  * explicación deja a la persona sin saber qué le falta. Solo se desactiva
  * mientras hay una petición en curso, para no crear dos leads.
+ *
+ * `id` del botón principal: fijo por paso, para el mapa de calor.
  */
 export function BotonesPaso({
+  id,
   principal,
   enviando = false,
   onPrincipal,
   onAtras,
 }: {
+  id: string;
   principal: string;
   enviando?: boolean;
   onPrincipal: () => void;
@@ -22,6 +26,7 @@ export function BotonesPaso({
   return (
     <div className="mt-7 flex flex-col gap-2.5">
       <button
+        id={id}
         type="button"
         onClick={onPrincipal}
         disabled={enviando}

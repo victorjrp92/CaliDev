@@ -10,7 +10,7 @@ import { BotonCta } from "@/components/delegar/boton-cta";
 export function Cierre() {
   return (
     <section className="mx-auto max-w-xl px-5 pb-12 pt-4">
-      <BotonCta />
+      <BotonCta id="cta-cierre" />
       <p className="mt-8 text-center text-[13px] text-[#46554D]">CaliDev · Cali · Frankfurt</p>
     </section>
   );
