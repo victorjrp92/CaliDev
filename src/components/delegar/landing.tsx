@@ -9,6 +9,7 @@ import { Detalle } from "@/components/delegar/detalle";
 import { PreguntasFrecuentes } from "@/components/delegar/preguntas-frecuentes";
 import { Cierre } from "@/components/delegar/cierre";
 import { CtaFija } from "@/components/delegar/cta-fija";
+import { SeguimientoSocial } from "@/components/social/SeguimientoSocial";
 import type { Campaign } from "@/lib/campaigns";
 
 /**
@@ -32,17 +33,19 @@ export function LandingDelegar({ campaign }: { campaign: Campaign }) {
   return (
     <>
       <Cabecera referencia={campaign.referrer ?? undefined} />
+      {/* data-seccion: lo lee el mapa de calor de calidev.dev/social. */}
       <main>
-        <Hero />
-        <Caso />
-        <Servicio />
-        <Despues />
-        <Formulario campaign={campaign.slug} />
-        <Detalle />
-        <PreguntasFrecuentes />
-        <Cierre />
+        <div data-seccion="propuesta"><Hero /></div>
+        <div data-seccion="caso"><Caso /></div>
+        <div data-seccion="servicio"><Servicio /></div>
+        <div data-seccion="despues"><Despues /></div>
+        <div data-seccion="formulario"><Formulario campaign={campaign.slug} /></div>
+        <div data-seccion="detalle"><Detalle /></div>
+        <div data-seccion="preguntas"><PreguntasFrecuentes /></div>
+        <div data-seccion="cierre"><Cierre /></div>
       </main>
       <CtaFija />
+      <SeguimientoSocial landing={`/servinomic/${campaign.slug}`} />
     </>
   );
 }

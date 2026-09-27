@@ -6,6 +6,7 @@ import { PasoContacto } from "@/components/delegar/paso-contacto";
 import { PasoCambio } from "@/components/delegar/paso-cambio";
 import { SinNegocio } from "@/components/delegar/sin-negocio";
 import { Confirmacion } from "@/components/delegar/confirmacion";
+import { codigoSocial } from "@/components/social/SeguimientoSocial";
 import { ISO_POR_DEFECTO, indicativoPorIso } from "@/lib/indicativos";
 import { numeroNacional } from "@/lib/delegar/telefono";
 import type { ClaveDelegar } from "@/lib/delegar/preguntas";
@@ -66,6 +67,17 @@ export function Formulario({ campaign }: { campaign: string }) {
   const seccion = useRef<HTMLElement>(null);
   const titulo = useRef<HTMLHeadingElement>(null);
   const primeraVez = useRef(true);
+  const empezo = useRef(false);
+
+  /**
+   * Avisa al mapa de calor en qué paso va (1 empezó · 2 datos de contacto ·
+   * 3 guardó el contacto · 4 completó). Solo el número: nunca lo escrito.
+   */
+  const avisarPaso = (n: number) => window.dispatchEvent(new CustomEvent("social:paso", { detail: n }));
+  useEffect(() => {
+    const n = etapa === 2 ? 2 : etapa === 3 ? 3 : etapa === "listo" ? 4 : 0;
+    if (n) avisarPaso(n);
+  }, [etapa]);
 
   // Al cambiar de paso: la vista arranca arriba del paso nuevo y el foco va a
   // su título. No en la primera carga, que no debe mover la página.
@@ -87,6 +99,10 @@ export function Formulario({ campaign }: { campaign: string }) {
     });
 
   const respuesta = (clave: ClaveDelegar, valor: string) => {
+    if (!empezo.current) {
+      empezo.current = true;
+      avisarPaso(1);
+    }
     setDatos((d) => ({ ...d, respuestas: { ...d.respuestas, [clave]: valor } }));
     quitarError(`d-${clave}`);
   };
@@ -163,6 +179,7 @@ export function Formulario({ campaign }: { campaign: string }) {
         const r = await pedir("POST", {
           campaign,
           utm: utmDeLaUrl(location.search),
+          social_codigo: codigoSocial(),
           ...contacto(),
           respuestas: paso1(),
         });
@@ -281,6 +298,9 @@ export function Formulario({ campaign }: { campaign: string }) {
           />
         )}
       </div>
+      <p className="mt-3 text-center text-[12.5px] text-[#55635C]">
+        Medimos cómo se usa esta página para mejorarla. No guardamos tu IP ni lo que escribes hasta que lo envías.
+      </p>
     </section>
   );
 }

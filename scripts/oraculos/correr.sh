@@ -9,6 +9,12 @@ for o in contraste barra-viva paridad-i18n render enlaces anclas barra-tapa alca
   echo "──────── $o ────────"
   node "scripts/oraculos/$o.mjs" || { echo "↑ $o FALLÓ"; fallos=$((fallos + 1)); }
 done
+# calidev.dev/social necesita su contraseña: solo corre si está en el entorno.
+if [ -n "${PANEL_SOCIAL_PASSWORD:-}" ]; then
+  echo ""
+  echo "──────── social ────────"
+  node scripts/oraculos/social.mjs || { echo "↑ social FALLÓ"; fallos=$((fallos + 1)); }
+fi
 echo ""
 if [ "$fallos" -eq 0 ]; then echo "✓ los nueve oráculos pasan"; else echo "✗ $fallos oráculo(s) fallando"; fi
 exit "$fallos"

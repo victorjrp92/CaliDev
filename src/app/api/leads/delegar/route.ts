@@ -59,7 +59,8 @@ function asegurarColumnas() {
       ADD COLUMN IF NOT EXISTS plazo TEXT,
       ADD COLUMN IF NOT EXISTS prioridad TEXT,
       ADD COLUMN IF NOT EXISTS prioridad_motivo TEXT,
-      ADD COLUMN IF NOT EXISTS utm TEXT
+      ADD COLUMN IF NOT EXISTS utm TEXT,
+      ADD COLUMN IF NOT EXISTS social_codigo TEXT
   `.catch((err) => {
     columnas = null; // que el siguiente intento lo repita
     throw err;
@@ -123,6 +124,8 @@ export async function POST(request: Request) {
     const campaign =
       typeof body.campaign === "string" && body.campaign in CAMPAIGNS ? body.campaign : "directo";
     const utm = texto(body.utm, 300);
+    // Código de la persona si llegó desde el botón de Instagram (calidev.dev/social).
+    const socialCodigo = typeof body.social_codigo === "string" && /^[a-z0-9]{10}$/.test(body.social_codigo) ? body.social_codigo : null;
     const token = randomUUID();
     const { prioridad, motivo } = prioridadDe({}, false);
 
@@ -131,12 +134,12 @@ export async function POST(request: Request) {
       INSERT INTO leads (
         campaign, variante, token, name, whatsapp, email, country, country_other,
         role, staff, actividad, dolor, dolor_otro,
-        track, qualified, completed, prioridad, prioridad_motivo, utm
+        track, qualified, completed, prioridad, prioridad_motivo, utm, social_codigo
       ) VALUES (
         ${campaign}, ${VARIANTE}, ${token}, ${contacto.nombre}, ${contacto.whatsapp}, ${contacto.correo},
         ${contacto.zona}, ${contacto.pais},
         ${p1.rol}, ${p1.tamano}, ${p1.actividad}, ${p1.dolor}, ${p1.dolor === "otro" ? p1.dolorOtro : null},
-        'revisar', TRUE, FALSE, ${prioridad}, ${motivo}, ${utm}
+        'revisar', TRUE, FALSE, ${prioridad}, ${motivo}, ${utm}, ${socialCodigo}
       )
       RETURNING id
     `;
