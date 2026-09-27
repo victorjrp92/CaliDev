@@ -1,46 +1,26 @@
 /**
- * El servicio en tres acciones concretas: qué se hace, quién lo hace y cómo se
- * sabe que va bien. Es la diferencia entre «ordenar el negocio» y comprar un
- * programa.
+ * El servicio en una frase, y la tecnología en otra.
  *
- * El cierre nombra la tecnología —software, apps, webs, automatizaciones—
- * porque también la construimos, y sin esa línea la página parecería vender
- * solo acompañamiento.
+ * Antes eran un título, una entradilla y tres tarjetas (qué se hace, quién se
+ * encarga, cómo se sabe que va bien). Víctor lo recortó el 2026-09-28: la gente
+ * que llega del video no quiere leer tanto, y las tarjetas distraían del
+ * formulario que viene justo después.
+ *
+ * La segunda línea se queda porque es la única de la página que nombra lo que
+ * también construimos: software, apps, webs y automatizaciones.
+ *
+ * El contenedor `data-seccion="servicio"` (en landing.tsx) no cambia: el mapa
+ * de calor de calidev.dev/social sigue encontrando esta sección con ese nombre.
  */
-const ACCIONES = [
-  {
-    titulo: "Qué se hace y cómo.",
-    texto: "Dejamos claros los pasos de las tareas que hoy necesitan tus explicaciones.",
-  },
-  {
-    titulo: "Quién se encarga.",
-    texto: "Definimos responsabilidades para que cada persona sepa qué le corresponde.",
-  },
-  {
-    titulo: "Cómo sabes que va bien.",
-    texto: "Organizamos el seguimiento para que puedas revisar resultados sin intervenir en cada paso.",
-  },
-];
-
 export function Servicio() {
   return (
     <section className="mx-auto max-w-xl px-5 py-10">
-      <h2 className="text-[26px] font-extrabold leading-tight tracking-tight">
-        Una forma de trabajar que puedas delegar
-      </h2>
-      <p className="mt-3 text-[16px] leading-relaxed text-[#2C3A33]">
-        Construimos contigo procesos claros, responsabilidades y herramientas para que puedas
-        delegar y dar seguimiento al trabajo de tu equipo.
+      <p className="text-[24px] font-extrabold leading-snug tracking-tight [text-wrap:balance] md:text-[28px]">
+        Trabajamos juntos para que puedas crecer, delegar y descansar.{" "}
+        <span className="text-[var(--verde)]">¡Descansar de verdad!</span>
       </p>
-      <ul className="mt-5 flex flex-col gap-3">
-        {ACCIONES.map((a) => (
-          <li key={a.titulo} className="rounded-2xl border border-[#D8DCD4] bg-white px-4 py-4 text-[15.5px] leading-relaxed text-[#2C3A33]">
-            <strong className="font-bold text-[var(--tinta)]">{a.titulo}</strong> {a.texto}
-          </li>
-        ))}
-      </ul>
-      <p className="mt-5 text-[16px] leading-relaxed text-[#2C3A33]">
-        Y cuando hace falta, construimos la tecnología que la sostiene:{" "}
+      <p className="mt-4 text-[17px] leading-relaxed text-[#2C3A33]">
+        ¡Ah! Y si hace falta, construimos la tecnología que lo sostiene:{" "}
         <strong className="font-bold text-[var(--tinta)]">
           software a la medida, apps, páginas web y automatizaciones.
         </strong>
