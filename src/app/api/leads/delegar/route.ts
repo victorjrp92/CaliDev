@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { sql } from "@/lib/db";
 import { CAMPAIGNS } from "@/lib/campaigns";
 import { indicativoPorIso } from "@/lib/indicativos";
@@ -15,6 +15,14 @@ import {
 } from "@/lib/delegar/preguntas";
 import { prioridadDe } from "@/lib/delegar/prioridad";
 import { errorDeNumero, numeroNacional } from "@/lib/delegar/telefono";
+import { enviarCorreo } from "@/lib/delegar/correos/enviar";
+import type { LeadDelegar } from "@/lib/delegar/correos/lead";
+import {
+  avisoLeadCompleto,
+  avisoNuevoContacto,
+  avisoNumeroCorregido,
+} from "@/lib/delegar/correos/aviso-victor";
+import { confirmacionLead } from "@/lib/delegar/correos/confirmacion";
 
 /**
  * Captura del formulario «Quiero empezar a delegar».
@@ -26,9 +34,17 @@ import { errorDeNumero, numeroNacional } from "@/lib/delegar/telefono";
  *          · `accion: "contacto"`  — corrige nombre, número o correo, al volver
  *            al paso 2 o desde la confirmación. Nunca crea un segundo lead.
  *
- * La prioridad se calcula aquí y nunca se acepta del navegador. Esta ruta no
- * dispara correos ni automatizaciones: el seguimiento es por WhatsApp y lo hace
- * una persona.
+ * La prioridad se calcula aquí y nunca se acepta del navegador.
+ *
+ * Correos (lib/delegar/correos), siempre con `after()`: salen cuando el lead ya
+ * está guardado y la respuesta ya llegó al navegador, y si fallan no afectan a
+ * nada.
+ *  · Paso 2 → aviso a Víctor «Nuevo contacto (sin terminar)».
+ *  · Paso 3 → aviso a Víctor con la prioridad en el asunto, y confirmación al
+ *    lead si dejó correo. Una sola vez: un reintento sobre un lead ya
+ *    completo no reenvía nada.
+ *  · Número corregido → aviso a Víctor con el número viejo y el nuevo.
+ * El seguimiento de verdad es por WhatsApp y lo hace una persona.
  */
 
 const VARIANTE = "delegar-v1";
@@ -141,10 +157,13 @@ export async function POST(request: Request) {
         ${p1.rol}, ${p1.tamano}, ${p1.actividad}, ${p1.dolor}, ${p1.dolor === "otro" ? p1.dolorOtro : null},
         'revisar', TRUE, FALSE, ${prioridad}, ${motivo}, ${utm}, ${socialCodigo}
       )
-      RETURNING id
+      RETURNING *
     `;
 
-    return NextResponse.json({ ok: true, id: resultado.rows[0].id, token });
+    const lead = resultado.rows[0] as LeadDelegar;
+    after(() => enviarCorreo(avisoNuevoContacto(lead)));
+
+    return NextResponse.json({ ok: true, id: lead.id, token });
   } catch (err) {
     console.error("delegar POST:", err);
     return NextResponse.json({ error: "No pudimos guardar tus datos." }, { status: 500 });
@@ -162,19 +181,20 @@ export async function PATCH(request: Request) {
 
     await asegurarColumnas();
     const existe = await sql`
-      SELECT busca, plazo, completed FROM leads
+      SELECT whatsapp, completed FROM leads
       WHERE id = ${id} AND token = ${token} AND variante = ${VARIANTE}
     `;
     if (existe.rows.length === 0) {
       return NextResponse.json({ error: "No encontramos tu solicitud." }, { status: 404 });
     }
+    const antes = existe.rows[0] as { whatsapp: string; completed: boolean };
 
     if (body.accion === "contacto") {
       const contacto = contactoDe(body);
       if ("error" in contacto) return NextResponse.json({ error: contacto.error }, { status: 400 });
       // Al volver al paso 2 también pueden haber cambiado las respuestas del 1.
       const p1 = paso1De(body.respuestas);
-      await sql`
+      const actualizado = await sql`
         UPDATE leads SET
           name = ${contacto.nombre},
           whatsapp = ${contacto.whatsapp},
@@ -189,7 +209,12 @@ export async function PATCH(request: Request) {
                             THEN COALESCE(${p1.dolorOtro}, dolor_otro) ELSE NULL END,
           updated_at = NOW()
         WHERE id = ${id}
+        RETURNING *
       `;
+      const lead = actualizado.rows[0] as LeadDelegar;
+      if (lead.whatsapp !== antes.whatsapp) {
+        after(() => enviarCorreo(avisoNumeroCorregido(lead, antes.whatsapp)));
+      }
       return NextResponse.json({ ok: true });
     }
 
@@ -210,7 +235,7 @@ export async function PATCH(request: Request) {
         : null;
       const { prioridad, motivo } = prioridadDe(respuestas, true);
 
-      await sql`
+      const completado = await sql`
         UPDATE leads SET
           herramientas = ${respuestas.herramientas},
           herramientas_otro = ${herramientasOtro},
@@ -222,7 +247,16 @@ export async function PATCH(request: Request) {
           prioridad_motivo = ${motivo},
           updated_at = NOW()
         WHERE id = ${id}
+        RETURNING *
       `;
+      if (!antes.completed) {
+        const lead = completado.rows[0] as LeadDelegar;
+        after(async () => {
+          await enviarCorreo(avisoLeadCompleto(lead));
+          const confirmacion = confirmacionLead(lead);
+          if (confirmacion) await enviarCorreo(confirmacion);
+        });
+      }
       return NextResponse.json({ ok: true });
     }
 
