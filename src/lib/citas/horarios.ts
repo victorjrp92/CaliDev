@@ -1,13 +1,18 @@
 /**
  * Horarios de las videollamadas de diagnóstico.
  *
- * Víctor ofrece citas de una hora, miércoles, jueves y viernes de 8:00 a 11:00
- * en hora de Colombia. Víctor vive en Frankfurt: cada horario se escribe con
- * su desfase (-05:00) para que no dependa de la zona del servidor ni de la de
- * quien lo lea. Para abrir otra semana basta con cambiar esta lista.
+ * Citas de una hora en hora de Colombia. Víctor vive en Frankfurt: cada
+ * horario se construye con el desfase de Colombia (-05:00, sin horario de
+ * verano) para que no dependa de la zona del servidor ni de quien lo lea.
  *
- * El `id` es lo que viaja en los enlaces del correo: corto, legible y estable.
+ * Los horarios los elige Víctor en el panel para cada invitación y se guardan
+ * con la cita. `HORARIOS` es solo la lista con la que salieron las primeras
+ * invitaciones, antes del selector: las citas sin horarios propios la usan.
+ *
+ * El `id` («2026-10-01T09») es lo que viaja en los enlaces del correo: corto,
+ * legible y estable.
  */
+import type { Cita } from "@/lib/citas/datos";
 
 export const DURACION_MINUTOS = 60;
 export const ZONA_COLOMBIA = "America/Bogota";
@@ -22,25 +27,48 @@ const HORAS = ["08", "09", "10"];
 
 export type Horario = { id: string; inicio: Date; fin: Date };
 
+/** Horas que el panel deja ofrecer, en hora de Colombia: de 6 a. m. a 8 p. m. */
+export const PRIMERA_HORA = 6;
+export const ULTIMA_HORA = 20;
+/** Hasta cuántos días adelante se puede ofrecer una cita. */
+export const DIAS_ADELANTE = 21;
+
+const FORMATO_ID = /^(\d{4}-\d{2}-\d{2})T(\d{2})$/;
+
+/** «2026-10-01T09» → el horario de 9:00 a 10:00 de Colombia. `undefined` si no es válido. */
+export function horarioDesdeId(id: string | null | undefined): Horario | undefined {
+  const m = FORMATO_ID.exec(id ?? "");
+  if (!m) return undefined;
+  const hora = Number(m[2]);
+  if (hora < PRIMERA_HORA || hora > ULTIMA_HORA) return undefined;
+  const inicio = new Date(`${m[1]}T${m[2]}:00:00-05:00`);
+  if (Number.isNaN(inicio.getTime())) return undefined;
+  return { id: id as string, inicio, fin: new Date(inicio.getTime() + DURACION_MINUTOS * 60 * 1000) };
+}
+
 export const HORARIOS: Horario[] = DIAS.flatMap((dia) =>
-  HORAS.map((hora) => {
-    const inicio = new Date(`${dia}T${hora}:00:00-05:00`);
-    return {
-      id: `${dia}T${hora}`,
-      inicio,
-      fin: new Date(inicio.getTime() + DURACION_MINUTOS * 60 * 1000),
-    };
-  })
+  HORAS.map((hora) => horarioDesdeId(`${dia}T${hora}`) as Horario)
 );
 
-export function horarioPorId(id: string | null | undefined): Horario | undefined {
-  return HORARIOS.find((h) => h.id === id);
+/** Los horarios que se le ofrecieron a esta persona, en orden. */
+export function horariosDeCita(cita: Pick<Cita, "horarios">): Horario[] {
+  const propios = (cita.horarios ?? "")
+    .split(",")
+    .map((id) => horarioDesdeId(id.trim()))
+    .filter((h): h is Horario => Boolean(h));
+  const lista = propios.length ? propios : HORARIOS;
+  return [...lista].sort((a, b) => a.inicio.getTime() - b.inicio.getTime());
+}
+
+/** El id del horario que empieza en esa fecha, en hora de Colombia. */
+export function idDesdeInicio(inicio: Date | string | null): string | undefined {
+  if (!inicio) return undefined;
+  const d = new Date(new Date(inicio).getTime() - 5 * 60 * 60 * 1000);
+  return d.toISOString().slice(0, 13);
 }
 
 export function horarioPorInicio(inicio: Date | string | null): Horario | undefined {
-  if (!inicio) return undefined;
-  const t = new Date(inicio).getTime();
-  return HORARIOS.find((h) => h.inicio.getTime() === t);
+  return horarioDesdeId(idDesdeInicio(inicio));
 }
 
 export function disponibleAun(h: Horario, ahora = new Date()): boolean {
@@ -76,6 +104,13 @@ export function diaDe(h: Horario): string {
 /** «8:00 a. m.». */
 export function horaDe(fecha: Date): string {
   return HORA.format(fecha);
+}
+
+const HORA_SOLA = new Intl.DateTimeFormat("es-CO", { hour: "numeric", hour12: true, timeZone: ZONA_COLOMBIA });
+
+/** «8 a. m.», «2 p. m.»: corta, para botones estrechos. Las citas empiezan en punto. */
+export function horaCompacta(fecha: Date): string {
+  return HORA_SOLA.format(fecha).replace(/\s+/g, " ").replace(/\u00a0/g, " ");
 }
 
 /** «Miércoles 30 de septiembre, 8:00 a. m. a 9:00 a. m. (hora de Colombia)». */

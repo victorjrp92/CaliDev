@@ -1,6 +1,6 @@
 import { escapar, type Correo } from "@/lib/delegar/correos/enviar";
 import { primerNombre } from "@/lib/delegar/correos/lead";
-import { HORARIOS, ZONA_COLOMBIA, disponibleAun, horaDe, type Horario } from "@/lib/citas/horarios";
+import { ZONA_COLOMBIA, disponibleAun, horaCompacta, horariosDeCita, type Horario } from "@/lib/citas/horarios";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, MONO } from "@/lib/citas/estilo-correo";
 
@@ -41,14 +41,14 @@ function columnas(lista: Horario[]): { clave: string; horarios: Horario[] }[] {
 
 const limpiar = (s: string) => s.replace(".", "").toUpperCase();
 
-/** «8:00» sin «a. m.»: todas las horas son de mañana y el encabezado ya lo dice. */
-const HORA_CORTA = new Intl.DateTimeFormat("es-CO", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: ZONA_COLOMBIA });
-const horaCorta = (d: Date) => HORA_CORTA.formatToParts(d).filter((p) => p.type === "hour" || p.type === "minute" || p.type === "literal").map((p) => p.value).join("").replace(/[^\d:]/g, "");
 
 export function correoInvitacion(cita: Cita): Correo {
   const nombre = primerNombre(cita.nombre);
   const enlace = (id: string) => `${SITIO}/cita/${cita.token}?h=${encodeURIComponent(id)}`;
-  const dias = columnas(HORARIOS.filter((h) => disponibleAun(h)));
+  const dias = columnas(horariosDeCita(cita).filter((h) => disponibleAun(h)));
+  // La hoja de calendario va de tres en tres columnas; con más días, más filas.
+  const filasDias: { clave: string; horarios: Horario[] }[][] = [];
+  for (let i = 0; i < dias.length; i += 3) filasDias.push(dias.slice(i, i + 3));
 
   const pasos: [string, string, string][] = [
     ["01", "Videollamada", "Me cuentas cómo funciona tu negocio y sus procesos."],
@@ -77,18 +77,18 @@ export function correoInvitacion(cita: Cita): Correo {
       </td>
     </tr>`;
 
-  const columnaDia = (d: { clave: string; horarios: Horario[] }, i: number) => {
+  const columnaDia = (d: { clave: string; horarios: Horario[] }, i: number, fila: unknown[]) => {
     const f = d.horarios[0].inicio;
     const horas = d.horarios
       .map(
         (h) => `
         <tr><td style="padding:0 0 8px">
-          <a href="${enlace(h.id)}" style="display:block;text-align:center;border:1.5px solid ${C.verde};border-radius:10px;padding:10px 4px;font-family:${FUENTE};font-size:14px;font-weight:700;color:${C.verde};text-decoration:none;background:#ffffff">${horaCorta(h.inicio)}</a>
+          <a href="${enlace(h.id)}" style="display:block;text-align:center;border:1.5px solid ${C.verde};border-radius:10px;padding:10px 4px;font-family:${FUENTE};font-size:14px;font-weight:700;color:${C.verde};text-decoration:none;background:#ffffff">${horaCompacta(h.inicio)}</a>
         </td></tr>`
       )
       .join("");
     return `
-      <td width="33%" valign="top" style="padding:0 ${i < dias.length - 1 ? 6 : 0}px 0 ${i > 0 ? 6 : 0}px">
+      <td width="33%" valign="top" style="padding:0 ${i < fila.length - 1 ? 6 : 0}px 0 ${i > 0 ? 6 : 0}px">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.hueso};border:1px solid ${C.linea};border-radius:14px">
           <tr><td align="center" style="padding:12px 8px 10px;border-bottom:1px solid ${C.linea}">
             <div style="font-family:${MONO};font-size:10.5px;letter-spacing:.12em;color:${C.gris}">${limpiar(DIA_CORTO.format(f))}</div>
@@ -139,11 +139,18 @@ export function correoInvitacion(cita: Cita): Correo {
         <tr><td style="padding:22px 28px 8px">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
             <td style="font-family:${MONO};font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:${C.gris}">Elige tu horario</td>
-            <td align="right" style="font-family:${MONO};font-size:10.5px;letter-spacing:.06em;color:${C.gris}">a. m. · hora de Colombia</td>
+            <td align="right" style="font-family:${MONO};font-size:10.5px;letter-spacing:.06em;color:${C.gris}">Hora de Colombia</td>
           </tr></table>
         </td></tr>
         <tr><td style="padding:6px 28px 0">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed"><tr>${dias.map(columnaDia).join("")}</tr></table>
+          ${filasDias
+            .map(
+              (fila, n) =>
+                `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed;${n > 0 ? "margin-top:12px" : ""}"><tr>${fila
+                  .map((d, i) => columnaDia(d, i, fila))
+                  .join("")}${"<td width=\"33%\"></td>".repeat(3 - fila.length)}</tr></table>`
+            )
+            .join("")}
           <div style="margin-top:12px;font-family:${FUENTE};font-size:13.5px;line-height:1.5;color:${C.gris}">Toca una hora y confírmala en la página. Te llega la invitación a tu calendario con el enlace de la videollamada.</div>
         </td></tr>
 
@@ -179,7 +186,7 @@ export function correoInvitacion(cita: Cita): Correo {
     "Elige tu horario (hora de Colombia):",
     ...dias.flatMap((d) => [
       `${limpiar(DIA_CORTO.format(d.horarios[0].inicio))} ${NUMERO.format(d.horarios[0].inicio)}`,
-      ...d.horarios.map((h) => `  ${horaDe(h.inicio)}: ${enlace(h.id)}`),
+      ...d.horarios.map((h) => `  ${horaCompacta(h.inicio)}: ${enlace(h.id)}`),
     ]),
     "",
     "¿Ninguno te sirve? Responde este correo y buscamos otro.",

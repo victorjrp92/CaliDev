@@ -2,15 +2,17 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SelectorHorarios } from "./selector-horarios";
 
 /**
- * Formulario del panel: nombre y correo de quien escribió por Instagram, y un
+ * Formulario del panel: nombre, correo, los horarios que se le ofrecen y un
  * botón que le envía la invitación para elegir hora. Dice si el correo salió.
  */
-export function InvitarCita({ campana }: { campana: string }) {
+export function InvitarCita({ campana, ocupados }: { campana: string; ocupados: string[] }) {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
+  const [horarios, setHorarios] = useState<string[]>([]);
   const [estado, setEstado] = useState<{ tipo: "ok" | "error"; texto: string; enlace?: string } | null>(null);
   const [enviando, setEnviando] = useState(false);
   const enCurso = useRef(false);
@@ -18,6 +20,10 @@ export function InvitarCita({ campana }: { campana: string }) {
   async function invitar(e: React.FormEvent) {
     e.preventDefault();
     if (enCurso.current) return;
+    if (horarios.length === 0) {
+      setEstado({ tipo: "error", texto: "Marca al menos un horario para ofrecerle." });
+      return;
+    }
     enCurso.current = true;
     setEnviando(true);
     setEstado(null);
@@ -25,13 +31,14 @@ export function InvitarCita({ campana }: { campana: string }) {
       const res = await fetch(`/servinomic/${campana}/leads/invitar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, correo }),
+        body: JSON.stringify({ nombre, correo, horarios }),
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
         setEstado({ tipo: "ok", texto: `Invitación enviada a ${correo}.`, enlace: json.enlace });
         setNombre("");
         setCorreo("");
+        setHorarios([]);
         router.refresh();
       } else {
         setEstado({ tipo: "error", texto: json.error || "No se pudo enviar.", enlace: json.enlace });
@@ -57,12 +64,13 @@ export function InvitarCita({ campana }: { campana: string }) {
         Correo
         <input className={`${campo} mt-1`} type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required placeholder="alexa@correo.com" />
       </label>
+      <SelectorHorarios elegidos={horarios} ocupados={ocupados} onChange={setHorarios} />
       <button
         type="submit"
         disabled={enviando}
-        className="h-12 cursor-pointer rounded-xl bg-[var(--lima)] px-5 text-[15px] font-bold text-[var(--tinta)] disabled:opacity-60"
+        className="h-12 cursor-pointer rounded-xl bg-[var(--lima)] px-5 text-[15px] font-bold text-[var(--tinta)] disabled:opacity-60 sm:col-start-3"
       >
-        {enviando ? "Enviando…" : "Enviar invitación"}
+        {enviando ? "Enviando…" : `Enviar invitación${horarios.length ? ` (${horarios.length} horarios)` : ""}`}
       </button>
       {estado && (
         <p role="status" className={`sm:col-span-3 text-[14px] ${estado.tipo === "ok" ? "text-[var(--verde)]" : "text-[#B42318]"}`}>

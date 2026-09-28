@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { citaPorToken, horasOcupadas } from "@/lib/citas/datos";
-import { HORARIOS, describir, disponibleAun, horaDe, horarioPorId, horarioPorInicio, porDia } from "@/lib/citas/horarios";
+import { describir, disponibleAun, horaDe, horarioPorInicio, horariosDeCita, porDia } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { primerNombre } from "@/lib/delegar/correos/lead";
 import { ElegirHorario, type GrupoHorarios } from "@/components/citas/elegir-horario";
@@ -30,7 +30,8 @@ export default async function PaginaCita({
   const ocupadas = new Set(await horasOcupadas(cita.id));
   const reservado = horarioPorInicio(cita.inicio);
 
-  const grupos: GrupoHorarios[] = porDia(HORARIOS).map((g) => ({
+  const ofrecidos = horariosDeCita(cita);
+  const grupos: GrupoHorarios[] = porDia(ofrecidos).map((g) => ({
     dia: g.dia,
     horarios: g.horarios.map((x) => ({
       id: x.id,
@@ -40,7 +41,7 @@ export default async function PaginaCita({
     })),
   }));
 
-  const preseleccion = horarioPorId(h);
+  const preseleccion = ofrecidos.find((x) => x.id === h);
 
   return (
     <main className="mx-auto max-w-xl px-5 pb-16 pt-10">

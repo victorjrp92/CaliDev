@@ -1,6 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { citaPorToken, reservar } from "@/lib/citas/datos";
-import { describir, disponibleAun, horarioPorId, horarioPorInicio } from "@/lib/citas/horarios";
+import { describir, disponibleAun, horarioPorInicio, horariosDeCita } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
@@ -19,10 +19,12 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const token = typeof body.token === "string" ? body.token : "";
-    const horario = horarioPorId(typeof body.horario === "string" ? body.horario : "");
+    const pedido = typeof body.horario === "string" ? body.horario : "";
 
     const cita = await citaPorToken(token);
     if (!cita) return NextResponse.json({ error: "Este enlace no es válido." }, { status: 404 });
+    // Solo vale una hora de las que se le ofrecieron a esta persona.
+    const horario = horariosDeCita(cita).find((h) => h.id === pedido);
     if (!horario || !disponibleAun(horario)) {
       return NextResponse.json({ error: "Ese horario ya no está disponible. Elige otro." }, { status: 400 });
     }

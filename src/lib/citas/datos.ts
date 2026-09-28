@@ -14,6 +14,10 @@ import { sql } from "@/lib/db";
  *
  * `secuencia` sube cada vez que la persona cambia de hora: los calendarios la
  * usan para reemplazar el evento anterior en vez de duplicarlo.
+ *
+ * `horarios` son los que Víctor le ofreció a esta persona, como ids separados
+ * por coma («2026-10-01T09,2026-10-01T10»). Vacío en las primeras invitaciones,
+ * que usan la lista fija de lib/citas/horarios.ts.
  */
 
 export type Cita = {
@@ -23,6 +27,7 @@ export type Cita = {
   correo: string;
   inicio: string | null;
   secuencia: number;
+  horarios: string | null;
   reservada_at: string | null;
   created_at: string;
 };
@@ -43,6 +48,7 @@ function asegurarTabla() {
       )
     `;
     await sql`CREATE UNIQUE INDEX IF NOT EXISTS citas_inicio_unico ON citas (inicio) WHERE inicio IS NOT NULL`;
+    await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS horarios TEXT`;
   })().catch((err) => {
     tabla = null;
     throw err;
@@ -50,11 +56,12 @@ function asegurarTabla() {
   return tabla;
 }
 
-export async function crearCita(nombre: string, correo: string): Promise<Cita> {
+export async function crearCita(nombre: string, correo: string, horarios: string[]): Promise<Cita> {
   await asegurarTabla();
   const token = randomBytes(16).toString("hex");
   const r = await sql<Cita>`
-    INSERT INTO citas (token, nombre, correo) VALUES (${token}, ${nombre}, ${correo})
+    INSERT INTO citas (token, nombre, correo, horarios)
+    VALUES (${token}, ${nombre}, ${correo}, ${horarios.join(",")})
     RETURNING *
   `;
   return r.rows[0];
