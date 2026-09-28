@@ -28,6 +28,9 @@ function selector(el: Element): string {
 
 export function SeguimientoSocial({ landing }: { landing: string }) {
   useEffect(() => {
+    // Los oráculos de Playwright visitan la landing en cada despliegue: si se
+    // midieran, el mapa de calor mostraría clics y scroll que no hizo nadie.
+    if (navigator.webdriver) return;
     const params = new URLSearchParams(location.search);
     const codigo = params.get("c");
     try {

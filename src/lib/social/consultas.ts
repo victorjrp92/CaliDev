@@ -167,10 +167,16 @@ export async function listaPublicacionesCorta() {
 /** Orden real de las secciones de la landing delegar (data-seccion). */
 export const SECCIONES_LANDING = ["propuesta", "caso", "servicio", "despues", "formulario", "detalle", "preguntas", "cierre"];
 
+/**
+ * `mediaId` acota "de esta publicación"; sin él (página Landings) cuenta toda
+ * visita que traiga código, es decir toda la que vino de Instagram. Antes se
+ * cruzaba contra cadena vacía y el contador daba siempre 0.
+ */
 export async function mapaLanding(ruta: string, mediaId: string | null) {
   const [v, cl] = await Promise.all([
-    sql`SELECT v.*, (s.igsid IS NOT NULL) AS de_esta
-        FROM social_visitas v LEFT JOIN social_personas s ON s.codigo = v.codigo AND s.media_id = ${mediaId ?? ""}
+    sql`SELECT v.*,
+          CASE WHEN ${mediaId}::text IS NULL THEN (v.codigo IS NOT NULL) ELSE (s.igsid IS NOT NULL) END AS de_esta
+        FROM social_visitas v LEFT JOIN social_personas s ON s.codigo = v.codigo AND s.media_id = ${mediaId}
         WHERE v.landing = ${ruta} AND v.inicio > NOW() - INTERVAL '30 days'`,
     sql`SELECT c.selector, c.seccion, COUNT(*) AS n, SUM(c.muerto::int) AS muertos, SUM(c.rabia::int) AS rabia
         FROM social_clics c JOIN social_visitas v ON v.id = c.visita_id
