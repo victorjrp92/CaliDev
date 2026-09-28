@@ -16,11 +16,19 @@
 const REMITENTE = process.env.CORREO_REMITENTE || "Víctor de CaliDev <info@calidev.dev>";
 export const CORREO_VICTOR = process.env.AVISO_LEADS_CORREO || "calidevdev@gmail.com";
 
+export type Adjunto = {
+  nombre: string;
+  contenido: string;
+  /** Tipo MIME. Para invitaciones: `text/calendar; method=REQUEST`. */
+  tipo?: string;
+};
+
 export type Correo = {
   para: string;
   asunto: string;
   texto: string;
   html: string;
+  adjuntos?: Adjunto[];
 };
 
 export async function enviarCorreo(correo: Correo): Promise<boolean> {
@@ -40,6 +48,15 @@ export async function enviarCorreo(correo: Correo): Promise<boolean> {
         subject: correo.asunto,
         text: correo.texto,
         html: correo.html,
+        ...(correo.adjuntos?.length
+          ? {
+              attachments: correo.adjuntos.map((a) => ({
+                filename: a.nombre,
+                content: Buffer.from(a.contenido, "utf8").toString("base64"),
+                ...(a.tipo ? { content_type: a.tipo } : {}),
+              })),
+            }
+          : {}),
       }),
     });
     if (!res.ok) {

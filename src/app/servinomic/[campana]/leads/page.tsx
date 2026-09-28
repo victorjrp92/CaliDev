@@ -7,6 +7,7 @@ import { panelAbierto, panelConfigurado } from "@/lib/panel-leads";
 import { Puerta } from "./puerta";
 import { Salir } from "./salir";
 import { LeadsDelegar, type FilaDelegar } from "./leads-delegar";
+import { CitasPanel } from "./citas-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -174,6 +175,8 @@ export default async function PanelLeads({
           {fallo}
         </p>
       )}
+
+      <CitasPanel campana={campana} />
 
       <LeadsDelegar filas={delegar} />
 

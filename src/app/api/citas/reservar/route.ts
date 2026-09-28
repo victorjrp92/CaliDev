@@ -1,0 +1,58 @@
+import { NextResponse, after } from "next/server";
+import { citaPorToken, reservar } from "@/lib/citas/datos";
+import { describir, disponibleAun, horarioPorId, horarioPorInicio } from "@/lib/citas/horarios";
+import { enlaceGoogleCalendar } from "@/lib/citas/ics";
+import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
+import { enviarCorreo } from "@/lib/delegar/correos/enviar";
+
+/**
+ * Reserva (o cambio) de la hora de una videollamada.
+ *
+ * Solo por POST y desde el botón «Confirmar» de la página: el enlace del correo
+ * nunca reserva, para que los filtros de correo que abren enlaces no lo hagan
+ * por la persona.
+ *
+ * Quien choca con otra persona en la misma hora recibe `ocupado` y elige otra;
+ * lo decide el índice único de la base, no una comprobación previa.
+ */
+export async function POST(request: Request) {
+  try {
+    const body = (await request.json()) as Record<string, unknown>;
+    const token = typeof body.token === "string" ? body.token : "";
+    const horario = horarioPorId(typeof body.horario === "string" ? body.horario : "");
+
+    const cita = await citaPorToken(token);
+    if (!cita) return NextResponse.json({ error: "Este enlace no es válido." }, { status: 404 });
+    if (!horario || !disponibleAun(horario)) {
+      return NextResponse.json({ error: "Ese horario ya no está disponible. Elige otro." }, { status: 400 });
+    }
+
+    // Misma hora que ya tenía: nada que cambiar ni que reenviar.
+    if (horarioPorInicio(cita.inicio)?.id === horario.id) {
+      return NextResponse.json({ ok: true, descripcion: describir(horario), google: enlaceGoogleCalendar(cita, horario) });
+    }
+
+    const resultado = await reservar(cita, horario.inicio);
+    if (!resultado.ok) {
+      return NextResponse.json(
+        { error: "Otra persona acaba de tomar ese horario. Elige otro.", ocupado: true },
+        { status: 409 }
+      );
+    }
+
+    const { cita: guardada, cambio } = resultado;
+    after(async () => {
+      await enviarCorreo(correoConfirmacionCita(guardada, horario, cambio));
+      await enviarCorreo(correoAvisoCita(guardada, horario, cambio));
+    });
+
+    return NextResponse.json({
+      ok: true,
+      descripcion: describir(horario),
+      google: enlaceGoogleCalendar(guardada, horario),
+    });
+  } catch (err) {
+    console.error("citas reservar:", err);
+    return NextResponse.json({ error: "No pudimos guardar tu reserva. Inténtalo de nuevo." }, { status: 500 });
+  }
+}
