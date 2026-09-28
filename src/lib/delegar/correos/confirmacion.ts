@@ -12,6 +12,8 @@ import { primerNombre, type LeadDelegar } from "@/lib/delegar/correos/lead";
  *
  * Tablas y estilos en línea: es lo único que Gmail y Outlook respetan. Nada de
  * clases, flex ni fuentes web (Gmail no las carga; va la fuente del sistema).
+ * El resaltador lima es un fondo sólido y no el degradado de la landing: los
+ * degradados no los pintan todas las bandejas.
  * El texto de vista previa va oculto al principio del cuerpo: es la línea gris
  * que se lee en la bandeja antes de abrir.
  *
@@ -115,8 +117,10 @@ export function confirmacionLead(l: LeadDelegar, recibida = new Date()): Correo 
   const whatsapp = l.whatsapp;
   const contaste = loQueContaste(l);
   // El primer contacto es por WhatsApp, no una llamada: la frase no la menciona.
-  const adelantar =
-    "¿Hay algo que debamos saber antes de escribirte? Cualquier detalle de tu negocio o de tu día a día nos ayuda a entender mejor tus retos. Responde este correo y lo leo yo.";
+  const pregunta = "¿Hay algo que debamos saber antes de escribirte?";
+  const resto =
+    "Cualquier detalle de tu negocio o de tu día a día nos ayuda a entender mejor tus retos. Responde este correo y lo leo yo.";
+  const adelantar = `${pregunta} ${resto}`;
   const cita = "«Cali Dev entendió que mi problema no era de ventas, era de tiempo y herramientas.»";
   const autora = "Deisy Moncayo · CEO, LimpiaExpress Cali";
 
@@ -197,7 +201,7 @@ export function confirmacionLead(l: LeadDelegar, recibida = new Date()): Correo 
           </table>
         </td></tr>
         <tr><td style="padding:22px 24px 26px;font-family:${FUENTE};font-size:14.5px;line-height:1.55;color:${C.texto}">
-          ${adelantar}
+          <span style="background:${C.lima};color:${C.tinta};font-weight:700;padding:1px 4px;border-radius:3px">${pregunta}</span> ${resto}
           <div style="margin-top:18px;font-weight:700;color:${C.tinta}">Víctor</div>
           <div style="color:${C.gris}">CaliDev · <a href="https://calidev.dev" style="color:${C.verde}">calidev.dev</a></div>
         </td></tr>
