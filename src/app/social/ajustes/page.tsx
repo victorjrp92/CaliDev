@@ -26,16 +26,21 @@ export default async function AjustesPage() {
           <b>Modo simulación:</b> el agente clasifica y decide, pero no publica nada en Instagram.
         </p>
       )}
-      {(d.minutosDesdeCiclo === null || d.minutosDesdeCiclo > 5) && (
+      {d.pausado && (
+        <p className="mt-4 rounded-xl border border-[#F0D58A] bg-[#FFF7E0] px-4 py-3 text-sm">
+          <b>Agente pausado:</b> no responde comentarios ni mensajes, y tampoco mide métricas. El reloj sigue llamando cada minuto.
+        </p>
+      )}
+      {(d.minutosDesdeReloj === null || d.minutosDesdeReloj > 5) && (
         <p role="alert" className="mt-4 rounded-xl bg-[#FDEDEA] px-4 py-3 text-sm text-[#8F2E1B]">
-          <b>El reloj no está corriendo:</b> último ciclo {hace(d.minutosDesdeCiclo)}. Revisa cron-job.org.
+          <b>El reloj no está corriendo:</b> última llamada {hace(d.minutosDesdeReloj)}. Revisa cron-job.org.
         </p>
       )}
 
       <section className="mt-6 rounded-2xl border border-[#E3E6E0] bg-white p-5">
         <h2 className="text-lg font-bold">Agente</h2>
         <p className="mt-1 text-sm text-[#55635C]">
-          Último ciclo: {hace(d.minutosDesdeCiclo)} · fallos seguidos: {d.fallosSeguidos}
+          Último ciclo: {hace(d.minutosDesdeCiclo)} · reloj: {hace(d.minutosDesdeReloj)} · fallos seguidos: {d.fallosSeguidos}
         </p>
         <div className="mt-4">
           <Controles pausado={d.pausado} simulacion={d.simulacion} />
