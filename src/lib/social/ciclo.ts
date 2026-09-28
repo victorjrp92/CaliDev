@@ -10,6 +10,9 @@ import { ajuste, asegurarEsquema, evento, fijarAjuste, soltarCandado, tomarCanda
  */
 export async function correrCiclo() {
   await asegurarEsquema();
+  // Marca de vida del reloj externo, ANTES de mirar la pausa: si no, estando
+  // pausado el panel avisaría de que el reloj no corre, y sí corre.
+  await fijarAjuste("ultimo_reloj", new Date().toISOString());
   if ((await ajuste("pausado")) === "1") return { estado: "pausado" };
   if (!(await tomarCandado(90))) return { estado: "ocupado" };
 

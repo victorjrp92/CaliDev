@@ -26,6 +26,8 @@ export async function datosAjustes() {
     ultimoCiclo: a.ultimo_ciclo ?? null,
     /** Minutos desde el último ciclo (null si nunca corrió). Se calcula aquí, no en el render. */
     minutosDesdeCiclo: a.ultimo_ciclo ? Math.round((Date.now() - Date.parse(a.ultimo_ciclo)) / 60_000) : null,
+    /** Minutos desde la última llamada del reloj externo, corra o no el agente. */
+    minutosDesdeReloj: a.ultimo_reloj ? Math.round((Date.now() - Date.parse(a.ultimo_reloj)) / 60_000) : null,
     fallosSeguidos: Number(a.fallos_seguidos ?? 0),
     consumo: Object.fromEntries(consumo.rows.map((r) => [r.servicio, Number(r.llamadas)])) as Record<string, number>,
     eventos: eventos.rows.map((r) => ({ ts: new Date(r.ts).toISOString(), nivel: r.nivel as string, texto: r.texto as string })),

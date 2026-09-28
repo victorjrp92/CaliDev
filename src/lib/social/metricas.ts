@@ -1,18 +1,31 @@
 import { sql } from "@/lib/db";
-import { asegurarEsquema } from "./db";
+import { ajuste, asegurarEsquema } from "./db";
 import { metricas } from "./instagram";
 
 /**
  * Una medición por publicación, empezando por la que lleva más tiempo sin
  * medir. Se guarda como serie: así se ve cómo evoluciona, no solo la foto.
- * Tope de 8 por ejecución (una llamada de ~4 s cada una) para caber en el
- * tiempo de Hobby. Con el reloj cada hora, todas quedan al día en 2 horas.
+ *
+ * Dos ritmos, porque cada medición es una llamada a Composio y medir un reel
+ * de agosto cada hora es gastar cuota sin aprender nada: cada hora las
+ * publicaciones vivas (automatizadas o de los últimos 7 días), una vez al día
+ * el resto. Y nada si el agente está pausado: pausar significa que no se toca
+ * Instagram.
  */
 export async function medirPublicaciones() {
   await asegurarEsquema();
+  if ((await ajuste("pausado")) === "1") return { pausado: true, medidas: 0 };
   const { rows } = await sql`
     SELECT p.media_id, p.tipo FROM social_publicaciones p
-    ORDER BY (SELECT MAX(medido_en) FROM social_metricas m WHERE m.media_id = p.media_id) ASC NULLS FIRST
+    LEFT JOIN social_automatizaciones a USING (media_id)
+    LEFT JOIN LATERAL (SELECT MAX(medido_en) AS ultima FROM social_metricas m WHERE m.media_id = p.media_id) u ON TRUE
+    WHERE u.ultima IS NULL
+       OR (
+            ((COALESCE(a.modo, 'apagado') <> 'apagado' OR p.publicado > NOW() - INTERVAL '7 days')
+              AND u.ultima < NOW() - INTERVAL '50 minutes')
+            OR u.ultima < NOW() - INTERVAL '24 hours'
+          )
+    ORDER BY u.ultima ASC NULLS FIRST
     LIMIT 8`;
   let medidas = 0;
   for (const { media_id, tipo } of rows) {
