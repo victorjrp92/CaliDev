@@ -15,6 +15,9 @@ import { sql } from "@/lib/db";
  * `secuencia` sube cada vez que la persona cambia de hora: los calendarios la
  * usan para reemplazar el evento anterior en vez de duplicarlo.
  *
+ * `recordatorio_at` es cuándo salió el recordatorio a quien no eligió hora
+ * (uno solo por invitación; ver api/citas/recordatorios).
+ *
  * `horarios` son los que Víctor le ofreció a esta persona, como ids separados
  * por coma («2026-10-01T09,2026-10-01T10»). Vacío en las primeras invitaciones,
  * que usan la lista fija de lib/citas/horarios.ts.
@@ -28,6 +31,7 @@ export type Cita = {
   inicio: string | null;
   secuencia: number;
   horarios: string | null;
+  recordatorio_at: string | null;
   reservada_at: string | null;
   created_at: string;
 };
@@ -49,6 +53,7 @@ function asegurarTabla() {
     `;
     await sql`CREATE UNIQUE INDEX IF NOT EXISTS citas_inicio_unico ON citas (inicio) WHERE inicio IS NOT NULL`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS horarios TEXT`;
+    await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS recordatorio_at TIMESTAMPTZ`;
   })().catch((err) => {
     tabla = null;
     throw err;
@@ -115,4 +120,37 @@ export async function borrarCita(id: number): Promise<boolean> {
   await asegurarTabla();
   const r = await sql`DELETE FROM citas WHERE id = ${id}`;
   return (r.rowCount ?? 0) > 0;
+}
+
+/**
+ * Invitaciones que llevan al menos 24 horas sin hora elegida y todavía no
+ * recibieron recordatorio. El tope de 7 días evita escribirle a alguien por
+ * una invitación vieja si la tarea estuvo parada.
+ */
+export async function citasParaRecordar(): Promise<Cita[]> {
+  await asegurarTabla();
+  const r = await sql<Cita>`
+    SELECT * FROM citas
+    WHERE inicio IS NULL
+      AND recordatorio_at IS NULL
+      AND created_at <= NOW() - INTERVAL '24 hours'
+      AND created_at > NOW() - INTERVAL '7 days'
+    ORDER BY created_at
+  `;
+  return r.rows;
+}
+
+/** Marca el recordatorio como enviado. Solo si sigue sin hora ni recordatorio: evita dobles. */
+export async function marcarRecordatorio(id: number): Promise<boolean> {
+  const r = await sql`
+    UPDATE citas SET recordatorio_at = NOW()
+    WHERE id = ${id} AND inicio IS NULL AND recordatorio_at IS NULL
+  `;
+  return (r.rowCount ?? 0) > 0;
+}
+
+export async function citaPorId(id: number): Promise<Cita | null> {
+  await asegurarTabla();
+  const r = await sql<Cita>`SELECT * FROM citas WHERE id = ${id}`;
+  return r.rows[0] ?? null;
 }

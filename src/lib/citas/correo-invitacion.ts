@@ -42,13 +42,29 @@ function columnas(lista: Horario[]): { clave: string; horarios: Horario[] }[] {
 const limpiar = (s: string) => s.replace(".", "").toUpperCase();
 
 
-export function correoInvitacion(cita: Cita): Correo {
+/**
+ * `recordatorio`: la segunda vez, 24 horas después, a quien no eligió hora.
+ * Cambia el saludo y el asunto, y ofrece solo las horas que siguen libres.
+ * `ocupadas` son los inicios (ms) que ya tomó otra persona.
+ */
+export function correoInvitacion(
+  cita: Cita,
+  opciones: { recordatorio?: boolean; ocupadas?: Set<number> } = {}
+): Correo & { horariosLibres: number } {
+  const { recordatorio = false, ocupadas = new Set<number>() } = opciones;
   const nombre = primerNombre(cita.nombre);
   const enlace = (id: string) => `${SITIO}/cita/${cita.token}?h=${encodeURIComponent(id)}`;
-  const dias = columnas(horariosDeCita(cita).filter((h) => disponibleAun(h)));
+  const dias = columnas(
+    horariosDeCita(cita).filter((h) => disponibleAun(h) && !ocupadas.has(h.inicio.getTime()))
+  );
   // La hoja de calendario va de tres en tres columnas; con más días, más filas.
   const filasDias: { clave: string; horarios: Horario[] }[][] = [];
   for (let i = 0; i < dias.length; i += 3) filasDias.push(dias.slice(i, i + 3));
+
+  const titulo = recordatorio ? `${nombre}, ¿agendamos?` : `${nombre}, conozcamos tu negocio.`;
+  const entrada = recordatorio
+    ? "Te escribí ayer para agendar una videollamada. Por si el correo se perdió entre otros, aquí están los horarios que siguen libres."
+    : "Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.";
 
   const pasos: [string, string, string][] = [
     ["01", "Videollamada", "Me cuentas cómo funciona tu negocio y sus procesos."],
@@ -106,7 +122,9 @@ export function correoInvitacion(cita: Cita): Correo {
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conozcamos tu negocio</title></head>
 <body style="margin:0;padding:0;background:${C.niebla}">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${escapar(
-    "Videollamada gratuita de 1 hora para conocer tu negocio. Elige el horario que te quede mejor."
+    recordatorio
+      ? "Siguen libres algunos horarios para la videollamada gratuita. Elige el que te quede mejor."
+      : "Videollamada gratuita de 1 hora para conocer tu negocio. Elige el horario que te quede mejor."
   )}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.niebla}">
     <tr><td align="center" style="padding:28px 12px">
@@ -123,8 +141,8 @@ export function correoInvitacion(cita: Cita): Correo {
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;background:#ffffff;border-radius:20px;overflow:hidden">
         <tr><td style="background:${C.verde};padding:34px 28px 30px">
           <div style="width:32px;height:3px;background:${C.lima};border-radius:2px"></div>
-          <div style="margin-top:18px;font-family:${FUENTE};font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.5px;color:${C.hueso}">${escapar(nombre)}, conozcamos tu negocio.</div>
-          <div style="margin-top:12px;font-family:${FUENTE};font-size:15.5px;line-height:1.55;color:#C9D6CF">Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.</div>
+          <div style="margin-top:18px;font-family:${FUENTE};font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.5px;color:${C.hueso}">${escapar(titulo)}</div>
+          <div style="margin-top:12px;font-family:${FUENTE};font-size:15.5px;line-height:1.55;color:#C9D6CF">${escapar(entrada)}</div>
         </td></tr>
 
         <tr><td style="padding:0 28px;border-bottom:1px solid ${C.linea}">
@@ -174,9 +192,9 @@ export function correoInvitacion(cita: Cita): Correo {
 </body></html>`;
 
   const texto = [
-    `${nombre}, conozcamos tu negocio.`,
+    titulo,
     "",
-    "Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.",
+    entrada,
     "",
     "Duración: 1 hora · Formato: Google Meet · Costo: gratuita",
     "",
@@ -195,5 +213,8 @@ export function correoInvitacion(cita: Cita): Correo {
     "CaliDev · calidev.dev",
   ].join("\n");
 
-  return { para: cita.correo, asunto: `${nombre}, elige el horario de nuestra videollamada`, texto, html };
+  const asunto = recordatorio
+    ? `${nombre}, ¿te queda bien alguno de estos horarios?`
+    : `${nombre}, elige el horario de nuestra videollamada`;
+  return { para: cita.correo, asunto, texto, html, horariosLibres: dias.reduce((n, d) => n + d.horarios.length, 0) };
 }

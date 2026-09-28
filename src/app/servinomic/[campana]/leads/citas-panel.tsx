@@ -2,6 +2,16 @@ import { todasLasCitas, type Cita } from "@/lib/citas/datos";
 import { describir, horaEnFrankfurt, horarioPorInicio, horariosDeCita, idDesdeInicio } from "@/lib/citas/horarios";
 import { InvitarCita } from "./invitar-cita";
 import { BorrarCita } from "./borrar-cita";
+import { RecordarCita } from "./recordar-cita";
+
+const FECHA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", timeZone: "Europe/Berlin" });
+
+/** Estado de quien no ha elegido hora: si ya se le recordó, o cuándo sale el recordatorio automático. */
+function estadoRecordatorio(c: Cita): string {
+  if (c.recordatorio_at) return `Recordatorio enviado el ${FECHA.format(new Date(c.recordatorio_at))}`;
+  const cuando = new Date(new Date(c.created_at).getTime() + 24 * 60 * 60 * 1000);
+  return `Recordatorio automático el ${FECHA.format(cuando)} (hora de Frankfurt)`;
+}
 
 /**
  * Videollamadas en el panel: el formulario para invitar y la lista de
@@ -42,7 +52,9 @@ export async function CitasPanel({ campana }: { campana: string }) {
                 <span className="flex items-baseline gap-2">
                   <span className={h ? "font-semibold text-[var(--verde)]" : "text-[#46554D]"}>
                     {h ? `${describir(h)} · ${horaEnFrankfurt(h)}` : "Sin elegir hora"}
+                    {!h && <span className="block text-[12.5px]">{estadoRecordatorio(c)}</span>}
                   </span>
+                  {!h && <RecordarCita campana={campana} id={c.id} />}
                   <BorrarCita campana={campana} id={c.id} nombre={c.nombre} />
                 </span>
               </li>

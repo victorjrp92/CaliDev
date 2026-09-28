@@ -1,0 +1,3 @@
+{
+  "crons": [{ "path": "/api/citas/recordatorios", "schedule": "0 * * * *" }]
+}
