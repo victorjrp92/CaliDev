@@ -114,8 +114,9 @@ export function confirmacionLead(l: LeadDelegar, recibida = new Date()): Correo 
   const numero = `#${String(l.id).padStart(4, "0")}`;
   const whatsapp = l.whatsapp;
   const contaste = loQueContaste(l);
+  // El primer contacto es por WhatsApp, no una llamada: la frase no la menciona.
   const adelantar =
-    "¿Quieres contarnos algo más antes de que te escribamos? Responde este correo y me llega directo.";
+    "¿Hay algo que debamos saber antes de escribirte? Cualquier detalle de tu negocio o de tu día a día nos ayuda a entender mejor tus retos. Responde este correo y lo leo yo.";
   const cita = "«Cali Dev entendió que mi problema no era de ventas, era de tiempo y herramientas.»";
   const autora = "Deisy Moncayo · CEO, LimpiaExpress Cali";
 

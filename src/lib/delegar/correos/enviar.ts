@@ -6,14 +6,14 @@
  * tumbar el guardado de un lead; por eso además se llama desde `after()`, con
  * el lead ya guardado y la respuesta ya enviada al navegador.
  *
- * Remitente: `CORREO_REMITENTE` o `hola@calidev.dev`, del dominio verificado en
+ * Remitente: `CORREO_REMITENTE` o `info@calidev.dev`, del dominio verificado en
  * Resend (DKIM en resend._domainkey.calidev.dev). Las respuestas van a
  * `calidevdev@gmail.com` con `reply_to`, porque calidev.dev no tiene buzón.
  *
  * `fetch` y no el SDK: es un POST con un JSON, no vale una dependencia.
  */
 
-const REMITENTE = process.env.CORREO_REMITENTE || "Víctor de CaliDev <hola@calidev.dev>";
+const REMITENTE = process.env.CORREO_REMITENTE || "Víctor de CaliDev <info@calidev.dev>";
 export const CORREO_VICTOR = process.env.AVISO_LEADS_CORREO || "calidevdev@gmail.com";
 
 export type Correo = {
