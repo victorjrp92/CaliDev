@@ -3,8 +3,10 @@ import { citasParaRecordar } from "@/lib/citas/datos";
 import { enviarRecordatorio } from "@/lib/citas/recordar";
 
 /**
- * Tarea programada de Vercel (vercel.json → crons), cada hora: recordatorio a
- * quien lleva 24 horas sin elegir hora. Uno por invitación.
+ * Tarea programada de Vercel (vercel.json → crons), una vez al día a las 9 a. m.
+ * de Colombia (14:00 UTC): recordatorio a quien lleva más de 20 horas sin
+ * elegir hora, es decir, la mañana siguiente a la invitación. Uno por
+ * invitación. El plan Hobby de Vercel no permite tareas más frecuentes.
  *
  * Vercel la llama con `Authorization: Bearer <CRON_SECRET>`; sin esa clave no
  * hace nada, así nadie de fuera puede disparar correos.

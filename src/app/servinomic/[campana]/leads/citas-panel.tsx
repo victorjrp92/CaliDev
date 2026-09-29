@@ -9,8 +9,13 @@ const FECHA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short",
 /** Estado de quien no ha elegido hora: si ya se le recordó, o cuándo sale el recordatorio automático. */
 function estadoRecordatorio(c: Cita): string {
   if (c.recordatorio_at) return `Recordatorio enviado el ${FECHA.format(new Date(c.recordatorio_at))}`;
-  const cuando = new Date(new Date(c.created_at).getTime() + 24 * 60 * 60 * 1000);
-  return `Recordatorio automático el ${FECHA.format(cuando)} (hora de Frankfurt)`;
+  // La tarea corre a diario a las 14:00 UTC (9 a. m. de Colombia) y toma a quien
+  // lleve más de 20 horas: la primera pasada que cumple eso es el envío.
+  const minimo = new Date(c.created_at).getTime() + 20 * 60 * 60 * 1000;
+  const pasada = new Date(minimo);
+  pasada.setUTCHours(14, 0, 0, 0);
+  if (pasada.getTime() < minimo) pasada.setUTCDate(pasada.getUTCDate() + 1);
+  return `Recordatorio automático el ${FECHA.format(pasada)} (hora de Frankfurt)`;
 }
 
 /**

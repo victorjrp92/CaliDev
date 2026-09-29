@@ -123,9 +123,11 @@ export async function borrarCita(id: number): Promise<boolean> {
 }
 
 /**
- * Invitaciones que llevan al menos 24 horas sin hora elegida y todavía no
- * recibieron recordatorio. El tope de 7 días evita escribirle a alguien por
- * una invitación vieja si la tarea estuvo parada.
+ * Invitaciones que llevan al menos 20 horas sin hora elegida y todavía no
+ * recibieron recordatorio. La tarea corre una vez al día, a las 9 a. m. de
+ * Colombia (el plan gratuito de Vercel no permite más): con 20 horas, quien fue
+ * invitado ayer recibe el recordatorio esta mañana. El tope de 7 días evita
+ * escribirle a alguien por una invitación vieja si la tarea estuvo parada.
  */
 export async function citasParaRecordar(): Promise<Cita[]> {
   await asegurarTabla();
@@ -133,7 +135,7 @@ export async function citasParaRecordar(): Promise<Cita[]> {
     SELECT * FROM citas
     WHERE inicio IS NULL
       AND recordatorio_at IS NULL
-      AND created_at <= NOW() - INTERVAL '24 hours'
+      AND created_at <= NOW() - INTERVAL '20 hours'
       AND created_at > NOW() - INTERVAL '7 days'
     ORDER BY created_at
   `;
