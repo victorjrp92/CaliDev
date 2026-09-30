@@ -10,8 +10,12 @@ import type { Escena, Punto } from "./caidas";
  * Nunca se inventa una curva: si no hay captura, no hay curva.
  */
 const BASE = "https://generativelanguage.googleapis.com";
-/** En orden: si uno está saturado (503/429), se prueba el siguiente. */
-const MODELOS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-3.5-flash"];
+/**
+ * En orden: si uno está saturado (503/429), se prueba el siguiente. Google
+ * retira modelos sin aviso (gemini-2.5-flash empezó a dar 404 el 1 oct 2026),
+ * así que un 404 también pasa al siguiente en vez de tumbar el análisis.
+ */
+const MODELOS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.5-flash"];
 
 function clave() {
   const k = process.env.GEMINI_API_KEY;
@@ -65,8 +69,8 @@ async function generar(partes: any[]): Promise<any> {
       }),
       signal: AbortSignal.timeout(50_000),
     });
-    if (r.status === 503 || r.status === 429) {
-      ultimo = `${modelo} saturado (HTTP ${r.status})`;
+    if (r.status === 503 || r.status === 429 || r.status === 404) {
+      ultimo = `${modelo}: HTTP ${r.status}`;
       await r.text();
       continue;
     }
