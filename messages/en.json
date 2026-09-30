@@ -140,6 +140,9 @@
     "legal": "Legal",
     "copyright": "© {year} CaliDev. All rights reserved."
   },
+  "legal": {
+    "effective": "Effective"
+  },
   "common": {
     "back": "Back",
     "loading": "Loading...",

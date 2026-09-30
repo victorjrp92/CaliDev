@@ -118,7 +118,7 @@ export async function cicloComentarios(acc: Acciones): Promise<ResumenComentario
         try {
           await procesar(c, a, acc, r);
         } catch (e) {
-          // Falló antes de reservar (Jev, DeepSeek, red): no salió nada a
+          // Falló antes de reservar (Jev, Gemini, red): no salió nada a
           // Instagram. No se da el conteo por visto, así se reintenta.
           completo = false;
           r.errores++;

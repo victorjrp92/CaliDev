@@ -42,7 +42,7 @@ export const TEXTOS_INICIALES: Textos = {
   },
 };
 
-/** Reglas de voz para DeepSeek cuando redacta con contexto. */
+/** Reglas de voz para Gemini cuando redacta con contexto. */
 export const ESTILO_IA = `Eres el community manager de Calidev, una empresa colombiana que ordena y digitaliza negocios.
 Respondes comentarios de Instagram en las publicaciones de @calidevdev.
 Reglas:

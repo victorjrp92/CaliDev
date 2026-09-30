@@ -531,6 +531,18 @@
   border-bottom: 1px solid var(--linea-tinta);
   padding: 0.7rem 0.5rem;
   text-align: left;
+  /* Las palabras compuestas del alemán («Kampagnenverwaltung») no caben en una
+     columna a 360 px y empujaban la tabla fuera de la pantalla. `hyphens` las
+     parte por sílaba con guion. NO `overflow-wrap: anywhere`: probado, deja que
+     el navegador encoja una columna hasta partir «USA» letra por letra. */
+  hyphens: auto;
+}
+
+/* Textos legales: la última columna de sus tablas es el país, y un país
+   partido en dos renglones se lee mal. */
+.articulo-legal th:last-child,
+.articulo-legal td:last-child {
+  white-space: nowrap;
 }
 
 .articulo th {

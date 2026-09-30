@@ -62,8 +62,8 @@ export default async function AjustesPage() {
           <p className="mt-1 text-2xl font-extrabold">{(d.consumo.jev ?? 0).toLocaleString("es-CO")}</p>
         </div>
         <div className="rounded-2xl border border-[#E3E6E0] bg-white p-5">
-          <p className="text-sm text-[#55635C]">DeepSeek (respuestas redactadas)</p>
-          <p className="mt-1 text-2xl font-extrabold">{(d.consumo.deepseek ?? 0).toLocaleString("es-CO")}</p>
+          <p className="text-sm text-[#55635C]">Gemini (respuestas redactadas)</p>
+          <p className="mt-1 text-2xl font-extrabold">{(d.consumo.gemini_redactor ?? 0).toLocaleString("es-CO")}</p>
         </div>
       </section>
 

@@ -28,6 +28,7 @@ const PAGINAS: ReadonlyArray<{ ruta: string; frecuencia: Frecuencia; prioridad: 
   { ruta: '/blog', frecuencia: 'monthly', prioridad: 0.8 },
   { ruta: '/contact', frecuencia: 'yearly', prioridad: 0.7 },
   { ruta: '/about', frecuencia: 'yearly', prioridad: 0.5 },
+  { ruta: '/privacy', frecuencia: 'yearly', prioridad: 0.2 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -10,11 +10,10 @@ import { Relojes } from "@/components/senal/relojes";
  * lea como suelo y no como una sección más — es lo único que separa «la página
  * sigue» de «la página se acabó».
  *
- * No hay columna Legal. Las claves `footer.privacy` y `footer.terms` existen
- * desde hace tiempo pero las rutas nunca se crearon, y el sitio se dirige
- * también a Alemania, que exige Impressum y Datenschutzerklärung. Son textos
- * con efecto legal: no se inventan. Un enlace a una página que no existe es un
- * fallo, así que hasta tener el texto la columna se omite.
+ * La privacidad va en la columna de la empresa y no en una columna Legal
+ * propia: hoy es el único texto legal que existe. `footer.terms` sigue sin
+ * ruta, y un enlace a una página que no existe es un fallo, así que no se
+ * enlaza hasta tener el texto.
  */
 const REDES = [
   { nombre: "LinkedIn", url: "https://www.linkedin.com/in/victorjrp9/" },
@@ -47,6 +46,7 @@ export function Pie() {
                   { href: "/about", texto: tNav("about") },
                   { href: "/blog", texto: tNav("blog") },
                   { href: "/contact", texto: tNav("contact") },
+                  { href: "/privacy", texto: t("privacy") },
                 ] as const
               ).map((e) => (
                 <li key={e.href}>

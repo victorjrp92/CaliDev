@@ -128,7 +128,7 @@
   },
   "footer": {
     "rights": "Alle Rechte vorbehalten.",
-    "privacy": "Datenschutzrichtlinie",
+    "privacy": "Datenschutzerklärung",
     "terms": "Nutzungsbedingungen",
     "tagline": "Unternehmen mit Technologie transformieren, die funktioniert.",
     "service_mobile": "App-Entwicklung",
@@ -139,6 +139,9 @@
     "about": "Über uns",
     "legal": "Rechtliches",
     "copyright": "© {year} CaliDev. Alle Rechte vorbehalten."
+  },
+  "legal": {
+    "effective": "Gültig ab"
   },
   "common": {
     "back": "Zurück",
