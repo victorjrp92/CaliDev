@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { citasParaRecordar } from "@/lib/citas/datos";
+import { citasParaRecordar, citasSinAvisos } from "@/lib/citas/datos";
+import { programarAvisos } from "@/lib/citas/avisos";
 import { enviarRecordatorio } from "@/lib/citas/recordar";
 
 /**
@@ -25,5 +26,11 @@ export async function GET(request: Request) {
     const r = await enviarRecordatorio(cita);
     resultados[r] = (resultados[r] ?? 0) + 1;
   }
-  return NextResponse.json({ revisadas: pendientes.length, ...resultados });
+  // Citas reservadas antes de que existieran los avisos programados: se les
+  // programan aquí una vez (después ya salen al reservar).
+  const sinAvisos = await citasSinAvisos();
+  let avisosProgramados = 0;
+  for (const cita of sinAvisos) avisosProgramados += (await programarAvisos(cita)).length;
+
+  return NextResponse.json({ revisadas: pendientes.length, ...resultados, citasSinAvisos: sinAvisos.length, avisosProgramados });
 }

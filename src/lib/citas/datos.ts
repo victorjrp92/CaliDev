@@ -15,6 +15,10 @@ import { sql } from "@/lib/db";
  * `secuencia` sube cada vez que la persona cambia de hora: los calendarios la
  * usan para reemplazar el evento anterior en vez de duplicarlo.
  *
+ * `avisos` son los ids de Resend de los correos programados para antes de la
+ * cita (24 horas y 1 hora antes, a la persona y a Víctor), separados por coma.
+ * Se guardan para poder cancelarlos si cambia la hora o se borra la cita.
+ *
  * `recordatorio_at` es cuándo salió el recordatorio a quien no eligió hora
  * (uno solo por invitación; ver api/citas/recordatorios).
  *
@@ -32,6 +36,7 @@ export type Cita = {
   secuencia: number;
   horarios: string | null;
   recordatorio_at: string | null;
+  avisos: string | null;
   reservada_at: string | null;
   created_at: string;
 };
@@ -54,6 +59,7 @@ function asegurarTabla() {
     await sql`CREATE UNIQUE INDEX IF NOT EXISTS citas_inicio_unico ON citas (inicio) WHERE inicio IS NOT NULL`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS horarios TEXT`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS recordatorio_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS avisos TEXT`;
   })().catch((err) => {
     tabla = null;
     throw err;
@@ -155,4 +161,19 @@ export async function citaPorId(id: number): Promise<Cita | null> {
   await asegurarTabla();
   const r = await sql<Cita>`SELECT * FROM citas WHERE id = ${id}`;
   return r.rows[0] ?? null;
+}
+
+export async function guardarAvisos(id: number, ids: string[]): Promise<void> {
+  await asegurarTabla();
+  await sql`UPDATE citas SET avisos = ${ids.length ? ids.join(",") : null} WHERE id = ${id}`;
+}
+
+/** Citas reservadas, todavía por delante, sin avisos programados (las anteriores a esta función). */
+export async function citasSinAvisos(): Promise<Cita[]> {
+  await asegurarTabla();
+  const r = await sql<Cita>`
+    SELECT * FROM citas
+    WHERE inicio IS NOT NULL AND inicio > NOW() + INTERVAL '1 hour' AND avisos IS NULL
+  `;
+  return r.rows;
 }

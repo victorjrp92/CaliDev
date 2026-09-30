@@ -71,6 +71,57 @@ export async function enviarCorreo(correo: Correo): Promise<boolean> {
 }
 
 /**
+ * Programa un correo para una fecha futura (Resend admite hasta 30 días). A
+ * diferencia de `enviarCorreo`, devuelve el id que da Resend: hace falta para
+ * cancelarlo si la cita cambia. `null` si no se pudo programar.
+ */
+export async function programarCorreo(correo: Correo, cuando: Date): Promise<string | null> {
+  const clave = process.env.RESEND_API_KEY;
+  if (!clave) return null;
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${clave}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: REMITENTE,
+        to: [correo.para],
+        reply_to: CORREO_VICTOR,
+        subject: correo.asunto,
+        text: correo.texto,
+        html: correo.html,
+        scheduled_at: cuando.toISOString(),
+      }),
+    });
+    if (!res.ok) {
+      console.error("Resend no programó", res.status, await res.text().catch(() => ""));
+      return null;
+    }
+    const json = (await res.json()) as { id?: string };
+    return json.id ?? null;
+  } catch (err) {
+    console.error("Error programando correo:", err);
+    return null;
+  }
+}
+
+/** Cancela un correo programado. Si ya salió o no existe, Resend lo rechaza y se sigue. */
+export async function cancelarCorreo(id: string): Promise<boolean> {
+  const clave = process.env.RESEND_API_KEY;
+  if (!clave) return false;
+  try {
+    const res = await fetch(`https://api.resend.com/emails/${encodeURIComponent(id)}/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${clave}`, "Content-Type": "application/json" },
+    });
+    if (!res.ok) console.error("Resend no canceló", id, res.status, await res.text().catch(() => ""));
+    return res.ok;
+  } catch (err) {
+    console.error("Error cancelando correo:", err);
+    return false;
+  }
+}
+
+/**
  * Todo lo que escribió el visitante pasa por aquí antes de entrar al HTML: un
  * nombre como `<a href=…>` no puede convertirse en un enlace dentro del correo.
  */
