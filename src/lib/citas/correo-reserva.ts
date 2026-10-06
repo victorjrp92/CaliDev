@@ -1,6 +1,6 @@
 import { escapar, CORREO_VICTOR, type Correo } from "@/lib/delegar/correos/enviar";
 import { primerNombre } from "@/lib/delegar/correos/lead";
-import { ENLACE_VIDEOLLAMADA, describir, horaEnFrankfurt, type Horario } from "@/lib/citas/horarios";
+import { ENLACE_VIDEOLLAMADA, describir, horaEnFrankfurt, textoDuracion, tipoDe, type Horario } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar, ics } from "@/lib/citas/ics";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, boton, etiqueta, firma, marco } from "@/lib/citas/estilo-correo";
@@ -22,7 +22,7 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean):
     <tr><td style="padding:24px 24px 0;font-family:${FUENTE}">
       ${etiqueta("Tu videollamada")}
       <div style="font-size:18px;font-weight:800;color:${C.tinta};line-height:1.35">${escapar(cuando)}</div>
-      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · 1 hora · gratuita</div>
+      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? " · presentación de tu propuesta" : " · gratuita"}</div>
     </td></tr>
     <tr><td style="padding:18px 24px 0">
       ${boton("Unirme a la videollamada", ENLACE_VIDEOLLAMADA)}
@@ -47,7 +47,7 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean):
   const texto = [
     `Listo, ${nombre}. Nos vemos.`,
     "",
-    `Tu videollamada: ${cuando}. Por Google Meet, 1 hora, gratuita.`,
+    `Tu videollamada: ${cuando}. Por Google Meet, ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? ", para presentarte la propuesta" : ", gratuita"}.`,
     `Enlace: ${ENLACE_VIDEOLLAMADA}`,
     `Agregar a Google Calendar: ${enlaceGoogleCalendar(cita, h)}`,
     "",

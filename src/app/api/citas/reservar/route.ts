@@ -1,6 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { citaPorToken, reservar } from "@/lib/citas/datos";
-import { describir, disponibleAun, horarioPorInicio, horariosDeCita } from "@/lib/citas/horarios";
+import { describir, disponibleAun, horarioDeCita, horariosDeCita } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Misma hora que ya tenía: nada que cambiar ni que reenviar.
-    if (horarioPorInicio(cita.inicio)?.id === horario.id) {
+    if (horarioDeCita(cita)?.id === horario.id) {
       return NextResponse.json({ ok: true, descripcion: describir(horario), google: enlaceGoogleCalendar(cita, horario) });
     }
 

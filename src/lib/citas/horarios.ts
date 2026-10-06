@@ -35,15 +35,35 @@ export const DIAS_ADELANTE = 21;
 
 const FORMATO_ID = /^(\d{4}-\d{2}-\d{2})T(\d{2})$/;
 
-/** «2026-10-01T09» → el horario de 9:00 a 10:00 de Colombia. `undefined` si no es válido. */
-export function horarioDesdeId(id: string | null | undefined): Horario | undefined {
+/**
+ * Dos tipos de cita: la primera videollamada (diagnóstico, 1 hora) y la
+ * segunda cita, donde se presenta la propuesta (30 minutos). El tipo cambia la
+ * duración y los textos de los correos; los horarios y la reserva son iguales.
+ */
+export type TipoCita = "primera" | "segunda";
+
+export function tipoDe(cita: { tipo?: string | null }): TipoCita {
+  return cita.tipo === "segunda" ? "segunda" : "primera";
+}
+
+export function duracionDe(cita: { tipo?: string | null }): number {
+  return tipoDe(cita) === "segunda" ? 30 : DURACION_MINUTOS;
+}
+
+/** «1 hora» o «30 minutos», para los textos. */
+export function textoDuracion(cita: { tipo?: string | null }): string {
+  return duracionDe(cita) === 60 ? "1 hora" : `${duracionDe(cita)} minutos`;
+}
+
+/** «2026-10-01T09» → el horario de 9:00 de Colombia, de `minutos` de duración. `undefined` si no es válido. */
+export function horarioDesdeId(id: string | null | undefined, minutos = DURACION_MINUTOS): Horario | undefined {
   const m = FORMATO_ID.exec(id ?? "");
   if (!m) return undefined;
   const hora = Number(m[2]);
   if (hora < PRIMERA_HORA || hora > ULTIMA_HORA) return undefined;
   const inicio = new Date(`${m[1]}T${m[2]}:00:00-05:00`);
   if (Number.isNaN(inicio.getTime())) return undefined;
-  return { id: id as string, inicio, fin: new Date(inicio.getTime() + DURACION_MINUTOS * 60 * 1000) };
+  return { id: id as string, inicio, fin: new Date(inicio.getTime() + minutos * 60 * 1000) };
 }
 
 export const HORARIOS: Horario[] = DIAS.flatMap((dia) =>
@@ -51,10 +71,11 @@ export const HORARIOS: Horario[] = DIAS.flatMap((dia) =>
 );
 
 /** Los horarios que se le ofrecieron a esta persona, en orden. */
-export function horariosDeCita(cita: Pick<Cita, "horarios">): Horario[] {
+export function horariosDeCita(cita: Pick<Cita, "horarios"> & { tipo?: string | null }): Horario[] {
+  const minutos = duracionDe(cita);
   const propios = (cita.horarios ?? "")
     .split(",")
-    .map((id) => horarioDesdeId(id.trim()))
+    .map((id) => horarioDesdeId(id.trim(), minutos))
     .filter((h): h is Horario => Boolean(h));
   const lista = propios.length ? propios : HORARIOS;
   return [...lista].sort((a, b) => a.inicio.getTime() - b.inicio.getTime());
@@ -69,6 +90,11 @@ export function idDesdeInicio(inicio: Date | string | null): string | undefined 
 
 export function horarioPorInicio(inicio: Date | string | null): Horario | undefined {
   return horarioDesdeId(idDesdeInicio(inicio));
+}
+
+/** La hora reservada de una cita, con la duración de su tipo. */
+export function horarioDeCita(cita: Pick<Cita, "inicio"> & { tipo?: string | null }): Horario | undefined {
+  return horarioDesdeId(idDesdeInicio(cita.inicio), duracionDe(cita));
 }
 
 export function disponibleAun(h: Horario, ahora = new Date()): boolean {

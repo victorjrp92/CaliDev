@@ -1,6 +1,6 @@
 import { escapar, CORREO_VICTOR, type Correo } from "@/lib/delegar/correos/enviar";
 import { primerNombre } from "@/lib/delegar/correos/lead";
-import { ENLACE_VIDEOLLAMADA, describir, horaEnFrankfurt, type Horario } from "@/lib/citas/horarios";
+import { ENLACE_VIDEOLLAMADA, describir, horaEnFrankfurt, textoDuracion, tipoDe, type Horario } from "@/lib/citas/horarios";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, boton, etiqueta, firma, marco } from "@/lib/citas/estilo-correo";
 
@@ -29,7 +29,7 @@ export function avisoParaElla(cita: Cita, h: Horario, antes: Antelacion): Correo
     <tr><td style="padding:24px 24px 0;font-family:${FUENTE}">
       ${etiqueta("Tu videollamada")}
       <div style="font-size:18px;font-weight:800;color:${C.tinta};line-height:1.35">${escapar(cuando)}</div>
-      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · 1 hora</div>
+      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? " · presentación de tu propuesta" : ""}</div>
     </td></tr>
     <tr><td style="padding:18px 24px 26px;font-family:${FUENTE};font-size:14.5px;color:${C.texto}">
       ${boton("Unirme a la videollamada", ENLACE_VIDEOLLAMADA)}
@@ -68,7 +68,7 @@ export function avisoParaVictor(cita: Cita, h: Horario, antes: Antelacion): Corr
 
   return {
     para: CORREO_VICTOR,
-    asunto: `${antes === "24h" ? "Mañana" : "En 1 hora"} · videollamada con ${cita.nombre} · ${frankfurt}`,
+    asunto: `${antes === "24h" ? "Mañana" : "En 1 hora"} · ${tipoDe(cita) === "segunda" ? "propuesta" : "videollamada"} con ${cita.nombre} · ${frankfurt}`,
     texto: `${antes === "24h" ? "Mañana" : "En 1 hora"}: videollamada con ${cita.nombre} (${cita.correo}), ${frankfurt}.\n${describir(h)}\n${ENLACE_VIDEOLLAMADA}`,
     html: marco({
       titulo: "Recordatorio de videollamada",

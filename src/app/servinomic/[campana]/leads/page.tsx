@@ -176,7 +176,9 @@ export default async function PanelLeads({
         </p>
       )}
 
-      <CitasPanel campana={campana} />
+      <CitasPanel campana={campana} tipo="primera" />
+
+      <CitasPanel campana={campana} tipo="segunda" />
 
       <LeadsDelegar filas={delegar} />
 

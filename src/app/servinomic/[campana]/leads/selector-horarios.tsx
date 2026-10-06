@@ -35,10 +35,12 @@ export function SelectorHorarios({
   elegidos,
   ocupados,
   onChange,
+  duracion,
 }: {
   elegidos: string[];
   ocupados: string[];
   onChange: (ids: string[]) => void;
+  duracion: string;
 }) {
   // Se calculan una vez al abrir el panel: la lista de días y el «ahora» con el
   // que se bloquean las horas que ya pasaron.
@@ -56,7 +58,7 @@ export function SelectorHorarios({
   return (
     <div className="sm:col-span-3">
       <p className="text-[13px] font-semibold">
-        Horarios que le ofreces <span className="font-normal text-[#46554D]">(1 hora cada uno · hora de Colombia)</span>
+        Horarios que le ofreces <span className="font-normal text-[#46554D]">({duracion} cada uno · hora de Colombia)</span>
       </p>
 
       <div className="mt-2 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Día">

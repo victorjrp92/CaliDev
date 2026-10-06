@@ -22,6 +22,11 @@ import { sql } from "@/lib/db";
  * `recordatorio_at` es cuándo salió el recordatorio a quien no eligió hora
  * (uno solo por invitación; ver api/citas/recordatorios).
  *
+ * `tipo` es «primera» (videollamada de diagnóstico, 1 hora) o «segunda» (la
+ * presentación de la propuesta, 30 minutos); vacío = primera. `mensaje` es una
+ * nota de Víctor que encabeza la invitación (por ejemplo, por qué cambia una
+ * hora ya acordada).
+ *
  * `horarios` son los que Víctor le ofreció a esta persona, como ids separados
  * por coma («2026-10-01T09,2026-10-01T10»). Vacío en las primeras invitaciones,
  * que usan la lista fija de lib/citas/horarios.ts.
@@ -35,6 +40,8 @@ export type Cita = {
   inicio: string | null;
   secuencia: number;
   horarios: string | null;
+  tipo: string | null;
+  mensaje: string | null;
   recordatorio_at: string | null;
   avisos: string | null;
   reservada_at: string | null;
@@ -60,6 +67,8 @@ function asegurarTabla() {
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS horarios TEXT`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS recordatorio_at TIMESTAMPTZ`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS avisos TEXT`;
+    await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS tipo TEXT`;
+    await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS mensaje TEXT`;
   })().catch((err) => {
     tabla = null;
     throw err;
@@ -67,12 +76,17 @@ function asegurarTabla() {
   return tabla;
 }
 
-export async function crearCita(nombre: string, correo: string, horarios: string[]): Promise<Cita> {
+export async function crearCita(
+  nombre: string,
+  correo: string,
+  horarios: string[],
+  extra: { tipo?: "primera" | "segunda"; mensaje?: string | null } = {}
+): Promise<Cita> {
   await asegurarTabla();
   const token = randomBytes(16).toString("hex");
   const r = await sql<Cita>`
-    INSERT INTO citas (token, nombre, correo, horarios)
-    VALUES (${token}, ${nombre}, ${correo}, ${horarios.join(",")})
+    INSERT INTO citas (token, nombre, correo, horarios, tipo, mensaje)
+    VALUES (${token}, ${nombre}, ${correo}, ${horarios.join(",")}, ${extra.tipo ?? "primera"}, ${extra.mensaje ?? null})
     RETURNING *
   `;
   return r.rows[0];

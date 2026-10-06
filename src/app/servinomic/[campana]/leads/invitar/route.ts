@@ -38,7 +38,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Marca al menos un horario para ofrecerle." }, { status: 400 });
     }
 
-    const cita = await crearCita(nombre, correo, horarios);
+    // Segunda cita = presentación de la propuesta (30 min). El mensaje, si lo
+    // hay, encabeza el correo; se guarda como texto y se escapa al enviarlo.
+    const tipo = body.tipo === "segunda" ? "segunda" : "primera";
+    const mensaje = typeof body.mensaje === "string" ? body.mensaje.trim().slice(0, 600) || null : null;
+
+    const cita = await crearCita(nombre, correo, horarios, { tipo, mensaje });
     const enviado = await enviarCorreo(correoInvitacion(cita));
     if (!enviado) {
       return NextResponse.json(

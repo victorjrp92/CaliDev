@@ -1,5 +1,5 @@
 import { citaPorToken } from "@/lib/citas/datos";
-import { horarioPorInicio } from "@/lib/citas/horarios";
+import { horarioDeCita } from "@/lib/citas/horarios";
 import { ics } from "@/lib/citas/ics";
 
 /**
@@ -10,7 +10,7 @@ import { ics } from "@/lib/citas/ics";
 export async function GET(_request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const cita = await citaPorToken(token);
-  const horario = cita ? horarioPorInicio(cita.inicio) : undefined;
+  const horario = cita ? horarioDeCita(cita) : undefined;
   if (!cita || !horario) return new Response("Sin cita reservada", { status: 404 });
 
   return new Response(ics(cita, horario, "PUBLISH"), {

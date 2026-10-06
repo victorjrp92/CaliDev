@@ -8,11 +8,20 @@ import { SelectorHorarios } from "./selector-horarios";
  * Formulario del panel: nombre, correo, los horarios que se le ofrecen y un
  * botón que le envía la invitación para elegir hora. Dice si el correo salió.
  */
-export function InvitarCita({ campana, ocupados }: { campana: string; ocupados: string[] }) {
+export function InvitarCita({
+  campana,
+  tipo,
+  ocupados,
+}: {
+  campana: string;
+  tipo: "primera" | "segunda";
+  ocupados: string[];
+}) {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [horarios, setHorarios] = useState<string[]>([]);
+  const [mensaje, setMensaje] = useState("");
   const [estado, setEstado] = useState<{ tipo: "ok" | "error"; texto: string; enlace?: string } | null>(null);
   const [enviando, setEnviando] = useState(false);
   const enCurso = useRef(false);
@@ -31,7 +40,7 @@ export function InvitarCita({ campana, ocupados }: { campana: string; ocupados: 
       const res = await fetch(`/servinomic/${campana}/leads/invitar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, correo, horarios }),
+        body: JSON.stringify({ nombre, correo, horarios, tipo, mensaje }),
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
@@ -39,6 +48,7 @@ export function InvitarCita({ campana, ocupados }: { campana: string; ocupados: 
         setNombre("");
         setCorreo("");
         setHorarios([]);
+        setMensaje("");
         router.refresh();
       } else {
         setEstado({ tipo: "error", texto: json.error || "No se pudo enviar.", enlace: json.enlace });
@@ -64,7 +74,21 @@ export function InvitarCita({ campana, ocupados }: { campana: string; ocupados: 
         Correo
         <input className={`${campo} mt-1`} type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required placeholder="alexa@correo.com" />
       </label>
-      <SelectorHorarios elegidos={horarios} ocupados={ocupados} onChange={setHorarios} />
+      <label className="text-[13px] font-semibold sm:col-span-3">
+        Mensaje para ella <span className="font-normal text-[#46554D]">(opcional · encabeza el correo)</span>
+        <textarea
+          className="mt-1 min-h-[76px] w-full rounded-xl border-[1.5px] border-[#D8DCD4] bg-white px-3.5 py-2.5 text-[15px] outline-none focus:border-[var(--verde)] focus:ring-2 focus:ring-[var(--verde)]/25"
+          value={mensaje}
+          maxLength={600}
+          onChange={(e) => setMensaje(e.target.value)}
+          placeholder={
+            tipo === "segunda"
+              ? "Se me presentó un inconveniente con la hora que acordamos. ¿Te queda bien alguna de estas?"
+              : "Gracias por escribirnos por Instagram…"
+          }
+        />
+      </label>
+      <SelectorHorarios elegidos={horarios} ocupados={ocupados} onChange={setHorarios} duracion={tipo === "segunda" ? "30 minutos" : "1 hora"} />
       <button
         type="submit"
         disabled={enviando}

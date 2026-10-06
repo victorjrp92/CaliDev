@@ -1,5 +1,5 @@
 import { guardarAvisos, type Cita } from "@/lib/citas/datos";
-import { horarioPorInicio } from "@/lib/citas/horarios";
+import { horarioDeCita } from "@/lib/citas/horarios";
 import { avisoParaElla, avisoParaVictor, type Antelacion } from "@/lib/citas/correo-avisos";
 import { cancelarCorreo, programarCorreo } from "@/lib/delegar/correos/enviar";
 
@@ -22,7 +22,7 @@ const ANTELACIONES: [Antelacion, number][] = [
 ];
 
 export async function programarAvisos(cita: Cita): Promise<string[]> {
-  const h = horarioPorInicio(cita.inicio);
+  const h = horarioDeCita(cita);
   if (!h) return [];
   const ids: string[] = [];
   for (const [antes, ms] of ANTELACIONES) {

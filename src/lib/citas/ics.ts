@@ -45,8 +45,12 @@ function plegar(linea: string): string {
   return partes.join("\r\n ");
 }
 
-function descripcion(): string {
-  return `Enlace de la videollamada: ${ENLACE_VIDEOLLAMADA}\n\nConversamos sobre tu negocio y sus procesos. Después te envío una propuesta de trabajo.`;
+function descripcion(cita: Pick<Cita, "tipo">): string {
+  const que =
+    cita.tipo === "segunda"
+      ? "Revisamos juntos la propuesta de trabajo y sus opciones."
+      : "Conversamos sobre tu negocio y sus procesos. Después te envío una propuesta de trabajo.";
+  return `Enlace de la videollamada: ${ENLACE_VIDEOLLAMADA}\n\n${que}`;
 }
 
 export function ics(cita: Cita, h: Horario, metodo: "REQUEST" | "PUBLISH"): string {
@@ -63,7 +67,7 @@ export function ics(cita: Cita, h: Horario, metodo: "REQUEST" | "PUBLISH"): stri
     `DTSTART:${fechaIcs(h.inicio)}`,
     `DTEND:${fechaIcs(h.fin)}`,
     `SUMMARY:${escaparIcs(`${TITULO} · ${cita.nombre}`)}`,
-    `DESCRIPTION:${escaparIcs(descripcion())}`,
+    `DESCRIPTION:${escaparIcs(descripcion(cita))}`,
     `LOCATION:${escaparIcs(ENLACE_VIDEOLLAMADA)}`,
     `URL:${ENLACE_VIDEOLLAMADA}`,
     `ORGANIZER;CN=${escaparIcs("Víctor (CaliDev)")}:mailto:${ORGANIZADOR}`,
@@ -86,7 +90,7 @@ export function enlaceGoogleCalendar(cita: Cita, h: Horario): string {
     action: "TEMPLATE",
     text: `${TITULO} · ${cita.nombre}`,
     dates: `${fechaIcs(h.inicio)}/${fechaIcs(h.fin)}`,
-    details: descripcion(),
+    details: descripcion(cita),
     location: ENLACE_VIDEOLLAMADA,
   });
   return `https://calendar.google.com/calendar/render?${p.toString()}`;

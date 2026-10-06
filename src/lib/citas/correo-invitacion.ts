@@ -1,6 +1,6 @@
 import { escapar, type Correo } from "@/lib/delegar/correos/enviar";
 import { primerNombre } from "@/lib/delegar/correos/lead";
-import { ZONA_COLOMBIA, disponibleAun, horaCompacta, horariosDeCita, type Horario } from "@/lib/citas/horarios";
+import { ZONA_COLOMBIA, disponibleAun, horaCompacta, horariosDeCita, textoDuracion, tipoDe, type Horario } from "@/lib/citas/horarios";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, MONO } from "@/lib/citas/estilo-correo";
 
@@ -61,21 +61,38 @@ export function correoInvitacion(
   const filasDias: { clave: string; horarios: Horario[] }[][] = [];
   for (let i = 0; i < dias.length; i += 3) filasDias.push(dias.slice(i, i + 3));
 
-  const titulo = recordatorio ? `${nombre}, ¿agendamos?` : `${nombre}, conozcamos tu negocio.`;
+  // La segunda cita es la presentación de la propuesta: otro saludo, otro paso
+  // en curso y otra duración. El mensaje de Víctor, si lo hay, va primero.
+  const segunda = tipoDe(cita) === "segunda";
+  const titulo = recordatorio
+    ? `${nombre}, ¿agendamos?`
+    : segunda
+      ? `${nombre}, agendemos la presentación de tu propuesta.`
+      : `${nombre}, conozcamos tu negocio.`;
   const entrada = recordatorio
     ? "Te escribí ayer para agendar una videollamada. Por si el correo se perdió entre otros, aquí están los horarios que siguen libres."
-    : "Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.";
+    : cita.mensaje?.trim()
+      ? cita.mensaje.trim()
+      : segunda
+        ? "Gracias por la conversación. Ya tengo lista tu propuesta de trabajo; te la presento en una videollamada corta para revisar juntos las opciones."
+        : "Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.";
 
-  const pasos: [string, string, string][] = [
-    ["01", "Videollamada", "Me cuentas cómo funciona tu negocio y sus procesos."],
-    ["02", "Propuesta de trabajo", "Te envío las opciones que veo para tu caso."],
-    ["03", "Propuesta formal", "Con presupuesto, cuando elijas la opción que te sirva."],
-  ];
+  const pasos: [string, string, string][] = segunda
+    ? [
+        ["01", "Diagnóstico", "Hecho. Me contaste cómo funciona tu negocio."],
+        ["02", "Presentación de la propuesta", "Revisamos juntos las opciones para tu caso."],
+        ["03", "Propuesta formal", "Con presupuesto, cuando elijas la opción que te sirva."],
+      ]
+    : [
+        ["01", "Videollamada", "Me cuentas cómo funciona tu negocio y sus procesos."],
+        ["02", "Propuesta de trabajo", "Te envío las opciones que veo para tu caso."],
+        ["03", "Propuesta formal", "Con presupuesto, cuando elijas la opción que te sirva."],
+      ];
 
   const datos: [string, string][] = [
-    ["Duración", "1 hora"],
+    ["Duración", textoDuracion(cita)],
     ["Formato", "Google Meet"],
-    ["Costo", "Gratuita"],
+    ["Costo", segunda ? "Sin compromiso" : "Gratuita"],
   ];
 
   const celdaDato = ([k, v]: [string, string], i: number) => `
@@ -186,7 +203,7 @@ export function correoInvitacion(
         </td></tr>
       </table>
 
-      <div style="max-width:540px;margin-top:14px;font-family:${FUENTE};font-size:12px;line-height:1.5;color:${C.gris}">Recibes este correo porque le escribiste a CaliDev por Instagram.</div>
+      <div style="max-width:540px;margin-top:14px;font-family:${FUENTE};font-size:12px;line-height:1.5;color:${C.gris}">${segunda ? "Recibes este correo porque tienes una conversación abierta con CaliDev." : "Recibes este correo porque le escribiste a CaliDev por Instagram."}</div>
     </td></tr>
   </table>
 </body></html>`;
@@ -196,7 +213,7 @@ export function correoInvitacion(
     "",
     entrada,
     "",
-    "Duración: 1 hora · Formato: Google Meet · Costo: gratuita",
+    `Duración: ${textoDuracion(cita)} · Formato: Google Meet · Costo: ${segunda ? "sin compromiso" : "gratuita"}`,
     "",
     "Cómo trabajamos:",
     ...pasos.map(([n, t, d]) => `${n}  ${t}: ${d}`),
@@ -215,6 +232,8 @@ export function correoInvitacion(
 
   const asunto = recordatorio
     ? `${nombre}, ¿te queda bien alguno de estos horarios?`
-    : `${nombre}, elige el horario de nuestra videollamada`;
+    : segunda
+      ? `${nombre}, elige la hora para presentarte tu propuesta`
+      : `${nombre}, elige el horario de nuestra videollamada`;
   return { para: cita.correo, asunto, texto, html, horariosLibres: dias.reduce((n, d) => n + d.horarios.length, 0) };
 }
