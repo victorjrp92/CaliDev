@@ -17,7 +17,8 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
   const id = Number(body.id);
   if (!Number.isInteger(id) || id <= 0) return NextResponse.json({ error: "id inválido" }, { status: 400 });
-  const r = await enviarRecordatorioPorId(id);
+  const mensaje = typeof body.mensaje === "string" ? body.mensaje.trim().slice(0, 600) || null : null;
+  const r = await enviarRecordatorioPorId(id, mensaje);
   if (!r) return NextResponse.json({ error: "No existe" }, { status: 404 });
   return NextResponse.json({ ok: r === "enviado", mensaje: MENSAJE[r] }, { status: r === "enviado" ? 200 : 409 });
 }

@@ -1,4 +1,4 @@
-import { guardarAvisos, type Cita } from "@/lib/citas/datos";
+import { guardarAvisos, registrarEvento, type Cita } from "@/lib/citas/datos";
 import { horarioDeCita } from "@/lib/citas/horarios";
 import { avisoParaElla, avisoParaVictor, type Antelacion } from "@/lib/citas/correo-avisos";
 import { cancelarCorreo, programarCorreo } from "@/lib/delegar/correos/enviar";
@@ -34,6 +34,7 @@ export async function programarAvisos(cita: Cita): Promise<string[]> {
     }
   }
   await guardarAvisos(cita.id, ids);
+  await registrarEvento(cita.id, "avisos", ids.length ? `${ids.length} recordatorios programados (24 h y 1 h antes)` : "Sin recordatorios: la cita está demasiado cerca");
   return ids;
 }
 

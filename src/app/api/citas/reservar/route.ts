@@ -1,5 +1,5 @@
 import { NextResponse, after } from "next/server";
-import { citaPorToken, reservar } from "@/lib/citas/datos";
+import { citaPorToken, registrarEvento, reservar } from "@/lib/citas/datos";
 import { describir, disponibleAun, horarioDeCita, horariosDeCita } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
@@ -45,7 +45,9 @@ export async function POST(request: Request) {
 
     const { cita: guardada, cambio } = resultado;
     after(async () => {
-      await enviarCorreo(correoConfirmacionCita(guardada, horario, cambio));
+      await registrarEvento(guardada.id, cambio ? "cambio" : "reserva", describir(horario));
+      const confirmo = await enviarCorreo(correoConfirmacionCita(guardada, horario, cambio));
+      await registrarEvento(guardada.id, confirmo ? "confirmacion" : "fallo", confirmo ? "Confirmación con invitación de calendario" : "La confirmación no salió");
       await enviarCorreo(correoAvisoCita(guardada, horario, cambio));
       // Recordatorios de 24 horas y 1 hora antes; si cambió de hora, se
       // cancelan los de la hora anterior (sus ids venían en `cita`).

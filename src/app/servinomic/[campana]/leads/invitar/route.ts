@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { panelAbierto } from "@/lib/panel-leads";
-import { crearCita } from "@/lib/citas/datos";
+import { crearCita, registrarEvento } from "@/lib/citas/datos";
 import { DIAS_ADELANTE, disponibleAun, horarioDesdeId } from "@/lib/citas/horarios";
 import { correoInvitacion } from "@/lib/citas/correo-invitacion";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
@@ -45,6 +45,11 @@ export async function POST(request: Request) {
 
     const cita = await crearCita(nombre, correo, horarios, { tipo, mensaje });
     const enviado = await enviarCorreo(correoInvitacion(cita));
+    await registrarEvento(
+      cita.id,
+      enviado ? "invitacion" : "fallo",
+      enviado ? `Invitación enviada con ${horarios.length} horarios` : "La invitación no salió"
+    );
     if (!enviado) {
       return NextResponse.json(
         { error: "La invitación se guardó, pero el correo no salió. Revisa Resend.", enlace: `/cita/${cita.token}` },

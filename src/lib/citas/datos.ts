@@ -69,6 +69,15 @@ function asegurarTabla() {
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS avisos TEXT`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS tipo TEXT`;
     await sql`ALTER TABLE citas ADD COLUMN IF NOT EXISTS mensaje TEXT`;
+    await sql`
+      CREATE TABLE IF NOT EXISTS citas_eventos (
+        id SERIAL PRIMARY KEY,
+        cita_id INT NOT NULL,
+        tipo TEXT NOT NULL,
+        detalle TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `;
   })().catch((err) => {
     tabla = null;
     throw err;
@@ -191,3 +200,27 @@ export async function citasSinAvisos(): Promise<Cita[]> {
   `;
   return r.rows;
 }
+
+/**
+ * Historial de una cita: cada correo enviado (invitación, recordatorio,
+ * confirmación, avisos programados) y cada cambio de hora queda anotado con su
+ * fecha. Es lo que muestra el panel de seguimiento; sin esto, «¿le llegó algo?»
+ * no tiene respuesta.
+ */
+export type EventoCita = { id: number; cita_id: number; tipo: string; detalle: string | null; created_at: string };
+
+export async function registrarEvento(citaId: number, tipo: string, detalle?: string | null): Promise<void> {
+  try {
+    await asegurarTabla();
+    await sql`INSERT INTO citas_eventos (cita_id, tipo, detalle) VALUES (${citaId}, ${tipo}, ${detalle ?? null})`;
+  } catch (err) {
+    console.error("No se pudo registrar el evento", tipo, err);
+  }
+}
+
+export async function eventosDeCitas(): Promise<EventoCita[]> {
+  await asegurarTabla();
+  const r = await sql<EventoCita>`SELECT * FROM citas_eventos ORDER BY created_at`;
+  return r.rows;
+}
+

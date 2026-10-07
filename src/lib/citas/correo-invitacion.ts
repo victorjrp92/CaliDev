@@ -49,7 +49,7 @@ const limpiar = (s: string) => s.replace(".", "").toUpperCase();
  */
 export function correoInvitacion(
   cita: Cita,
-  opciones: { recordatorio?: boolean; ocupadas?: Set<number> } = {}
+  opciones: { recordatorio?: boolean; ocupadas?: Set<number>; mensajeRecordatorio?: string | null } = {}
 ): Correo & { horariosLibres: number } {
   const { recordatorio = false, ocupadas = new Set<number>() } = opciones;
   const nombre = primerNombre(cita.nombre);
@@ -65,12 +65,17 @@ export function correoInvitacion(
   // en curso y otra duración. El mensaje de Víctor, si lo hay, va primero.
   const segunda = tipoDe(cita) === "segunda";
   const titulo = recordatorio
-    ? `${nombre}, ¿agendamos?`
+    ? segunda
+      ? `${nombre}, ¿a qué hora te queda mejor?`
+      : `${nombre}, ¿agendamos?`
     : segunda
       ? `${nombre}, agendemos la presentación de tu propuesta.`
       : `${nombre}, conozcamos tu negocio.`;
+  // Un recordatorio enviado a mano puede llevar su propio mensaje.
   const entrada = recordatorio
-    ? "Te escribí ayer para agendar una videollamada. Por si el correo se perdió entre otros, aquí están los horarios que siguen libres."
+    ? opciones.mensajeRecordatorio?.trim()
+      ? opciones.mensajeRecordatorio.trim()
+      : "Te escribí ayer para agendar una videollamada. Por si el correo se perdió entre otros, aquí están los horarios que siguen libres."
     : cita.mensaje?.trim()
       ? cita.mensaje.trim()
       : segunda
