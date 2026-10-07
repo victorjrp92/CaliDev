@@ -9,17 +9,23 @@ import { SelectorHorarios } from "./selector-horarios";
  * botón que le envía la invitación para elegir hora. Dice si el correo salió.
  */
 export function InvitarCita({
-  campana,
-  tipo,
+  tipo: tipoInicial,
   ocupados,
+  nombreInicial = "",
+  correoInicial = "",
+  elegirTipo = false,
 }: {
-  campana: string;
   tipo: "primera" | "segunda";
   ocupados: string[];
+  nombreInicial?: string;
+  correoInicial?: string;
+  /** Muestra el selector de tipo (en «Nueva invitación»); en una ficha el tipo ya viene dado. */
+  elegirTipo?: boolean;
 }) {
   const router = useRouter();
-  const [nombre, setNombre] = useState("");
-  const [correo, setCorreo] = useState("");
+  const [tipo, setTipo] = useState(tipoInicial);
+  const [nombre, setNombre] = useState(nombreInicial);
+  const [correo, setCorreo] = useState(correoInicial);
   const [horarios, setHorarios] = useState<string[]>([]);
   const [mensaje, setMensaje] = useState("");
   const [estado, setEstado] = useState<{ tipo: "ok" | "error"; texto: string; enlace?: string } | null>(null);
@@ -37,7 +43,7 @@ export function InvitarCita({
     setEnviando(true);
     setEstado(null);
     try {
-      const res = await fetch(`/servinomic/${campana}/leads/invitar`, {
+      const res = await fetch("/servinomic/leads/invitar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, correo, horarios, tipo, mensaje }),
@@ -66,6 +72,24 @@ export function InvitarCita({
 
   return (
     <form onSubmit={invitar} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      {elegirTipo && (
+        <div className="flex flex-wrap gap-2 sm:col-span-3" role="radiogroup" aria-label="Tipo de cita">
+          {(["primera", "segunda"] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              role="radio"
+              aria-checked={tipo === t}
+              onClick={() => setTipo(t)}
+              className={`h-10 cursor-pointer rounded-full border-[1.5px] px-4 text-[13.5px] font-semibold ${
+                tipo === t ? "border-[var(--verde)] bg-[var(--verde)] text-[var(--hueso)]" : "border-[#D8DCD4] bg-white"
+              }`}
+            >
+              {t === "primera" ? "1.ª videollamada · 1 hora" : "2.ª cita: propuesta · 30 min"}
+            </button>
+          ))}
+        </div>
+      )}
       <label className="text-[13px] font-semibold">
         Nombre
         <input className={`${campo} mt-1`} value={nombre} onChange={(e) => setNombre(e.target.value)} required minLength={2} placeholder="Alexa Correa" />

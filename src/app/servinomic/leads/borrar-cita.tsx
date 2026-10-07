@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
  * confirmación en el propio botón (el visor no muestra `confirm()` en todas
  * partes y un borrado no se deshace).
  */
-export function BorrarCita({ campana, id, nombre }: { campana: string; id: number; nombre: string }) {
+export function BorrarCita({ id, nombre }: { id: number; nombre: string }) {
   const router = useRouter();
   const [seguro, setSeguro] = useState(false);
   const [borrando, setBorrando] = useState(false);
@@ -16,7 +16,7 @@ export function BorrarCita({ campana, id, nombre }: { campana: string; id: numbe
   async function borrar() {
     if (!seguro) return setSeguro(true);
     setBorrando(true);
-    const res = await fetch(`/servinomic/${campana}/leads/borrar-cita`, {
+    const res = await fetch("/servinomic/leads/borrar-cita", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),

@@ -12,7 +12,7 @@ import { primerNombre, type LeadDelegar } from "@/lib/delegar/correos/lead";
  * WhatsApp con el saludo ya escrito.
  */
 
-const PANEL = "https://calidev.dev/servinomic/limpiaexpress/leads";
+const PANEL = "https://calidev.dev/servinomic/leads";
 
 const NOMBRE_PRIORIDAD: Record<Prioridad, string> = {
   alta: "Prioridad alta",
