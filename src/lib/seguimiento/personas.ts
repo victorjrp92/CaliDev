@@ -57,6 +57,8 @@ export type Persona = {
   formulario: { fecha: string; prioridad: string | null; motivo: string | null; datos: DatoLead[] } | null;
   primera: Cita | null;
   segunda: Cita | null;
+  /** La cita que se puede agendar o mover a mano: la más avanzada que aún no pasó. */
+  vigente: Cita | null;
   eventos: (EventoCita & { cita: "1.ª" | "2.ª" })[];
   seguimiento: Seguimiento | null;
   etapa: Etapa;
@@ -237,6 +239,7 @@ export async function armarPersonas(): Promise<Persona[]> {
         : null,
       primera,
       segunda,
+      vigente: [segunda, primera].find((c) => c && (!c.inicio || +new Date(c.inicio) > ahora)) ?? null,
       eventos: [
         ...evDe(primera).map((e) => ({ ...e, cita: "1.ª" as const })),
         ...evDe(segunda).map((e) => ({ ...e, cita: "2.ª" as const })),

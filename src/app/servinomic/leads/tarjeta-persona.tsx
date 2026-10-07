@@ -4,6 +4,7 @@ import { Historial } from "./historial";
 import { AccionesPersona } from "./acciones-persona";
 import { RecordarCita } from "./recordar-cita";
 import { BorrarCita } from "./borrar-cita";
+import { AgendarCita } from "./agendar-cita";
 
 /**
  * La ficha de una persona: quién es, en qué etapa está, qué toca hacer ahora,
@@ -32,6 +33,7 @@ function enlaceWhatsapp(numero: string, nombre: string) {
 
 export function TarjetaPersona({ persona: p, ocupados }: { persona: Persona; ocupados: string[] }) {
   const pendiente = p.segunda && !p.segunda.inicio ? p.segunda : p.primera && !p.primera.inicio && !p.segunda ? p.primera : null;
+  const vigente = p.vigente;
   const invitarA =
     p.etapa === "por-invitar" ? "primera" : p.etapa === "por-invitar-2" ? "segunda" : null;
   const etapaManual = p.seguimiento?.etapa ?? null;
@@ -86,10 +88,13 @@ export function TarjetaPersona({ persona: p, ocupados }: { persona: Persona; ocu
         <Historial persona={p} />
       </div>
 
-      {pendiente && (
+      {(pendiente || vigente) && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <RecordarCita id={pendiente.id} />
-          <BorrarCita id={pendiente.id} nombre={p.nombre} />
+          {pendiente && <RecordarCita id={pendiente.id} />}
+          {vigente && (
+            <AgendarCita id={vigente.id} textoBoton={vigente.inicio ? "Cambiar la hora" : "Agendar directamente"} />
+          )}
+          {pendiente && <BorrarCita id={pendiente.id} nombre={p.nombre} />}
         </div>
       )}
 

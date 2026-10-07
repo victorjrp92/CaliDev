@@ -224,3 +224,15 @@ export async function eventosDeCitas(): Promise<EventoCita[]> {
   return r.rows;
 }
 
+/** Añade un horario a los ofrecidos de una cita (al agendar a mano una hora que no estaba). */
+export async function agregarHorario(id: number, horarioId: string): Promise<void> {
+  await asegurarTabla();
+  await sql`
+    UPDATE citas SET horarios = CASE
+      WHEN horarios IS NULL OR horarios = '' THEN ${horarioId}
+      WHEN position(${horarioId} in horarios) > 0 THEN horarios
+      ELSE horarios || ',' || ${horarioId} END
+    WHERE id = ${id}
+  `;
+}
+

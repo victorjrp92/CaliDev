@@ -13,12 +13,19 @@ import { C, FUENTE, boton, etiqueta, firma, marco } from "@/lib/citas/estilo-cor
 
 const SITIO = "https://calidev.dev";
 
-export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean): Correo {
+/**
+ * `mensaje`: cuando Víctor agenda la hora a mano (acordada por WhatsApp o en la
+ * llamada), su nota va arriba del correo, antes de los datos de la cita.
+ */
+export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean, mensaje?: string | null): Correo {
   const nombre = primerNombre(cita.nombre);
   const cuando = describir(h);
   const cambiar = `${SITIO}/cita/${cita.token}`;
+  const nota = mensaje?.trim()
+    ? `<tr><td style="padding:24px 24px 0;font-family:${FUENTE};font-size:15.5px;line-height:1.6;color:${C.texto}">${escapar(mensaje.trim())}</td></tr>`
+    : "";
 
-  const cuerpo = `
+  const cuerpo = `${nota}
     <tr><td style="padding:24px 24px 0;font-family:${FUENTE}">
       ${etiqueta("Tu videollamada")}
       <div style="font-size:18px;font-weight:800;color:${C.tinta};line-height:1.35">${escapar(cuando)}</div>
@@ -47,6 +54,7 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean):
   const texto = [
     `Listo, ${nombre}. Nos vemos.`,
     "",
+    ...(mensaje?.trim() ? [mensaje.trim(), ""] : []),
     `Tu videollamada: ${cuando}. Por Google Meet, ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? ", para presentarte la propuesta" : ", gratuita"}.`,
     `Enlace: ${ENLACE_VIDEOLLAMADA}`,
     `Agregar a Google Calendar: ${enlaceGoogleCalendar(cita, h)}`,
