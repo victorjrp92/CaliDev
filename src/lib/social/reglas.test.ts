@@ -64,6 +64,13 @@ test("la clave sola rescata un dudoso", () => {
   assert.equal(accionFinal("revision", "Ayuda!", c), "contacto");
   assert.equal(accionFinal("revision", "no sé si ayuda o no esto la verdad", c), "revision");
 });
+test("la clave sola abre el privado aunque Jev la tome por etiqueta o emoji", () => {
+  const c = { palabrasClave: ["orden"], detectarInteres: false };
+  assert.equal(accionFinal("ia", "Orden", c), "contacto");
+  assert.equal(accionFinal("ia", "orden 🙌", c), "contacto");
+  assert.equal(accionFinal("ia", "me encantó el video, mucho orden en ese negocio", c), "ia");
+  assert.equal(accionFinal("ignorar", "orden", c), "ignorar");
+});
 
 import { debeAbrirConversacion } from "./reglas";
 

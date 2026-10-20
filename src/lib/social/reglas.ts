@@ -67,7 +67,10 @@ export function accionFinal(
 ): Accion {
   const tieneClave = contieneClave(texto, c.palabrasClave);
   if (accion === "contacto" && !c.detectarInteres && !tieneClave) return "ia";
-  if (accion === "revision" && tieneClave && normalizar(texto).split(" ").length <= 3) return "contacto";
+  // La clave sola («orden», «info 🙌»): Jev la suele tomar por etiqueta o
+  // emoji, o dudar; igual es alguien que pide el privado.
+  const corto = normalizar(texto).split(" ").length <= 3;
+  if ((accion === "revision" || accion === "ia") && tieneClave && corto) return "contacto";
   return accion;
 }
 
