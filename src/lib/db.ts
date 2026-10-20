@@ -17,9 +17,29 @@ import postgres from "postgres";
  */
 type Resultado<T> = { rows: T[]; rowCount: number };
 
+/**
+ * El código guarda JSON ya convertido a texto (`JSON.stringify`), como pedía
+ * el driver de Neon. El de `postgres` lo volvería a convertir y la columna
+ * quedaría con una cadena en vez del objeto: un texto ya serializado se pasa
+ * tal cual.
+ */
+const JSON_TAL_CUAL = (oid: number) => ({
+  to: oid,
+  from: [oid],
+  serialize: (x: unknown) => (typeof x === "string" ? x : JSON.stringify(x)),
+  parse: (x: string) => JSON.parse(x),
+});
+
 let cliente: ReturnType<typeof postgres> | null = null;
 function supabase() {
-  cliente ??= postgres(process.env.SUPABASE_DB_URL!, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 15 });
+  cliente ??= postgres(process.env.SUPABASE_DB_URL!, {
+    prepare: false,
+    max: 3,
+    idle_timeout: 20,
+    connect_timeout: 15,
+    onnotice: () => {}, // los CREATE … IF NOT EXISTS avisan en cada arranque
+    types: { json: JSON_TAL_CUAL(114), jsonb: JSON_TAL_CUAL(3802) },
+  });
   return cliente;
 }
 
