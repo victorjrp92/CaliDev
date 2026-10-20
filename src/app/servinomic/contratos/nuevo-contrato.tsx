@@ -25,7 +25,8 @@ function hoy() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Bogota" }).format(new Date());
 }
 
-const campo = "mt-1 block h-11 w-full rounded-lg border-[1.5px] border-[#D8DCD4] bg-white px-3 text-[15px] outline-none focus:border-[var(--verde)]";
+const base = "h-11 rounded-lg border-[1.5px] border-[#D8DCD4] bg-white px-3 text-[15px] outline-none focus:border-[var(--verde)]";
+const campo = `mt-1 block w-full ${base}`;
 const etiqueta = "block text-[13px] font-semibold";
 
 function Texto({ label, value, onChange, ayuda, placeholder }: { label: string; value: string; onChange: (v: string) => void; ayuda?: string; placeholder?: string }) {
@@ -66,7 +67,10 @@ export function NuevoContrato({ bases }: { bases: Base[] }) {
   const [enviando, setEnviando] = useState(false);
   const [creado, setCreado] = useState<Creado | null>(null);
 
-  const set = <K extends keyof DatosServinomic>(k: K) => (v: DatosServinomic[K]) => setD((x) => ({ ...x, [k]: v }));
+  const set = <K extends keyof DatosServinomic>(k: K) => (v: DatosServinomic[K]) => {
+    setEstado(null);
+    setD((x) => ({ ...x, [k]: v }));
+  };
   const suma = d.cuotas.reduce((s, c) => s + c.valor, 0);
   const faltan = faltantesServinomic(d);
 
@@ -174,13 +178,13 @@ export function NuevoContrato({ bases }: { bases: Base[] }) {
             {d.cuotas.map((c, i) => (
               <div key={i} className="flex flex-wrap items-center gap-2">
                 <input
-                  className={`${campo} mt-0 min-w-[220px] flex-1`}
+                  className={`${base} min-w-0 flex-1 basis-[240px]`}
                   placeholder="Entre el 1 y el 5 de noviembre de 2026"
                   value={c.cuando}
                   onChange={(e) => setD((x) => ({ ...x, cuotas: x.cuotas.map((y, j) => (j === i ? { ...y, cuando: e.target.value } : y)) }))}
                 />
                 <input
-                  className={`${campo} mt-0 w-36`}
+                  className={`${base} w-36`}
                   inputMode="numeric"
                   placeholder="Valor"
                   value={c.valor ? String(c.valor) : ""}
