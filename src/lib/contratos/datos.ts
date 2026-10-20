@@ -27,6 +27,8 @@ export type Contrato = {
   titulo: string;
   html: string;
   huella: string;
+  /** Los datos de la plantilla con que se armó (JSON), para usarlo de base en otro. */
+  datos: string | null;
   created_at: string;
 };
 
@@ -66,6 +68,7 @@ function asegurarTabla() {
         created_at TIMESTAMPTZ DEFAULT NOW()
       )
     `;
+    await sql`ALTER TABLE contratos ADD COLUMN IF NOT EXISTS datos TEXT`;
     await sql`
       CREATE TABLE IF NOT EXISTS contrato_firmantes (
         id SERIAL PRIMARY KEY,
@@ -109,11 +112,12 @@ function hashCodigo(token: string, codigo: string): string {
 export async function crearContrato(
   titulo: string,
   html: string,
-  firmantes: { rol: string; etiqueta: string }[]
+  firmantes: { rol: string; etiqueta: string }[],
+  datos: string | null = null
 ): Promise<{ contrato: Contrato; firmantes: Firmante[] }> {
   await asegurarTabla();
   const r = await sql<Contrato>`
-    INSERT INTO contratos (titulo, html, huella) VALUES (${titulo}, ${html}, ${huellaDe(html)}) RETURNING *
+    INSERT INTO contratos (titulo, html, huella, datos) VALUES (${titulo}, ${html}, ${huellaDe(html)}, ${datos}) RETURNING *
   `;
   const contrato = r.rows[0];
   const creados: Firmante[] = [];

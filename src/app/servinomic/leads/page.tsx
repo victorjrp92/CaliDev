@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { panelAbierto, panelConfigurado } from "@/lib/panel-leads";
 import { armarPersonas, type Persona } from "@/lib/seguimiento/personas";
 import { idDesdeInicio } from "@/lib/citas/horarios";
@@ -61,6 +62,9 @@ export default async function SeguimientoLeads() {
         <div>
           <p className="mono text-[var(--verde)]">Panel privado</p>
           <h1 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight">Seguimiento de leads</h1>
+          <Link href="/servinomic/contratos" className="mt-1 inline-block text-[14px] font-semibold text-[var(--verde)] underline underline-offset-2">
+            Ver contratos
+          </Link>
         </div>
         <Salir />
       </div>
