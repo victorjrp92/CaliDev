@@ -5,7 +5,7 @@ import postgres from "postgres";
  * La conexión a la base. Todo el sitio consulta por aquí con la etiqueta
  * `sql\`...\``, que devuelve `{ rows, rowCount }`.
  *
- * Con `DATABASE_URL` (Supabase, por el pooler en modo transacción, puerto
+ * Con `SUPABASE_DB_URL` (Supabase, por el pooler en modo transacción, puerto
  * 6543) se usa el driver `postgres`; sin ella, la base de Neon de siempre.
  * Neon cobra por horas de cómputo y el agente de Instagram la despierta cada
  * minuto: en octubre de 2026 agotó la cuota gratis el día 19. Supabase no
@@ -19,13 +19,13 @@ type Resultado<T> = { rows: T[]; rowCount: number };
 
 let cliente: ReturnType<typeof postgres> | null = null;
 function supabase() {
-  cliente ??= postgres(process.env.DATABASE_URL!, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 15 });
+  cliente ??= postgres(process.env.SUPABASE_DB_URL!, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 15 });
   return cliente;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mismo tipo de fila que daba el driver de Neon
 export async function sql<T = Record<string, any>>(textos: TemplateStringsArray, ...valores: unknown[]): Promise<Resultado<T>> {
-  if (!process.env.DATABASE_URL) return sqlNeon(textos, ...(valores as Parameters<typeof sqlNeon>[1][])) as unknown as Promise<Resultado<T>>;
+  if (!process.env.SUPABASE_DB_URL) return sqlNeon(textos, ...(valores as Parameters<typeof sqlNeon>[1][])) as unknown as Promise<Resultado<T>>;
   const filas = await supabase()(textos, ...(valores.map((v) => (v === undefined ? null : v)) as never[]));
   return { rows: filas as unknown as T[], rowCount: filas.count };
 }
