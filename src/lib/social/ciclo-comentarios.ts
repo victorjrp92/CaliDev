@@ -66,7 +66,8 @@ async function procesar(c: ig.ComentarioIg, a: Automatizacion, acc: Acciones, r:
       const yaEntro = await datos.entroPorPublicacion(igsid, a.mediaId);
       const previa = await datos.persona(igsid);
       if (debeAbrirConversacion(yaEntro, previa?.paso ?? null)) {
-        await acc.respuestaPrivada(c.id, a.textos.pregunta, [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado]);
+        const botones = a.textos.flujoDm === "preguntas" ? [] : [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado];
+        await acc.respuestaPrivada(c.id, a.textos.pregunta, botones);
         if (!acc.simulacion) {
           await datos.registrarEntrada({
             igsid, usuario, codigo: codigoPersona(igsid, process.env.SOCIAL_SAL ?? "calidev"),

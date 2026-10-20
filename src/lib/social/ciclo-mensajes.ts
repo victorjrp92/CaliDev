@@ -45,6 +45,9 @@ async function responder(acc: Acciones, p: datos.Persona, texto: string, a: Auto
   const t = a?.textos ?? TEXTOS_INICIALES;
   const umbral = a?.umbral ?? 0.7;
   if (p.paso === "esperando_boton" || p.paso === "esperando_texto") {
+    // Flujo de preguntas: con su primera respuesta le llega el enlace. Lo que
+    // contestó queda en Chats para leerlo antes de la llamada.
+    if (t.flujoDm === "preguntas") return { ...(await ramaSi(acc, p, a)), accion: "respondio_preguntas" };
     const boton = reconocerBoton(texto, t);
     if (boton === "si") return ramaSi(acc, p, a);
     if (boton === "aliado") return ramaAliado(acc, p, a);

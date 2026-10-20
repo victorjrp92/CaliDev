@@ -30,6 +30,7 @@ export function validarAutomatizacion(b: Record<string, unknown>): { ok: true; v
   };
   const d = TEXTOS_INICIALES;
   const textos: Textos = {
+    flujoDm: t.flujoDm === "preguntas" ? "preguntas" : "botones",
     pregunta: cad(t.pregunta, 600) || d.pregunta, si: cad(t.si, 600) || d.si, no: cad(t.no, 600) || d.no,
     aliado: cad(t.aliado, 600) || d.aliado,
     botonSi: cad(t.botonSi, 20) || d.botonSi, botonNo: cad(t.botonNo, 20) || d.botonNo, botonAliado: cad(t.botonAliado, 20) || d.botonAliado,

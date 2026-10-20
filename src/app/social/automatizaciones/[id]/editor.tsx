@@ -95,6 +95,18 @@ export function Editor({ mediaId, inicial, landings, otras }: {
 
       <section className="rounded-2xl border border-[#E3E6E0] bg-white p-5">
         <h2 className="mb-3 text-lg font-bold">Conversación por mensaje</h2>
+        <div role="radiogroup" aria-label="Cómo sigue el mensaje privado" className="mb-4 flex flex-col gap-2 text-sm">
+          {([
+            ["botones", "Pregunta con botones (Sí, tengo negocio / No / LimpiaExpress)"],
+            ["preguntas", "Preguntas abiertas: con su primera respuesta le llega la tarjeta con el enlace de la landing"],
+          ] as const).map(([id, texto]) => (
+            <label key={id} className="flex items-start gap-2">
+              <input type="radio" name="flujoDm" className="mt-1" checked={(c.textos.flujoDm ?? "botones") === id}
+                onChange={() => set("textos", { ...c.textos, flujoDm: id })} />
+              <span>{texto}</span>
+            </label>
+          ))}
+        </div>
         <Flujo t={c.textos} onCambio={(t) => set("textos", t)} />
       </section>
 

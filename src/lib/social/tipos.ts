@@ -31,6 +31,13 @@ export interface Tarjeta {
 
 /** Todo lo que Victor puede editar de una automatización. */
 export interface Textos {
+  /**
+   * Cómo sigue el privado. «botones» (por defecto): pregunta con botones Sí /
+   * No / LimpiaExpress. «preguntas»: la pregunta va sin botones (por ejemplo,
+   * tipo de negocio, empleados y mayor problema) y, con la primera respuesta,
+   * se envía la tarjeta con el enlace de la landing.
+   */
+  flujoDm?: "botones" | "preguntas";
   pregunta: string;
   si: string;
   no: string;
