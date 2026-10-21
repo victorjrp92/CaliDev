@@ -166,9 +166,9 @@ export function FormularioArranque({ token, cliente, inicial, enviado: yaEnviado
             <p className="mt-2 text-[16px] leading-relaxed text-[#2C3A33]">{s.intro}</p>
             <div className="mt-7">
               {s.tipo === "lista" ? (
-                <SeccionLista seccion={s} valor={Array.isArray(valor) ? valor : []} onCambio={(v) => cambiar(s.id, v)} mostrarErrores={mostrarErrores} />
+                <SeccionLista key={s.id} seccion={s} valor={Array.isArray(valor) ? valor : []} onCambio={(v) => cambiar(s.id, v)} mostrarErrores={mostrarErrores} />
               ) : (
-                <SeccionCampos seccion={s} valor={valor && !Array.isArray(valor) ? valor : {}} onCambio={(v) => cambiar(s.id, v)} mostrarErrores={mostrarErrores} />
+                <SeccionCampos key={s.id} seccion={s} valor={valor && !Array.isArray(valor) ? valor : {}} onCambio={(v) => cambiar(s.id, v)} mostrarErrores={mostrarErrores} />
               )}
             </div>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
