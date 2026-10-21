@@ -38,6 +38,8 @@ export function FormularioArranque({ token, cliente, inicial, enviado: yaEnviado
   const temporizador = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendiente = useRef<{ seccion: string; valor: Valores | Valores[] } | null>(null);
   const arriba = useRef<HTMLDivElement>(null);
+  // Secciones ya celebradas: las que llegaron completas y las que se completan aquí.
+  const celebradas = useRef(new Set(avance(inicial).completas));
 
   const { completas, porcentaje } = avance(respuestas);
   const nombre = cliente.split(" ")[0];
@@ -85,14 +87,14 @@ export function FormularioArranque({ token, cliente, inicial, enviado: yaEnviado
 
   async function guardarYSeguir() {
     const s = SECCIONES[paso - 1];
-    const estabaCompleta = completas.includes(s.id);
     if (!seccionCompleta(s, respuestas)) {
       setMostrarErrores(true);
       setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
       return;
     }
     await guardar();
-    if (!estabaCompleta) {
+    if (!celebradas.current.has(s.id)) {
+      celebradas.current.add(s.id);
       const final = avance(respuestas).completas.length === N;
       setCelebrar({ titulo: final ? `¡Lo lograste, ${nombre}!` : "¡Sección completa!", texto: s.logro, final });
     } else ir(paso + 1);
