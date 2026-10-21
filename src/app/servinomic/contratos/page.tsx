@@ -53,6 +53,9 @@ export default async function Contratos() {
           <Link href="/servinomic/leads" className="mt-1 inline-block text-[14px] font-semibold text-[var(--verde)] underline underline-offset-2">
             Ir al seguimiento de leads
           </Link>
+          <Link href="/servinomic/arranques" className="ml-4 mt-1 inline-block text-[14px] font-semibold text-[var(--verde)] underline underline-offset-2">
+            Arranques
+          </Link>
         </div>
         <Salir />
       </div>

@@ -1,0 +1,99 @@
+import { SECCIONES, type Campo, type Respuestas, type Seccion, type Valores } from "@/lib/arranque/esquema";
+
+/**
+ * Validación del formulario de arranque. Funciones puras: las usan el
+ * navegador (para avisar al instante) y el servidor (que es el que decide qué
+ * sección está completa). Los mensajes dicen qué arreglar, no solo que hay un
+ * error.
+ */
+
+export function visible(c: Campo, v: Valores): boolean {
+  if (!c.visibleSi) return true;
+  const actual = v[c.visibleSi.campo];
+  return typeof actual === "string" && c.visibleSi.valores.includes(actual);
+}
+
+const soloDigitos = (s: string) => s.replace(/\D/g, "");
+
+/** Error de un campo, o null si está bien. */
+export function errorCampo(c: Campo, v: Valores): string | null {
+  if (!visible(c, v)) return null;
+  const valor = v[c.id];
+  const vacio = valor === undefined || (Array.isArray(valor) ? valor.length === 0 : valor.trim() === "");
+  if (vacio) return c.requerido ? (c.tipo === "opcion" || c.tipo === "opciones" ? "Elige una opción." : "Este dato es necesario.") : null;
+  const t = Array.isArray(valor) ? "" : valor.trim();
+  switch (c.tipo) {
+    case "correo":
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t) ? null : "Revisa el correo: debe verse como nombre@correo.com.";
+    case "celular": {
+      const d = soloDigitos(t).replace(/^57(?=3\d{9}$)/, "");
+      return /^3\d{9}$/.test(d) || (t.startsWith("+") && d.length >= 8 && d.length <= 15) ? null : "Escribe el celular con sus 10 dígitos (empieza por 3).";
+    }
+    case "documento":
+      return /^\d{5,12}$/.test(soloDigitos(t)) && !/[a-z]/i.test(t.replace(/^(cc|ce|nit|pp)\s*/i, "")) ? null : "Escribe solo los números del documento (entre 5 y 12).";
+    case "numero":
+      return /^\d{1,6}$/.test(t) ? null : "Escribe solo un número.";
+    case "pesos":
+      return /^\d{3,10}$/.test(soloDigitos(t)) && Number(soloDigitos(t)) > 0 ? null : "Escribe el valor en pesos, solo números.";
+    case "porcentaje": {
+      const n = Number(t.replace(",", ".").replace("%", ""));
+      return Number.isFinite(n) && n >= 0 && n <= 100 ? null : "Debe ser un número entre 0 y 100.";
+    }
+    case "fecha":
+      return /^\d{4}-\d{2}-\d{2}$/.test(t) && !Number.isNaN(Date.parse(t)) ? null : "Elige una fecha válida.";
+    case "opcion":
+      return c.opciones?.includes(t) ? null : "Elige una de las opciones.";
+    case "opciones":
+      return Array.isArray(valor) && valor.every((x) => c.opciones?.includes(x)) ? null : "Elige entre las opciones.";
+    default:
+      return t.length <= 1000 ? null : "Es muy largo; resúmelo un poco.";
+  }
+}
+
+export function erroresValores(campos: readonly Campo[], v: Valores): Record<string, string> {
+  const e: Record<string, string> = {};
+  for (const c of campos) {
+    const x = errorCampo(c, v);
+    if (x) e[c.id] = x;
+  }
+  return e;
+}
+
+/** ¿La sección cumple todo? Las listas piden su mínimo y cada elemento sin errores. */
+export function seccionCompleta(s: Seccion, r: Respuestas): boolean {
+  const valor = r[s.id];
+  if (s.tipo === "lista") {
+    const items = Array.isArray(valor) ? valor : [];
+    return items.length >= (s.item?.minimo ?? 1) && items.every((it) => Object.keys(erroresValores(s.campos, it)).length === 0);
+  }
+  const v = valor && !Array.isArray(valor) ? valor : {};
+  return Object.keys(erroresValores(s.campos, v)).length === 0;
+}
+
+export function avance(r: Respuestas): { completas: string[]; porcentaje: number } {
+  const completas = SECCIONES.filter((s) => seccionCompleta(s, r)).map((s) => s.id);
+  return { completas, porcentaje: Math.round((completas.length / SECCIONES.length) * 100) };
+}
+
+/**
+ * Lo que manda el navegador, reducido a lo que el esquema conoce: solo campos
+ * existentes, textos recortados, opciones válidas. Nunca se guarda nada más.
+ */
+function limpiarValores(campos: readonly Campo[], v: unknown): Valores {
+  const o = (v && typeof v === "object" && !Array.isArray(v) ? v : {}) as Record<string, unknown>;
+  const r: Valores = {};
+  for (const c of campos) {
+    const x = o[c.id];
+    if (c.tipo === "opciones") {
+      if (Array.isArray(x)) r[c.id] = x.filter((y): y is string => typeof y === "string" && Boolean(c.opciones?.includes(y)));
+    } else if (typeof x === "string" || typeof x === "number") {
+      r[c.id] = String(x).slice(0, c.tipo === "area" ? 1000 : 200);
+    }
+  }
+  return r;
+}
+
+export function limpiarSeccion(s: Seccion, valor: unknown): Valores | Valores[] {
+  if (s.tipo === "lista") return (Array.isArray(valor) ? valor : []).slice(0, 500).map((it) => limpiarValores(s.campos, it));
+  return limpiarValores(s.campos, valor);
+}

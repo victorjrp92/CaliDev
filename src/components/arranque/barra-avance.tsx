@@ -1,0 +1,65 @@
+"use client";
+
+import { SECCIONES } from "@/lib/arranque/esquema";
+
+/**
+ * Arriba y fija: el porcentaje y un punto por sección. Las completas llevan
+ * ✓, la actual se resalta, y todas se pueden tocar para ir a ellas. Es lo que
+ * convierte una lista de datos en un camino con avance visible.
+ */
+export function BarraAvance({
+  porcentaje,
+  completas,
+  actual,
+  onIr,
+  guardado,
+}: {
+  porcentaje: number;
+  completas: string[];
+  actual: number;
+  onIr: (i: number) => void;
+  guardado: "guardado" | "guardando" | "error" | null;
+}) {
+  return (
+    <div className="sticky top-0 z-20 border-b border-[#E3E6E0] bg-[var(--hueso)]/95 backdrop-blur">
+      <div className="mx-auto max-w-2xl px-4 pb-3 pt-3">
+        <div className="flex items-center justify-between gap-3 text-[13px]">
+          <span className="mono text-[var(--verde)]">Arranque de ServiNomic</span>
+          <span className="flex items-center gap-2">
+            {guardado && (
+              <span className={guardado === "error" ? "text-[#B42318]" : "text-[#5A6B63]"}>
+                {guardado === "guardando" ? "Guardando…" : guardado === "error" ? "Sin conexión: no se guardó" : "Guardado"}
+              </span>
+            )}
+            <b className="mono text-[15px]">{porcentaje}%</b>
+          </span>
+        </div>
+        <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#E3E6E0]" role="progressbar" aria-valuenow={porcentaje} aria-valuemin={0} aria-valuemax={100} aria-label="Avance del formulario">
+          <div className="h-full rounded-full bg-[var(--lima)] transition-[width] duration-700 ease-out motion-reduce:transition-none" style={{ width: `${Math.max(porcentaje, 3)}%` }} />
+        </div>
+        <ol className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5">
+          {SECCIONES.map((s, i) => {
+            const ok = completas.includes(s.id);
+            const aqui = actual === i + 1;
+            return (
+              <li key={s.id} className="flex-none">
+                <button
+                  type="button"
+                  onClick={() => onIr(i + 1)}
+                  aria-current={aqui ? "step" : undefined}
+                  className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 text-[12.5px] font-semibold ${
+                    aqui ? "border-[var(--verde)] bg-white text-[var(--verde)]" : ok ? "border-transparent bg-[var(--verde)] text-[var(--lima)]" : "border-[#D8DCD4] bg-white text-[#5A6B63]"
+                  }`}
+                >
+                  <span aria-hidden="true">{ok ? "✓" : i + 1}</span>
+                  <span className={aqui ? "" : "hidden sm:inline"}>{s.titulo}</span>
+                  <span className="sr-only">{ok ? " (completa)" : ""}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </div>
+  );
+}
