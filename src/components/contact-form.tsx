@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-const FORMSPREE = "https://formspree.io/f/mojrvqak";
-
 type Estado = "reposo" | "enviando" | "enviado" | "error";
 
 /**
@@ -19,9 +17,10 @@ type Estado = "reposo" | "enviando" | "enviado" | "error";
  * mensaje: si alguien pulsa desde «automatizaciones», llega con eso escrito y no
  * ante un campo en blanco.
  *
- * El envío sigue yendo a Formspree, que está en Estados Unidos. Eso es una
- * transferencia internacional de datos y tiene que quedar declarada en la
- * política de privacidad — está anotado en el informe legal pendiente.
+ * El envío va a /api/contacto: se guarda en la base y llega a
+ * calidevdev@gmail.com (antes iba a Formspree, al correo personal de Victor y
+ * a servidores en Estados Unidos). `sitio` es un campo trampa, invisible para
+ * las personas, que solo llenan los bots.
  */
 export function ContactForm() {
   const t = useTranslations("contact");
@@ -33,12 +32,12 @@ export function ContactForm() {
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setEstado("enviando");
-    const datos = new FormData(e.currentTarget);
+    const datos = Object.fromEntries(new FormData(e.currentTarget));
     try {
-      const res = await fetch(FORMSPREE, {
+      const res = await fetch("/api/contacto", {
         method: "POST",
-        body: datos,
-        headers: { Accept: "application/json" },
+        body: JSON.stringify({ ...datos, pagina: window.location.pathname }),
+        headers: { "Content-Type": "application/json" },
       });
       setEstado(res.ok ? "enviado" : "error");
     } catch {
@@ -110,6 +109,8 @@ export function ContactForm() {
           className={`${campo} resize-y`}
         />
       </div>
+
+      <input type="text" name="sitio" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
       {estado === "error" && (
         <p role="alert" className="text-[var(--lima)]">

@@ -29,6 +29,8 @@ export type Correo = {
   texto: string;
   html: string;
   adjuntos?: Adjunto[];
+  /** A quién va la respuesta; por defecto, a Víctor. */
+  responderA?: string;
 };
 
 export async function enviarCorreo(correo: Correo): Promise<boolean> {
@@ -44,7 +46,7 @@ export async function enviarCorreo(correo: Correo): Promise<boolean> {
       body: JSON.stringify({
         from: REMITENTE,
         to: [correo.para],
-        reply_to: CORREO_VICTOR,
+        reply_to: correo.responderA ?? CORREO_VICTOR,
         subject: correo.asunto,
         text: correo.texto,
         html: correo.html,
