@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { panelAbierto } from "@/lib/panel-leads";
 import { agregarHorario, citaPorId, crearCita, registrarEvento, reservar, type Cita } from "@/lib/citas/datos";
-import { describir, disponibleAun, duracionDe, horarioDesdeId } from "@/lib/citas/horarios";
+import { describir, duracionDe, horarioDesdeId } from "@/lib/citas/horarios";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { reprogramarAvisos } from "@/lib/citas/avisos";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
@@ -42,7 +42,9 @@ export async function POST(request: Request) {
   if (!cita) return NextResponse.json({ error: "No existe esa cita." }, { status: 404 });
 
   const horario = horarioDesdeId(horarioId, duracionDe(cita));
-  if (!horario || !disponibleAun(horario)) {
+  // Víctor agenda horas ya acordadas: basta con 10 minutos de margen (la
+  // agenda pública exige una hora, ver disponibleAun).
+  if (!horario || horario.inicio.getTime() - Date.now() < 10 * 60 * 1000) {
     return NextResponse.json({ error: "Esa hora no es válida o ya pasó." }, { status: 400 });
   }
   const mensaje = typeof body.mensaje === "string" ? body.mensaje.trim().slice(0, 800) || null : null;
