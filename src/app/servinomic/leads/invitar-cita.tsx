@@ -99,7 +99,7 @@ export function InvitarCita({
         <input className={`${campo} mt-1`} type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} required placeholder="alexa@correo.com" />
       </label>
       <label className="text-[13px] font-semibold sm:col-span-3">
-        Mensaje para ella <span className="font-normal text-[#46554D]">(opcional · encabeza el correo)</span>
+        Mensaje <span className="font-normal text-[#46554D]">(opcional · encabeza el correo)</span>
         <textarea
           className="mt-1 min-h-[76px] w-full rounded-xl border-[1.5px] border-[#D8DCD4] bg-white px-3.5 py-2.5 text-[15px] outline-none focus:border-[var(--verde)] focus:ring-2 focus:ring-[var(--verde)]/25"
           value={mensaje}
@@ -108,7 +108,7 @@ export function InvitarCita({
           placeholder={
             tipo === "segunda"
               ? "Se me presentó un inconveniente con la hora que acordamos. ¿Te queda bien alguna de estas?"
-              : "Gracias por escribirnos por Instagram…"
+              : "Gracias por escribirnos desde nuestra página…"
           }
         />
       </label>

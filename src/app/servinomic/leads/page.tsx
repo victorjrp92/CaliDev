@@ -8,7 +8,7 @@ import { Puerta } from "./puerta";
 import { Salir } from "./salir";
 import { ResumenEtapas } from "./resumen-etapas";
 import { TarjetaPersona } from "./tarjeta-persona";
-import { InvitarCita } from "./invitar-cita";
+import { NuevaCita } from "./nueva-cita";
 
 export const dynamic = "force-dynamic";
 
@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 /**
  * Seguimiento de cada lead hasta el cierre, en calidev.dev/servinomic/leads.
  *
- * Arriba, cuántos hay en cada etapa. Después, una ficha por persona ordenada
- * por lo que pide atención: primero a quien hay que invitar o enviarle la
- * propuesta, después las citas por venir, al final los cerrados. Al pie, una
- * invitación nueva para alguien que todavía no está en la lista (llegó por
- * Instagram).
+ * Arriba, «Nueva cita» para alguien que todavía no está en la lista
+ * (proponerle horarios o agendar una hora ya acordada) y cuántos hay en cada
+ * etapa. Después, una ficha por persona ordenada por lo que pide atención:
+ * primero a quien hay que invitar o enviarle la propuesta, después las citas
+ * por venir, al final los cerrados.
  */
 export default async function SeguimientoLeads() {
   if (!panelConfigurado()) {
@@ -75,6 +75,10 @@ export default async function SeguimientoLeads() {
       {fallo && <p role="alert" className="mt-6 text-[15px] text-[#B42318]">{fallo}</p>}
 
       <div className="mt-6">
+        <NuevaCita ocupados={ocupados} />
+      </div>
+
+      <div className="mt-6">
         <ResumenEtapas personas={personas} />
       </div>
 
@@ -95,15 +99,6 @@ export default async function SeguimientoLeads() {
         </details>
       )}
 
-      <section className="mt-10 rounded-3xl border border-[#D8DCD4] bg-white p-5">
-        <h2 className="text-[20px] font-extrabold tracking-tight">Nueva invitación</h2>
-        <p className="mt-1 text-[14px] text-[#46554D]">
-          Para alguien que todavía no está en la lista, por ejemplo quien escribió por Instagram. Elige el tipo de cita y los horarios.
-        </p>
-        <div className="mt-4">
-          <InvitarCita tipo="primera" ocupados={ocupados} elegirTipo />
-        </div>
-      </section>
     </main>
   );
 }

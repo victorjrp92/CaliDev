@@ -80,7 +80,7 @@ export function correoInvitacion(
       ? cita.mensaje.trim()
       : segunda
         ? "Gracias por la conversación. Ya tengo lista tu propuesta de trabajo; te la presento en una videollamada corta para revisar juntos las opciones."
-        : "Gracias por escribirme por Instagram. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.";
+        : "Gracias por escribirme. Te propongo una videollamada para entender cómo trabajan hoy y qué te gustaría cambiar.";
 
   const pasos: [string, string, string][] = segunda
     ? [
