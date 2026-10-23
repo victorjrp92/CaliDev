@@ -4,6 +4,7 @@ import { agregarHorario, citaPorId, crearCita, registrarEvento, reservar, type C
 import { describir, duracionDe, horarioDesdeId } from "@/lib/citas/horarios";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { reprogramarAvisos } from "@/lib/citas/avisos";
+import { sincronizarCalendario } from "@/lib/citas/calendario";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
 
 /**
@@ -63,6 +64,7 @@ export async function POST(request: Request) {
   );
   await enviarCorreo(correoAvisoCita(guardada, horario, cambio));
   await reprogramarAvisos(cita, guardada);
+  await sincronizarCalendario(guardada);
 
   return NextResponse.json({ ok: confirmo, mensaje: confirmo ? "Agendada y confirmación enviada." : "Agendada, pero la confirmación no salió." });
 }

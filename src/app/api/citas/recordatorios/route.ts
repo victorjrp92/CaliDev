@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { citasParaRecordar, citasSinAvisos } from "@/lib/citas/datos";
 import { programarAvisos } from "@/lib/citas/avisos";
+import { citasSinCalendario, sincronizarCalendario } from "@/lib/citas/calendario";
 import { enviarRecordatorio } from "@/lib/citas/recordar";
 
 /**
@@ -31,6 +32,9 @@ export async function GET(request: Request) {
   const sinAvisos = await citasSinAvisos();
   let avisosProgramados = 0;
   for (const cita of sinAvisos) avisosProgramados += (await programarAvisos(cita)).length;
+  // Igual con Google Calendar: las citas de antes de la sincronización entran aquí.
+  const sinCalendario = await citasSinCalendario();
+  for (const cita of sinCalendario) await sincronizarCalendario(cita);
 
-  return NextResponse.json({ revisadas: pendientes.length, ...resultados, citasSinAvisos: sinAvisos.length, avisosProgramados });
+  return NextResponse.json({ revisadas: pendientes.length, ...resultados, citasSinAvisos: sinAvisos.length, avisosProgramados, alCalendario: sinCalendario.length });
 }

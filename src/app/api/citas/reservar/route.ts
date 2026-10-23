@@ -5,6 +5,7 @@ import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
 import { reprogramarAvisos } from "@/lib/citas/avisos";
+import { sincronizarCalendario } from "@/lib/citas/calendario";
 
 /**
  * Reserva (o cambio) de la hora de una videollamada.
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
       // Recordatorios de 24 horas y 1 hora antes; si cambió de hora, se
       // cancelan los de la hora anterior (sus ids venían en `cita`).
       await reprogramarAvisos(cita, guardada);
+      await sincronizarCalendario(guardada);
     });
 
     return NextResponse.json({

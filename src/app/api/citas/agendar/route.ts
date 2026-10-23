@@ -5,6 +5,7 @@ import { horariosAgendaPublica } from "@/lib/citas/libres";
 import { enlaceGoogleCalendar } from "@/lib/citas/ics";
 import { correoAvisoCita, correoConfirmacionCita } from "@/lib/citas/correo-reserva";
 import { reprogramarAvisos } from "@/lib/citas/avisos";
+import { sincronizarCalendario } from "@/lib/citas/calendario";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
 
 /**
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
       await registrarEvento(guardada.id, ok ? "confirmacion" : "fallo", ok ? "Confirmación con invitación de calendario" : "La confirmación no salió");
       await enviarCorreo(correoAvisoCita(guardada, horario, false));
       await reprogramarAvisos(cita, guardada);
+      await sincronizarCalendario(guardada);
     });
     return NextResponse.json({ ok: true, descripcion: describir(horario), google: enlaceGoogleCalendar(guardada, horario) });
   } catch (err) {

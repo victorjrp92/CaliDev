@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { panelAbierto } from "@/lib/panel-leads";
 import { borrarCita, citaPorId } from "@/lib/citas/datos";
 import { cancelarAvisos } from "@/lib/citas/avisos";
+import { quitarDelCalendario } from "@/lib/citas/calendario";
 
 /**
  * Borra una invitación desde el panel y libera su hora: para pruebas y para
@@ -17,7 +18,10 @@ export async function POST(request: Request) {
   // Primero se cancelan los recordatorios programados: si no, llegarían avisos
   // de una cita que ya no existe.
   const cita = await citaPorId(id);
-  if (cita) await cancelarAvisos(cita);
+  if (cita) {
+    await cancelarAvisos(cita);
+    await quitarDelCalendario(cita);
+  }
   const ok = await borrarCita(id);
   return ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: "No existe" }, { status: 404 });
 }
