@@ -164,7 +164,7 @@ export function correoInvitacion(
         <tr><td style="background:${C.verde};padding:34px 28px 30px">
           <div style="width:32px;height:3px;background:${C.lima};border-radius:2px"></div>
           <div style="margin-top:18px;font-family:${FUENTE};font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.5px;color:${C.hueso}">${escapar(titulo)}</div>
-          <div style="margin-top:12px;font-family:${FUENTE};font-size:15.5px;line-height:1.55;color:#C9D6CF">${escapar(entrada)}</div>
+          <div style="margin-top:12px;font-family:${FUENTE};font-size:15.5px;line-height:1.55;color:#C9D6CF">${escapar(entrada).replace(/\n/g, "<br>")}</div>
         </td></tr>
 
         <tr><td style="padding:0 28px;border-bottom:1px solid ${C.linea}">
