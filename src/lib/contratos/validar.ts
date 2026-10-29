@@ -4,7 +4,7 @@
  * de correo y la firma como PNG de tamaño razonable.
  */
 
-export const TIPOS_DOCUMENTO = ["Cédula de ciudadanía", "Cédula de extranjería", "NIT", "Pasaporte", "PPT"] as const;
+export const TIPOS_DOCUMENTO = ["Cédula de ciudadanía", "Cédula de extranjería", "NIT", "Pasaporte", "PPT", "DNI / NIF (España)", "NIE (España)", "Personalausweis (Alemania)"] as const;
 
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FIRMA_MAX = 400_000;
