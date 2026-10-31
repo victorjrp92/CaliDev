@@ -104,13 +104,15 @@ export function SeccionLista({
       >
         + Agregar {item.singular}
       </button>
-      <SubirExcel
-        seccion={s}
-        onAgregar={(xs) => {
-          onCambio([...items.filter((x) => Object.keys(x).length > 0), ...xs]);
-          setAbierta(null);
-        }}
-      />
+      {!s.sinExcel && (
+        <SubirExcel
+          seccion={s}
+          onAgregar={(xs) => {
+            onCambio([...items.filter((x) => Object.keys(x).length > 0), ...xs]);
+            setAbierta(null);
+          }}
+        />
+      )}
     </div>
   );
 }

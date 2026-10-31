@@ -11,7 +11,7 @@ const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", displa
 const plex = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Arranque de ServiNomic · CaliDev",
+  title: "Arranque · CaliDev",
   robots: { index: false, follow: false, nocache: true },
 };
 

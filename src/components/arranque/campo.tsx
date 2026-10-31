@@ -1,6 +1,8 @@
 "use client";
 
 import type { Campo as TCampo } from "@/lib/arranque/esquema";
+import { CampoArchivos } from "@/components/arranque/campo-archivos";
+import { CampoMuestras } from "@/components/arranque/campo-muestras";
 
 /**
  * Un campo del formulario de arranque. Las opciones se eligen tocando, no
@@ -14,6 +16,7 @@ const pesos = (s: string) => {
 
 const TECLADO: Partial<Record<TCampo["tipo"], React.HTMLAttributes<HTMLInputElement>["inputMode"]>> = {
   celular: "tel",
+  telefono: "tel",
   documento: "numeric",
   numero: "numeric",
   pesos: "numeric",
@@ -42,13 +45,17 @@ export function Campo({
 
   return (
     <div data-campo={c.id} className="flex flex-col">
-      <label htmlFor={c.tipo === "opcion" || c.tipo === "opciones" ? undefined : id} id={`${id}-l`} className="text-[15px] font-semibold leading-snug">
+      <label htmlFor={c.tipo === "opcion" || c.tipo === "opciones" || c.tipo === "archivos" || c.tipo === "muestras" ? undefined : id} id={`${id}-l`} className="text-[15px] font-semibold leading-snug">
         {c.etiqueta}
         {!c.requerido && <span className="ml-1.5 text-[13px] font-normal text-[#8C948D]">(opcional)</span>}
       </label>
       {c.ayuda && <p className="mt-0.5 text-[13px] text-[#5A6B63]">{c.ayuda}</p>}
 
-      {c.tipo === "opcion" || c.tipo === "opciones" ? (
+      {c.tipo === "archivos" ? (
+        <CampoArchivos valor={lista} onCambio={onCambio} />
+      ) : c.tipo === "muestras" ? (
+        <CampoMuestras valor={lista} minimo={c.minimo ?? 1} onCambio={onCambio} />
+      ) : c.tipo === "opcion" || c.tipo === "opciones" ? (
         <div role={c.tipo === "opcion" ? "radiogroup" : "group"} aria-labelledby={`${id}-l`} className="mt-2 flex flex-wrap gap-2">
           {c.opciones?.map((o) => {
             const marcada = c.tipo === "opcion" ? texto === o : lista.includes(o);
@@ -74,7 +81,7 @@ export function Campo({
       ) : (
         <input
           id={id}
-          type={c.tipo === "fecha" ? "date" : c.tipo === "correo" ? "email" : c.tipo === "celular" ? "tel" : "text"}
+          type={c.tipo === "fecha" ? "date" : c.tipo === "correo" ? "email" : c.tipo === "celular" || c.tipo === "telefono" ? "tel" : "text"}
           inputMode={TECLADO[c.tipo]}
           autoComplete="off"
           placeholder={c.ejemplo}

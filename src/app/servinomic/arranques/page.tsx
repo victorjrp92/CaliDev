@@ -3,6 +3,7 @@ import Link from "next/link";
 import { panelAbierto, panelConfigurado } from "@/lib/panel-leads";
 import { respuestasDe, todosLosArranques, type Arranque } from "@/lib/arranque/datos";
 import { avance } from "@/lib/arranque/validar";
+import { plantillaDe } from "@/lib/arranque/plantillas";
 import { fechaColombia } from "@/lib/contratos/correos";
 import { Puerta } from "../leads/puerta";
 import { Salir } from "../leads/salir";
@@ -17,8 +18,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * Formularios de arranque de ServiNomic: uno por cliente nuevo, con su avance
- * y si ya lo envió. Desde aquí se crea el enlace y se abren las respuestas.
+ * Formularios de arranque (ServiNomic, SeiriLegal): uno por cliente nuevo, con
+ * su avance y si ya lo envió. Desde aquí se crea el enlace y se abren las
+ * respuestas.
  */
 export default async function Arranques() {
   if (!panelConfigurado()) return <main className="mx-auto max-w-sm px-5 py-24">Falta configurar el panel.</main>;
@@ -38,7 +40,7 @@ export default async function Arranques() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="mono text-[var(--verde)]">Panel privado</p>
-          <h1 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight">Arranques de ServiNomic</h1>
+          <h1 className="mt-2 text-[30px] font-extrabold leading-tight tracking-tight">Arranques</h1>
           <p className="mt-1 flex flex-wrap gap-x-4 text-[14px] font-semibold">
             <Link href="/servinomic/leads" className="text-[var(--verde)] underline underline-offset-2">Leads</Link>
             <Link href="/servinomic/contratos" className="text-[var(--verde)] underline underline-offset-2">Contratos</Link>
@@ -55,7 +57,8 @@ export default async function Arranques() {
 
       <ul className="mt-8 flex flex-col gap-4">
         {lista.map((a) => {
-          const { porcentaje } = avance(respuestasDe(a));
+          const plantilla = plantillaDe(a.plantilla);
+          const { porcentaje } = avance(respuestasDe(a), plantilla.secciones);
           const enlace = `https://calidev.dev/arranque/${a.token}`;
           return (
             <li key={a.id} className="rounded-2xl border border-[#D8DCD4] bg-white p-4 sm:p-5">
@@ -63,7 +66,7 @@ export default async function Arranques() {
                 <div>
                   <p className="text-[17px] font-bold">{a.negocio || a.cliente}</p>
                   <p className="text-[13px] text-[#46554D]">
-                    {a.cliente} · creado el {fechaColombia(a.created_at).replace(" (hora de Colombia)", "")}
+                    {plantilla.producto} · {a.cliente} · creado el {fechaColombia(a.created_at).replace(" (hora de Colombia)", "")}
                   </p>
                 </div>
                 <span className={`mono rounded-full px-2.5 py-1 text-[10.5px] ${a.enviado_at ? "bg-[var(--verde)] text-[var(--lima)]" : "bg-[#FDF3D8] text-[#6B4E00]"}`}>

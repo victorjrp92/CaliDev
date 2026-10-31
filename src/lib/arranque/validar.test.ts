@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SECCIONES } from "./esquema";
+import { SECCIONES_SEIRILEGAL } from "./esquema-seirilegal";
 import { avance, errorCampo, limpiarSeccion, seccionCompleta } from "./validar";
 import { filasAElementos } from "./excel";
 
@@ -60,4 +61,40 @@ test("Excel: reconoce títulos con o sin tildes, salta la fila de ejemplo y norm
   assert.equal(r.elementos.length, 1);
   assert.deepEqual(r.elementos[0], { nombre: "Luz Rojas", documento: "1144000111", celular: "3001234567", exentoPension: "Sí", exentoCaja: "No" });
   assert.deepEqual(r.ignoradas, ["Columna rara"]);
+});
+
+const legal = (id: string) => SECCIONES_SEIRILEGAL.find((s) => s.id === id)!;
+const TOKEN = "a".repeat(32);
+const BLOB = `https://abc.public.blob.vercel-storage.com/arranques/${TOKEN}`;
+
+test("SeiriLegal: teléfono internacional con prefijo", () => {
+  const c = legal("despacho").campos.find((x) => x.id === "telefono")!;
+  assert.equal(errorCampo(c, { telefono: "+34 600 123 456" }), null);
+  assert.notEqual(errorCampo(c, { telefono: "600" }), null);
+});
+
+test("SeiriLegal: los documentos de ejemplo piden su mínimo", () => {
+  const c = legal("muestras").campos.find((x) => x.id === "documentos")!;
+  const una = JSON.stringify({ tipo: "Pasaporte", paginas: [`${BLOB}/muestras/p.jpg`] });
+  assert.match(errorCampo(c, { documentos: [una, una] }) ?? "", /faltan 8/);
+  assert.equal(errorCampo(c, { documentos: Array(10).fill(una) }), null);
+});
+
+test("SeiriLegal: solo se guardan archivos de la carpeta del propio enlace", () => {
+  const propio = JSON.stringify({ url: `${BLOB}/plantillas/hoja.docx`, nombre: "hoja.docx" });
+  const ajeno = JSON.stringify({ url: `https://abc.public.blob.vercel-storage.com/arranques/${"b".repeat(32)}/x.docx`, nombre: "x" });
+  const otroSitio = JSON.stringify({ url: "https://malo.com/arranques/x.docx", nombre: "x" });
+  const v = limpiarSeccion(legal("plantillas"), { archivos: [propio, ajeno, otroSitio, "basura"] }, TOKEN) as Record<string, string[]>;
+  assert.deepEqual(v.archivos, [propio]);
+});
+
+test("SeiriLegal: una muestra con tipo inventado no se guarda", () => {
+  const raro = JSON.stringify({ tipo: "Inventado", paginas: [`${BLOB}/muestras/p.jpg`] });
+  const v = limpiarSeccion(legal("muestras"), { documentos: [raro] }, TOKEN) as Record<string, string[]>;
+  assert.deepEqual(v.documentos, []);
+});
+
+test("SeiriLegal: el avance se mide con sus propias secciones", () => {
+  assert.equal(avance({}, SECCIONES_SEIRILEGAL).porcentaje, 0);
+  assert.equal(avance({}, SECCIONES_SEIRILEGAL).completas.length, 0);
 });

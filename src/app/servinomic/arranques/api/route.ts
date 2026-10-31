@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { panelAbierto } from "@/lib/panel-leads";
 import { borrarArranque, crearArranque } from "@/lib/arranque/datos";
+import { PLANTILLAS } from "@/lib/arranque/plantillas";
 
 /**
  * Crear y borrar formularios de arranque desde el panel (bajo /servinomic por
@@ -11,8 +12,9 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
   const cliente = typeof body.cliente === "string" ? body.cliente.trim().slice(0, 100) : "";
   const negocio = typeof body.negocio === "string" ? body.negocio.trim().slice(0, 120) : "";
+  const plantilla = typeof body.plantilla === "string" && body.plantilla in PLANTILLAS ? body.plantilla : "servinomic";
   if (cliente.length < 2) return NextResponse.json({ error: "Escribe el nombre del cliente." }, { status: 400 });
-  const a = await crearArranque(cliente, negocio || null);
+  const a = await crearArranque(cliente, negocio || null, plantilla);
   return NextResponse.json({ id: a.id, enlace: `https://calidev.dev/arranque/${a.token}` });
 }
 

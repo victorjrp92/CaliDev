@@ -1,4 +1,6 @@
 import { SECCIONES, type Campo, type Respuestas, type Seccion, type Valores } from "@/lib/arranque/esquema";
+import { leerArchivo, leerMuestra, urlPermitida } from "@/lib/arranque/archivos";
+import { TIPOS_MUESTRA } from "@/lib/arranque/esquema-seirilegal";
 
 /**
  * Validación del formulario de arranque. Funciones puras: las usan el
@@ -20,6 +22,13 @@ export function errorCampo(c: Campo, v: Valores): string | null {
   if (!visible(c, v)) return null;
   const valor = v[c.id];
   const vacio = valor === undefined || (Array.isArray(valor) ? valor.length === 0 : valor.trim() === "");
+  if (c.tipo === "archivos" || c.tipo === "muestras") {
+    const n = Array.isArray(valor) ? valor.length : 0;
+    const minimo = c.minimo ?? (c.requerido ? 1 : 0);
+    if (n >= minimo) return null;
+    if (c.tipo === "archivos") return "Sube al menos un archivo.";
+    return n === 0 ? `Sube al menos ${minimo} documentos.` : `Llevas ${n}: faltan ${minimo - n} para llegar a ${minimo}.`;
+  }
   if (vacio) return c.requerido ? (c.tipo === "opcion" || c.tipo === "opciones" ? "Elige una opción." : "Este dato es necesario.") : null;
   const t = Array.isArray(valor) ? "" : valor.trim();
   switch (c.tipo) {
@@ -28,6 +37,10 @@ export function errorCampo(c: Campo, v: Valores): string | null {
     case "celular": {
       const d = soloDigitos(t).replace(/^57(?=3\d{9}$)/, "");
       return /^3\d{9}$/.test(d) || (t.startsWith("+") && d.length >= 8 && d.length <= 15) ? null : "Escribe el celular con sus 10 dígitos (empieza por 3).";
+    }
+    case "telefono": {
+      const d = soloDigitos(t);
+      return d.length >= 9 && d.length <= 15 && /^[+\d\s().-]+$/.test(t) ? null : "Escribe el teléfono con su prefijo, por ejemplo +34 600 000 000.";
     }
     case "documento":
       return /^\d{5,12}$/.test(soloDigitos(t)) && !/[a-z]/i.test(t.replace(/^(cc|ce|nit|pp)\s*/i, "")) ? null : "Escribe solo los números del documento (entre 5 y 12).";
@@ -70,21 +83,42 @@ export function seccionCompleta(s: Seccion, r: Respuestas): boolean {
   return Object.keys(erroresValores(s.campos, v)).length === 0;
 }
 
-export function avance(r: Respuestas): { completas: string[]; porcentaje: number } {
-  const completas = SECCIONES.filter((s) => seccionCompleta(s, r)).map((s) => s.id);
-  return { completas, porcentaje: Math.round((completas.length / SECCIONES.length) * 100) };
+export function avance(r: Respuestas, secciones: readonly Seccion[] = SECCIONES): { completas: string[]; porcentaje: number } {
+  const completas = secciones.filter((s) => seccionCompleta(s, r)).map((s) => s.id);
+  return { completas, porcentaje: Math.round((completas.length / secciones.length) * 100) };
+}
+
+/** Archivos subidos: solo los de la carpeta de este enlace, reescritos con lo que conocemos. */
+function limpiarArchivos(c: Campo, x: unknown, token: string): string[] {
+  if (!Array.isArray(x)) return [];
+  const out: string[] = [];
+  for (const y of x.slice(0, 60)) {
+    if (c.tipo === "archivos") {
+      const a = leerArchivo(y);
+      if (a && urlPermitida(a.url, token)) out.push(JSON.stringify({ url: a.url, nombre: a.nombre.slice(0, 120) }));
+    } else {
+      const m = leerMuestra(y);
+      if (m && TIPOS_MUESTRA.some((t) => t.tipo === m.tipo) && m.paginas.length <= 10 && m.paginas.every((p) => urlPermitida(p, token))) {
+        out.push(JSON.stringify({ tipo: m.tipo, paginas: m.paginas }));
+      }
+    }
+  }
+  return out;
 }
 
 /**
  * Lo que manda el navegador, reducido a lo que el esquema conoce: solo campos
- * existentes, textos recortados, opciones válidas. Nunca se guarda nada más.
+ * existentes, textos recortados, opciones válidas y archivos de su propia
+ * carpeta. Nunca se guarda nada más.
  */
-function limpiarValores(campos: readonly Campo[], v: unknown): Valores {
+function limpiarValores(campos: readonly Campo[], v: unknown, token: string): Valores {
   const o = (v && typeof v === "object" && !Array.isArray(v) ? v : {}) as Record<string, unknown>;
   const r: Valores = {};
   for (const c of campos) {
     const x = o[c.id];
-    if (c.tipo === "opciones") {
+    if (c.tipo === "archivos" || c.tipo === "muestras") {
+      if (Array.isArray(x)) r[c.id] = limpiarArchivos(c, x, token);
+    } else if (c.tipo === "opciones") {
       if (Array.isArray(x)) r[c.id] = x.filter((y): y is string => typeof y === "string" && Boolean(c.opciones?.includes(y)));
     } else if (typeof x === "string" || typeof x === "number") {
       r[c.id] = String(x).slice(0, c.tipo === "area" ? 1000 : 200);
@@ -93,7 +127,7 @@ function limpiarValores(campos: readonly Campo[], v: unknown): Valores {
   return r;
 }
 
-export function limpiarSeccion(s: Seccion, valor: unknown): Valores | Valores[] {
-  if (s.tipo === "lista") return (Array.isArray(valor) ? valor : []).slice(0, 500).map((it) => limpiarValores(s.campos, it));
-  return limpiarValores(s.campos, valor);
+export function limpiarSeccion(s: Seccion, valor: unknown, token = ""): Valores | Valores[] {
+  if (s.tipo === "lista") return (Array.isArray(valor) ? valor : []).slice(0, 500).map((it) => limpiarValores(s.campos, it, token));
+  return limpiarValores(s.campos, valor, token);
 }
