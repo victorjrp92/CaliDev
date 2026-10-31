@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { panelAbierto } from "@/lib/panel-leads";
 import { arranquePorId, respuestasDe } from "@/lib/arranque/datos";
-import { SECCIONES, type Valores } from "@/lib/arranque/esquema";
+import type { Valores } from "@/lib/arranque/esquema";
+import { plantillaDe } from "@/lib/arranque/plantillas";
 import { seccionCompleta, visible } from "@/lib/arranque/validar";
 import { Puerta } from "../../leads/puerta";
+import { ValorArchivos } from "./valor-archivos";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,7 @@ export default async function RespuestasArranque({ params }: { params: Promise<{
   const a = await arranquePorId(Number((await params).id));
   if (!a) notFound();
   const r = respuestasDe(a);
+  const { secciones, producto } = plantillaDe(a.plantilla);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
@@ -33,9 +36,9 @@ export default async function RespuestasArranque({ params }: { params: Promise<{
         Volver a los arranques
       </Link>
       <h1 className="mt-3 text-[30px] font-extrabold leading-tight tracking-tight">{a.negocio || a.cliente}</h1>
-      <p className="text-[14px] text-[#46554D]">{a.enviado_at ? "Enviado por el cliente" : "Todavía en curso: lo que ves es lo que lleva guardado"}</p>
+      <p className="text-[14px] text-[#46554D]">{producto} · {a.enviado_at ? "Enviado por el cliente" : "Todavía en curso: lo que ves es lo que lleva guardado"}</p>
 
-      {SECCIONES.map((s) => {
+      {secciones.map((s) => {
         const v = r[s.id];
         const ok = seccionCompleta(s, r);
         return (
@@ -79,12 +82,18 @@ export default async function RespuestasArranque({ params }: { params: Promise<{
               <dl className="mt-3 grid gap-x-6 gap-y-3 rounded-2xl border border-[#D8DCD4] bg-white p-4 sm:grid-cols-2">
                 {s.campos
                   .filter((c) => visible(c, v && !Array.isArray(v) ? v : {}))
-                  .map((c) => (
-                    <div key={c.id}>
-                      <dt className="text-[12.5px] font-semibold text-[#5A6B63]">{c.etiqueta}</dt>
-                      <dd className="mt-0.5 whitespace-pre-wrap text-[14.5px]">{texto(v && !Array.isArray(v) ? v[c.id] : undefined) || <span className="text-[#B9C2BC]">—</span>}</dd>
-                    </div>
-                  ))}
+                  .map((c) => {
+                    const x = v && !Array.isArray(v) ? v[c.id] : undefined;
+                    const archivos = c.tipo === "archivos" || c.tipo === "muestras";
+                    return (
+                      <div key={c.id} className={archivos ? "sm:col-span-2" : undefined}>
+                        <dt className="text-[12.5px] font-semibold text-[#5A6B63]">{c.etiqueta}</dt>
+                        <dd className="mt-0.5 whitespace-pre-wrap text-[14.5px]">
+                          {archivos ? <ValorArchivos campo={c} valor={Array.isArray(x) ? x : []} /> : texto(x) || <span className="text-[#B9C2BC]">—</span>}
+                        </dd>
+                      </div>
+                    );
+                  })}
               </dl>
             )}
           </section>

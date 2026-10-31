@@ -6,13 +6,15 @@ import type { Respuestas } from "@/lib/arranque/esquema";
  * Formularios de arranque en la base: uno por cliente, con su enlace
  * personal (`token`). Las respuestas se guardan como texto JSON por sección a
  * medida que la persona avanza, así puede dejarlo a medias y volver.
- * `enviado_at` es cuándo pulsó «Enviar a CaliDev».
+ * `enviado_at` es cuándo pulsó «Enviar a CaliDev». `plantilla` dice de qué
+ * producto es (ver `plantillas.ts`); los de antes son de ServiNomic.
  */
 export type Arranque = {
   id: number;
   token: string;
   cliente: string;
   negocio: string | null;
+  plantilla: string;
   respuestas: string;
   enviado_at: string | null;
   created_at: string;
@@ -21,18 +23,21 @@ export type Arranque = {
 
 let tabla: Promise<unknown> | null = null;
 function asegurarTabla() {
-  tabla ??= sql`
-    CREATE TABLE IF NOT EXISTS arranques (
-      id SERIAL PRIMARY KEY,
-      token TEXT UNIQUE NOT NULL,
-      cliente TEXT NOT NULL,
-      negocio TEXT,
-      respuestas TEXT NOT NULL DEFAULT '{}',
-      enviado_at TIMESTAMPTZ,
-      created_at TIMESTAMPTZ DEFAULT NOW(),
-      updated_at TIMESTAMPTZ DEFAULT NOW()
-    )
-  `.catch((err) => {
+  tabla ??= (async () => {
+    await sql`
+      CREATE TABLE IF NOT EXISTS arranques (
+        id SERIAL PRIMARY KEY,
+        token TEXT UNIQUE NOT NULL,
+        cliente TEXT NOT NULL,
+        negocio TEXT,
+        respuestas TEXT NOT NULL DEFAULT '{}',
+        enviado_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `;
+    await sql`ALTER TABLE arranques ADD COLUMN IF NOT EXISTS plantilla TEXT NOT NULL DEFAULT 'servinomic'`;
+  })().catch((err) => {
     tabla = null;
     throw err;
   });
@@ -47,10 +52,10 @@ export function respuestasDe(a: Arranque): Respuestas {
   }
 }
 
-export async function crearArranque(cliente: string, negocio: string | null): Promise<Arranque> {
+export async function crearArranque(cliente: string, negocio: string | null, plantilla: string): Promise<Arranque> {
   await asegurarTabla();
   const token = randomBytes(16).toString("hex");
-  const r = await sql<Arranque>`INSERT INTO arranques (token, cliente, negocio) VALUES (${token}, ${cliente}, ${negocio}) RETURNING *`;
+  const r = await sql<Arranque>`INSERT INTO arranques (token, cliente, negocio, plantilla) VALUES (${token}, ${cliente}, ${negocio}, ${plantilla}) RETURNING *`;
   return r.rows[0];
 }
 

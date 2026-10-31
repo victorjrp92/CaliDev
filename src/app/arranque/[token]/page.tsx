@@ -16,6 +16,7 @@ export default async function PaginaArranque({ params }: { params: Promise<{ tok
     <FormularioArranque
       token={a.token}
       cliente={a.cliente}
+      plantilla={a.plantilla}
       inicial={respuestasDe(a)}
       enviado={Boolean(a.enviado_at)}
     />

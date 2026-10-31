@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CopiarEnlace } from "../contratos/copiar-enlace";
+import { PLANTILLAS } from "@/lib/arranque/plantillas";
 
 /** Crea el formulario de arranque de un cliente y devuelve su enlace para copiar. */
 export function NuevoArranque() {
   const router = useRouter();
   const [cliente, setCliente] = useState("");
   const [negocio, setNegocio] = useState("");
+  const [plantilla, setPlantilla] = useState("servinomic");
   const [enlace, setEnlace] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -19,7 +21,7 @@ export function NuevoArranque() {
     const res = await fetch("/servinomic/arranques/api", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cliente, negocio }),
+      body: JSON.stringify({ cliente, negocio, plantilla }),
     }).catch(() => null);
     const json = res ? await res.json().catch(() => ({})) : {};
     setEnviando(false);
@@ -35,7 +37,17 @@ export function NuevoArranque() {
   return (
     <div className="rounded-2xl border border-[#D8DCD4] bg-white p-4 sm:p-5">
       <p className="text-[16px] font-bold">Nuevo formulario de arranque</p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <div className="mt-3 grid gap-3 sm:grid-cols-[auto_1fr_1fr_auto] sm:items-end">
+        <label className="text-[13px] font-semibold">
+          Producto
+          <select className={campo} value={plantilla} onChange={(e) => setPlantilla(e.target.value)}>
+            {Object.values(PLANTILLAS).map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.producto}
+              </option>
+            ))}
+          </select>
+        </label>
         <label className="text-[13px] font-semibold">
           Nombre del cliente
           <input className={campo} value={cliente} onChange={(e) => setCliente(e.target.value)} placeholder="María José" />

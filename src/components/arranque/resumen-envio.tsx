@@ -1,12 +1,13 @@
 "use client";
 
-import { SECCIONES, type Respuestas } from "@/lib/arranque/esquema";
+import type { Respuestas, Seccion } from "@/lib/arranque/esquema";
 
 /**
  * Último paso: qué secciones están listas y cuáles faltan, con un botón para
  * ir a cada una. «Enviar a CaliDev» solo aparece con todo completo.
  */
 export function ResumenEnvio({
+  secciones,
   respuestas,
   completas,
   onIr,
@@ -14,6 +15,7 @@ export function ResumenEnvio({
   enviando,
   error,
 }: {
+  secciones: readonly Seccion[];
   respuestas: Respuestas;
   completas: string[];
   onIr: (i: number) => void;
@@ -21,7 +23,7 @@ export function ResumenEnvio({
   enviando: boolean;
   error: string | null;
 }) {
-  const todo = completas.length === SECCIONES.length;
+  const todo = completas.length === secciones.length;
   return (
     <div>
       <p className="mono text-[var(--verde)]">Último paso</p>
@@ -30,7 +32,7 @@ export function ResumenEnvio({
         {todo ? "Revisa que todo esté bien y envíanoslo. Con esto empezamos a configurar tu cuenta." : "Te faltan estas secciones. Toca una para completarla."}
       </p>
       <ul className="mt-6 flex flex-col gap-2">
-        {SECCIONES.map((s, i) => {
+        {secciones.map((s, i) => {
           const ok = completas.includes(s.id);
           const v = respuestas[s.id];
           const cuantos = Array.isArray(v) ? v.length : null;

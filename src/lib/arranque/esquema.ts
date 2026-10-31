@@ -2,6 +2,7 @@
  * El formulario de arranque de ServiNomic: lo que un cliente nuevo nos cuenta
  * para dejarle la app configurada. Un solo esquema manda sobre todo: las
  * pantallas, la validación (en el navegador y en el servidor) y el avance.
+ * Otros productos tienen su propio esquema (ver `plantillas.ts`).
  *
  * Cada sección es de campos sueltos o una lista (equipo, servicios, clientes),
  * y las listas aceptan también un Excel. Los datos de pago (Wompi, cuentas) NO
@@ -17,13 +18,18 @@ export type TipoCampo =
   | "area"
   | "correo"
   | "celular"
+  | "telefono"
   | "documento"
   | "numero"
   | "pesos"
   | "porcentaje"
   | "fecha"
   | "opcion"
-  | "opciones";
+  | "opciones"
+  /** Archivos que se suben tal cual (plantillas en Word o PDF). */
+  | "archivos"
+  /** Documentos de ejemplo que se tapan en el navegador antes de subir. */
+  | "muestras";
 
 export type Campo = {
   id: string;
@@ -37,6 +43,8 @@ export type Campo = {
   visibleSi?: { campo: string; valores: readonly string[] };
   /** Otros títulos de columna con que puede llegar en un Excel. */
   alias?: readonly string[];
+  /** Archivos y muestras: cuántos hacen falta como mínimo (por defecto 1 si es requerido). */
+  minimo?: number;
 };
 
 export type Seccion = {
@@ -50,6 +58,8 @@ export type Seccion = {
   campos: readonly Campo[];
   /** Solo listas. */
   item?: { singular: string; plural: string; minimo: number; tituloDe: string };
+  /** Listas que no tiene sentido llenar desde un Excel. */
+  sinExcel?: boolean;
 };
 
 const SI_NO = ["Sí", "No"] as const;

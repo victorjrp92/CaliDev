@@ -1,19 +1,32 @@
 "use client";
 
-import { SECCIONES } from "@/lib/arranque/esquema";
+import type { Seccion } from "@/lib/arranque/esquema";
 
 /**
  * Arriba y fija: el porcentaje y un punto por sección. Las completas llevan
  * ✓, la actual se resalta, y todas se pueden tocar para ir a ellas. Es lo que
- * convierte una lista de datos en un camino con avance visible.
+ * convierte una lista de datos en un camino con avance visible. La frase de
+ * ánimo cambia con el porcentaje.
  */
+function animo(p: number) {
+  if (p === 0) return "Empecemos";
+  if (p < 35) return "Buen comienzo";
+  if (p < 65) return "Vas bien";
+  if (p < 100) return "Ya casi terminas";
+  return "¡Todo listo!";
+}
+
 export function BarraAvance({
+  producto,
+  secciones,
   porcentaje,
   completas,
   actual,
   onIr,
   guardado,
 }: {
+  producto: string;
+  secciones: readonly Seccion[];
   porcentaje: number;
   completas: string[];
   actual: number;
@@ -24,7 +37,9 @@ export function BarraAvance({
     <div className="sticky top-0 z-20 border-b border-[#E3E6E0] bg-[var(--hueso)]/95 backdrop-blur">
       <div className="mx-auto max-w-2xl px-4 pb-3 pt-3">
         <div className="flex items-center justify-between gap-3 text-[13px]">
-          <span className="mono text-[var(--verde)]">Arranque de ServiNomic</span>
+          <span className="mono text-[var(--verde)]">
+            Arranque de {producto} · <span className="font-semibold">{animo(porcentaje)}</span>
+          </span>
           <span className="flex items-center gap-2">
             {guardado && (
               <span className={guardado === "error" ? "text-[#B42318]" : "text-[#5A6B63]"}>
@@ -38,7 +53,7 @@ export function BarraAvance({
           <div className="h-full rounded-full bg-[var(--lima)] transition-[width] duration-700 ease-out motion-reduce:transition-none" style={{ width: `${Math.max(porcentaje, 3)}%` }} />
         </div>
         <ol className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5">
-          {SECCIONES.map((s, i) => {
+          {secciones.map((s, i) => {
             const ok = completas.includes(s.id);
             const aqui = actual === i + 1;
             return (
