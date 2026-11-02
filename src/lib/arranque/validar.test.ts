@@ -76,8 +76,9 @@ test("SeiriLegal: teléfono internacional con prefijo", () => {
 test("SeiriLegal: los documentos de ejemplo piden su mínimo", () => {
   const c = legal("muestras").campos.find((x) => x.id === "documentos")!;
   const una = JSON.stringify({ tipo: "Pasaporte", paginas: [`${BLOB}/muestras/p.jpg`] });
-  assert.match(errorCampo(c, { documentos: [una, una] }) ?? "", /faltan 8/);
-  assert.equal(errorCampo(c, { documentos: Array(10).fill(una) }), null);
+  assert.match(errorCampo(c, { subirEjemplos: "Sí, ahora", documentos: [una, una] }) ?? "", /faltan 1/);
+  assert.equal(errorCampo(c, { subirEjemplos: "Sí, ahora", documentos: Array(3).fill(una) }), null);
+  assert.equal(errorCampo(c, { subirEjemplos: "Mejor los vemos en la llamada" }), null, "si los deja para la llamada, no se piden");
 });
 
 test("SeiriLegal: solo se guardan archivos de la carpeta del propio enlace", () => {
@@ -107,4 +108,21 @@ test("SeiriLegal · oficinas: «Otra provincia» en una pregunta de varias respu
   assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"], otrasOficinas: "Cantabria" }), null);
   assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Gipuzkoa"] }), null, "sin «Otra provincia» no se pide");
   assert.equal(errorCampo(oficinas, { oficinas: ["En toda España"] }), null);
+});
+
+test("SeiriLegal · trámites: lo ya respondido sigue completo y cada trámite trae su lista de documentos para marcar", () => {
+  const tramites = legal("tramites");
+  const yaRespondido = { tramite: "Renovación de residencia", volumen: "De 3 a 5", documentos: "pasaporte completo\ntie ambas caras", honorarios: "230 € con IVA" };
+  for (const c of tramites.campos) assert.equal(errorCampo(c, yaRespondido), null, `«${c.etiqueta}» no debe invalidar lo que ya respondió`);
+  const visibles = tramites.campos.filter((c) => c.id.startsWith("docs-") && c.visibleSi?.valores.includes("Renovación de residencia"));
+  assert.equal(visibles.length, 1, "solo aparece la lista del trámite elegido");
+  assert.ok(visibles[0].opciones!.includes("Vida laboral"));
+  assert.equal(errorCampo(visibles[0], { tramite: "Renovación de residencia", [visibles[0].id]: ["Vida laboral", "Pasaporte completo"] }), null);
+});
+
+test("SeiriLegal · familias: las preguntas de familia solo aparecen si lleva familias", () => {
+  const s = legal("clientesCobros");
+  const cobro = s.campos.find((c) => c.id === "cobroFamilia")!;
+  assert.equal(errorCampo(cobro, { familias: "No" }), null);
+  assert.notEqual(errorCampo(cobro, { familias: "A veces" }), null);
 });

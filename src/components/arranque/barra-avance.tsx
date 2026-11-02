@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import type { Seccion } from "@/lib/arranque/esquema";
 
 /**
  * Arriba y fija: el porcentaje y un punto por sección. Las completas llevan
- * ✓, la actual se resalta, y todas se pueden tocar para ir a ellas. Es lo que
+ * ✓, la actual se resalta (y se desplaza a la vista en el móvil, donde los
+ * pasos no caben y se deslizan de lado), y todas se pueden tocar para ir a ellas. Es lo que
  * convierte una lista de datos en un camino con avance visible. La frase de
  * ánimo cambia con el porcentaje.
  */
@@ -33,9 +35,13 @@ export function BarraAvance({
   onIr: (i: number) => void;
   guardado: "guardado" | "guardando" | "error" | null;
 }) {
+  const lista = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    lista.current?.querySelector('[aria-current="step"]')?.scrollIntoView({ inline: "nearest", block: "nearest" });
+  }, [actual]);
   return (
     <div className="sticky top-0 z-20 border-b border-[#E3E6E0] bg-[var(--hueso)]/95 backdrop-blur">
-      <div className="mx-auto max-w-2xl px-4 pb-3 pt-3">
+      <div className="mx-auto min-w-0 max-w-2xl px-4 pb-3 pt-3">
         <div className="flex items-center justify-between gap-3 text-[13px]">
           <span className="mono text-[var(--verde)]">
             Arranque de {producto} · <span className="font-semibold">{animo(porcentaje)}</span>
@@ -52,7 +58,7 @@ export function BarraAvance({
         <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#E3E6E0]" role="progressbar" aria-valuenow={porcentaje} aria-valuemin={0} aria-valuemax={100} aria-label="Avance del formulario">
           <div className="h-full rounded-full bg-[var(--lima)] transition-[width] duration-700 ease-out motion-reduce:transition-none" style={{ width: `${Math.max(porcentaje, 3)}%` }} />
         </div>
-        <ol className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5">
+        <ol ref={lista} className="relative mt-2.5 flex min-w-0 max-w-full gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none]">
           {secciones.map((s, i) => {
             const ok = completas.includes(s.id);
             const aqui = actual === i + 1;
