@@ -12,6 +12,8 @@ import { TIPOS_MUESTRA } from "@/lib/arranque/esquema-seirilegal";
 export function visible(c: Campo, v: Valores): boolean {
   if (!c.visibleSi) return true;
   const actual = v[c.visibleSi.campo];
+  // Preguntas de varias respuestas («opciones») guardan una lista: basta con que una coincida.
+  if (Array.isArray(actual)) return actual.some((x) => typeof x === "string" && c.visibleSi!.valores.includes(x));
   return typeof actual === "string" && c.visibleSi.valores.includes(actual);
 }
 

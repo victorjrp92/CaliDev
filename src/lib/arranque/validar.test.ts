@@ -98,3 +98,13 @@ test("SeiriLegal: el avance se mide con sus propias secciones", () => {
   assert.equal(avance({}, SECCIONES_SEIRILEGAL).porcentaje, 0);
   assert.equal(avance({}, SECCIONES_SEIRILEGAL).completas.length, 0);
 });
+
+test("SeiriLegal · oficinas: «Otra provincia» en una pregunta de varias respuestas pide cuáles, y «En toda España» es válida", () => {
+  const despacho = SECCIONES_SEIRILEGAL.find((s) => s.id === "despacho")!;
+  const otras = despacho.campos.find((c) => c.id === "otrasOficinas")!;
+  const oficinas = despacho.campos.find((c) => c.id === "oficinas")!;
+  assert.notEqual(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"] }), null, "con «Otra provincia» marcada, «¿Cuáles otras?» aparece y es obligatoria");
+  assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"], otrasOficinas: "Cantabria" }), null);
+  assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Gipuzkoa"] }), null, "sin «Otra provincia» no se pide");
+  assert.equal(errorCampo(oficinas, { oficinas: ["En toda España"] }), null);
+});
