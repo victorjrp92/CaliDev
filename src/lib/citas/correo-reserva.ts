@@ -1,9 +1,9 @@
 import { escapar, CORREO_VICTOR, type Correo } from "@/lib/delegar/correos/enviar";
-import { primerNombre } from "@/lib/delegar/correos/lead";
 import { ENLACE_VIDEOLLAMADA, describir, horaEnFrankfurt, textoDuracion, tipoDe, type Horario } from "@/lib/citas/horarios";
 import { enlaceGoogleCalendar, ics } from "@/lib/citas/ics";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, boton, etiqueta, firma, marco } from "@/lib/citas/estilo-correo";
+import { NOMBRE_PROGRAMA, esSesion, nombreSaludo, rotuloSesion } from "@/lib/citas/sesion";
 
 /**
  * Los dos correos que salen al reservar: la confirmación para la persona, con
@@ -18,8 +18,10 @@ const SITIO = "https://calidev.dev";
  * llamada), su nota va arriba del correo, antes de los datos de la cita.
  */
 export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean, mensaje?: string | null): Correo {
-  const nombre = primerNombre(cita.nombre);
+  const nombre = nombreSaludo(cita);
   const cuando = describir(h);
+  const sesion = esSesion(cita);
+  const rotulo = rotuloSesion(cita);
   const cambiar = `${SITIO}/cita/${cita.token}`;
   const nota = mensaje?.trim()
     ? `<tr><td style="padding:24px 24px 0;font-family:${FUENTE};font-size:15.5px;line-height:1.6;color:${C.texto}">${escapar(mensaje.trim())}</td></tr>`
@@ -27,12 +29,12 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean, 
 
   const cuerpo = `${nota}
     <tr><td style="padding:24px 24px 0;font-family:${FUENTE}">
-      ${etiqueta("Tu videollamada")}
+      ${etiqueta(sesion ? `${NOMBRE_PROGRAMA} · ${rotulo}` : "Tu videollamada")}
       <div style="font-size:18px;font-weight:800;color:${C.tinta};line-height:1.35">${escapar(cuando)}</div>
-      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? " · presentación de tu propuesta" : " · gratuita"}</div>
+      <div style="margin-top:6px;font-size:14px;color:${C.gris}">Por Google Meet · ${textoDuracion(cita)}${sesion ? " · incluida en tu contrato" : tipoDe(cita) === "segunda" ? " · presentación de tu propuesta" : " · gratuita"}</div>
     </td></tr>
     <tr><td style="padding:18px 24px 0">
-      ${boton("Unirme a la videollamada", ENLACE_VIDEOLLAMADA)}
+      ${boton(sesion ? "Entrar a la sesión" : "Unirme a la videollamada", ENLACE_VIDEOLLAMADA)}
       <div style="height:10px"></div>
       ${boton("Agregar a Google Calendar", enlaceGoogleCalendar(cita, h), "verde")}
       <div style="margin-top:12px;font-family:${FUENTE};font-size:13.5px;line-height:1.5;color:${C.gris}">También va adjunta la invitación (.ics) para Apple Calendar u Outlook.</div>
@@ -43,19 +45,21 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean, 
     </td></tr>`;
 
   const html = marco({
-    titulo: "Videollamada confirmada",
+    titulo: sesion ? "Sesión confirmada" : "Videollamada confirmada",
     vistaPrevia: escapar(`${cuando}. Te espero en Google Meet.`),
-    meta: cambio ? "Videollamada · hora cambiada" : "Videollamada confirmada",
+    meta: sesion ? `${escapar(rotulo)} · ${cambio ? "hora cambiada" : "confirmada"}` : cambio ? "Videollamada · hora cambiada" : "Videollamada confirmada",
     encabezado: `Listo, ${escapar(nombre)}. Nos vemos.`,
     cuerpo,
-    pie: "Recibes este correo porque reservaste una videollamada con CaliDev.",
+    pie: sesion ? "Recibes este correo porque eres cliente de CaliDev." : "Recibes este correo porque reservaste una videollamada con CaliDev.",
   });
 
   const texto = [
     `Listo, ${nombre}. Nos vemos.`,
     "",
     ...(mensaje?.trim() ? [mensaje.trim(), ""] : []),
-    `Tu videollamada: ${cuando}. Por Google Meet, ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? ", para presentarte la propuesta" : ", gratuita"}.`,
+    sesion
+      ? `${NOMBRE_PROGRAMA}, ${rotulo}: ${cuando}. Por Google Meet, ${textoDuracion(cita)}, incluida en tu contrato.`
+      : `Tu videollamada: ${cuando}. Por Google Meet, ${textoDuracion(cita)}${tipoDe(cita) === "segunda" ? ", para presentarte la propuesta" : ", gratuita"}.`,
     `Enlace: ${ENLACE_VIDEOLLAMADA}`,
     `Agregar a Google Calendar: ${enlaceGoogleCalendar(cita, h)}`,
     "",
@@ -67,16 +71,17 @@ export function correoConfirmacionCita(cita: Cita, h: Horario, cambio: boolean, 
 
   return {
     para: cita.correo,
-    asunto: cambio ? `Videollamada cambiada: ${cuando}` : `Videollamada confirmada: ${cuando}`,
+    asunto: `${sesion ? rotulo : "Videollamada"} ${cambio ? "cambiada" : "confirmada"}: ${cuando}`,
     texto,
     html,
-    adjuntos: [{ nombre: "videollamada-calidev.ics", contenido: ics(cita, h, "REQUEST"), tipo: "text/calendar; method=REQUEST" }],
+    adjuntos: [{ nombre: sesion ? "sesion-calidev.ics" : "videollamada-calidev.ics", contenido: ics(cita, h, "REQUEST"), tipo: "text/calendar; method=REQUEST" }],
   };
 }
 
 export function correoAvisoCita(cita: Cita, h: Horario, cambio: boolean): Correo {
   const cuando = describir(h);
-  const accion = cambio ? "cambió su videollamada a" : "reservó su videollamada:";
+  const que = esSesion(cita) ? `${rotuloSesion(cita)} de ${NOMBRE_PROGRAMA}` : "videollamada";
+  const accion = cambio ? `cambió su ${que} a` : `reservó su ${que}:`;
   const cuerpo = `
     <tr><td style="padding:24px 24px 0;font-family:${FUENTE};font-size:15px;line-height:1.6;color:${C.texto}">
       <strong>${escapar(cita.nombre)}</strong> (${escapar(cita.correo)}) ${accion}

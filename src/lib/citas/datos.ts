@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { sql } from "@/lib/db";
+import type { TipoCita } from "@/lib/citas/horarios";
 
 /**
  * Citas de videollamada en la base.
@@ -23,9 +24,10 @@ import { sql } from "@/lib/db";
  * (uno solo por invitación; ver api/citas/recordatorios).
  *
  * `tipo` es «primera» (videollamada de diagnóstico, 1 hora) o «segunda» (la
- * presentación de la propuesta, 30 minutos); vacío = primera. `mensaje` es una
- * nota de Víctor que encabeza la invitación (por ejemplo, por qué cambia una
- * hora ya acordada).
+ * presentación de la propuesta, 30 minutos) o «sesion» (con un cliente, ver
+ * lib/citas/sesion.ts); vacío = primera. `mensaje` es una nota de Víctor que
+ * encabeza la invitación (por ejemplo, por qué cambia una hora ya acordada); en
+ * las sesiones dice cuál es («Sesión 1 de 3»).
  *
  * `horarios` son los que Víctor le ofreció a esta persona, como ids separados
  * por coma («2026-10-01T09,2026-10-01T10»). Vacío en las primeras invitaciones,
@@ -89,7 +91,7 @@ export async function crearCita(
   nombre: string,
   correo: string,
   horarios: string[],
-  extra: { tipo?: "primera" | "segunda"; mensaje?: string | null } = {}
+  extra: { tipo?: TipoCita; mensaje?: string | null } = {}
 ): Promise<Cita> {
   await asegurarTabla();
   const token = randomBytes(16).toString("hex");
@@ -99,6 +101,13 @@ export async function crearCita(
     RETURNING *
   `;
   return r.rows[0];
+}
+
+/** Las sesiones de un cliente, en orden. */
+export async function sesionesDe(correo: string): Promise<Cita[]> {
+  await asegurarTabla();
+  const r = await sql<Cita>`SELECT * FROM citas WHERE correo = ${correo} AND tipo = 'sesion' ORDER BY id`;
+  return r.rows;
 }
 
 export async function citaPorToken(token: string): Promise<Cita | null> {
@@ -157,6 +166,7 @@ export async function borrarCita(id: number): Promise<boolean> {
  * Colombia (el plan gratuito de Vercel no permite más): con 20 horas, quien fue
  * invitado ayer recibe el recordatorio esta mañana. El tope de 7 días evita
  * escribirle a alguien por una invitación vieja si la tarea estuvo parada.
+ * Las sesiones de clientes no entran: ese recordatorio es de ventas.
  */
 export async function citasParaRecordar(): Promise<Cita[]> {
   await asegurarTabla();
@@ -164,6 +174,7 @@ export async function citasParaRecordar(): Promise<Cita[]> {
     SELECT * FROM citas
     WHERE inicio IS NULL
       AND recordatorio_at IS NULL
+      AND tipo IS DISTINCT FROM 'sesion'
       AND created_at <= NOW() - INTERVAL '20 hours'
       AND created_at > NOW() - INTERVAL '7 days'
     ORDER BY created_at

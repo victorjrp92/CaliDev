@@ -8,10 +8,14 @@
 export function CitaConfirmada({
   token,
   reserva,
+  nombreCita,
+  siguiente,
   onCambiar,
 }: {
   token: string;
   reserva: { descripcion: string; google: string };
+  nombreCita: string;
+  siguiente: { rotulo: string; enlace: string } | null;
   onCambiar: () => void;
 }) {
   return (
@@ -21,12 +25,20 @@ export function CitaConfirmada({
           <path d="M5 12.5 10 17.5 19 7.5" stroke="#C8F045" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-      <p className="mono mt-5 text-[var(--verde)]">Videollamada confirmada</p>
+      <p className="mono mt-5 text-[var(--verde)]">{nombreCita === "videollamada" ? "Videollamada" : nombreCita} confirmada</p>
       <p className="mt-2 text-[21px] font-extrabold leading-snug tracking-tight">{reserva.descripcion}</p>
       <p className="mt-2 text-[15px] text-[#46554D]">
         Por Google Meet. Te llegó un correo con la invitación para tu calendario.
       </p>
       <div className="mt-6 flex flex-col gap-2.5">
+        {siguiente && (
+          <a
+            href={siguiente.enlace}
+            className="flex h-14 items-center justify-center rounded-2xl bg-[var(--verde)] text-base font-bold text-[var(--hueso)]"
+          >
+            Elegir la hora de la {siguiente.rotulo.toLowerCase()}
+          </a>
+        )}
         <a
           href={reserva.google}
           target="_blank"

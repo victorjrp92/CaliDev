@@ -36,14 +36,15 @@ export const DIAS_ADELANTE = 21;
 const FORMATO_ID = /^(\d{4}-\d{2}-\d{2})T(\d{2})$/;
 
 /**
- * Dos tipos de cita: la primera videollamada (diagnóstico, 1 hora) y la
- * segunda cita, donde se presenta la propuesta (30 minutos). El tipo cambia la
- * duración y los textos de los correos; los horarios y la reserva son iguales.
+ * Tres tipos de cita: la primera videollamada (diagnóstico, 1 hora), la segunda
+ * cita, donde se presenta la propuesta (30 minutos), y la sesión con un cliente
+ * (1 hora, ver lib/citas/sesion.ts). El tipo cambia la duración y los textos de
+ * los correos; los horarios y la reserva son iguales.
  */
-export type TipoCita = "primera" | "segunda";
+export type TipoCita = "primera" | "segunda" | "sesion";
 
 export function tipoDe(cita: { tipo?: string | null }): TipoCita {
-  return cita.tipo === "segunda" ? "segunda" : "primera";
+  return cita.tipo === "segunda" || cita.tipo === "sesion" ? cita.tipo : "primera";
 }
 
 export function duracionDe(cita: { tipo?: string | null }): number {

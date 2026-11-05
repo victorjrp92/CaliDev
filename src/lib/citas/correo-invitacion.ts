@@ -1,8 +1,9 @@
 import { escapar, type Correo } from "@/lib/delegar/correos/enviar";
 import { primerNombre } from "@/lib/delegar/correos/lead";
-import { ZONA_COLOMBIA, disponibleAun, horaCompacta, horariosDeCita, textoDuracion, tipoDe, type Horario } from "@/lib/citas/horarios";
+import { disponibleAun, horaCompacta, horariosDeCita, textoDuracion, tipoDe } from "@/lib/citas/horarios";
 import type { Cita } from "@/lib/citas/datos";
 import { C, FUENTE, MONO } from "@/lib/citas/estilo-correo";
+import { columnas, diaEnTexto, hojaCalendario } from "@/lib/citas/hoja-calendario";
 
 /**
  * Invitación a elegir horario para la videollamada.
@@ -24,24 +25,6 @@ import { C, FUENTE, MONO } from "@/lib/citas/estilo-correo";
 
 const SITIO = "https://calidev.dev";
 
-const DIA_CORTO = new Intl.DateTimeFormat("es-CO", { weekday: "short", timeZone: ZONA_COLOMBIA });
-const NUMERO = new Intl.DateTimeFormat("es-CO", { day: "numeric", timeZone: ZONA_COLOMBIA });
-const MES = new Intl.DateTimeFormat("es-CO", { month: "short", timeZone: ZONA_COLOMBIA });
-
-function columnas(lista: Horario[]): { clave: string; horarios: Horario[] }[] {
-  const grupos: { clave: string; horarios: Horario[] }[] = [];
-  for (const h of lista) {
-    const clave = h.id.slice(0, 10);
-    const g = grupos.find((x) => x.clave === clave);
-    if (g) g.horarios.push(h);
-    else grupos.push({ clave, horarios: [h] });
-  }
-  return grupos;
-}
-
-const limpiar = (s: string) => s.replace(".", "").toUpperCase();
-
-
 /**
  * `recordatorio`: la segunda vez, 24 horas después, a quien no eligió hora.
  * Cambia el saludo y el asunto, y ofrece solo las horas que siguen libres.
@@ -57,10 +40,6 @@ export function correoInvitacion(
   const dias = columnas(
     horariosDeCita(cita).filter((h) => disponibleAun(h) && !ocupadas.has(h.inicio.getTime()))
   );
-  // La hoja de calendario va de tres en tres columnas; con más días, más filas.
-  const filasDias: { clave: string; horarios: Horario[] }[][] = [];
-  for (let i = 0; i < dias.length; i += 3) filasDias.push(dias.slice(i, i + 3));
-
   // La segunda cita es la presentación de la propuesta: otro saludo, otro paso
   // en curso y otra duración. El mensaje de Víctor, si lo hay, va primero.
   const segunda = tipoDe(cita) === "segunda";
@@ -115,31 +94,6 @@ export function correoInvitacion(
       </td>
     </tr>`;
 
-  const columnaDia = (d: { clave: string; horarios: Horario[] }, i: number, fila: unknown[]) => {
-    const f = d.horarios[0].inicio;
-    const horas = d.horarios
-      .map(
-        (h) => `
-        <tr><td style="padding:0 0 8px">
-          <a href="${enlace(h.id)}" style="display:block;text-align:center;border:1.5px solid ${C.verde};border-radius:10px;padding:10px 4px;font-family:${FUENTE};font-size:14px;font-weight:700;color:${C.verde};text-decoration:none;background:#ffffff">${horaCompacta(h.inicio)}</a>
-        </td></tr>`
-      )
-      .join("");
-    return `
-      <td width="33%" valign="top" style="padding:0 ${i < fila.length - 1 ? 6 : 0}px 0 ${i > 0 ? 6 : 0}px">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.hueso};border:1px solid ${C.linea};border-radius:14px">
-          <tr><td align="center" style="padding:12px 8px 10px;border-bottom:1px solid ${C.linea}">
-            <div style="font-family:${MONO};font-size:10.5px;letter-spacing:.12em;color:${C.gris}">${limpiar(DIA_CORTO.format(f))}</div>
-            <div style="font-family:${FUENTE};font-size:30px;line-height:1.1;font-weight:800;color:${C.tinta}">${NUMERO.format(f)}</div>
-            <div style="font-family:${MONO};font-size:10.5px;letter-spacing:.12em;color:${C.gris}">${limpiar(MES.format(f))}</div>
-          </td></tr>
-          <tr><td style="padding:10px 8px 2px">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${horas}</table>
-          </td></tr>
-        </table>
-      </td>`;
-  };
-
   const html = `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conozcamos tu negocio</title></head>
 <body style="margin:0;padding:0;background:${C.niebla}">
@@ -183,14 +137,7 @@ export function correoInvitacion(
           </tr></table>
         </td></tr>
         <tr><td style="padding:6px 28px 0">
-          ${filasDias
-            .map(
-              (fila, n) =>
-                `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed;${n > 0 ? "margin-top:12px" : ""}"><tr>${fila
-                  .map((d, i) => columnaDia(d, i, fila))
-                  .join("")}${"<td width=\"33%\"></td>".repeat(3 - fila.length)}</tr></table>`
-            )
-            .join("")}
+          ${hojaCalendario(dias, enlace)}
           <div style="margin-top:12px;font-family:${FUENTE};font-size:13.5px;line-height:1.5;color:${C.gris}">Toca una hora y confírmala en la página. Te llega la invitación a tu calendario con el enlace de la videollamada.</div>
         </td></tr>
 
@@ -225,7 +172,7 @@ export function correoInvitacion(
     "",
     "Elige tu horario (hora de Colombia):",
     ...dias.flatMap((d) => [
-      `${limpiar(DIA_CORTO.format(d.horarios[0].inicio))} ${NUMERO.format(d.horarios[0].inicio)}`,
+      diaEnTexto(d.horarios[0].inicio),
       ...d.horarios.map((h) => `  ${horaCompacta(h.inicio)}: ${enlace(h.id)}`),
     ]),
     "",

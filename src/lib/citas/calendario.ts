@@ -2,6 +2,7 @@ import { sql } from "@/lib/db";
 import { herramienta } from "@/lib/social/composio";
 import { registrarEvento, type Cita } from "@/lib/citas/datos";
 import { ENLACE_VIDEOLLAMADA, describir, horarioDeCita, tipoDe } from "@/lib/citas/horarios";
+import { NOMBRE_PROGRAMA, esSesion, rotuloSesion } from "@/lib/citas/sesion";
 
 /**
  * Cada cita reservada entra al Google Calendar de calidevdev@gmail.com con
@@ -44,7 +45,7 @@ function datosEvento(cita: Cita) {
   const h = horarioDeCita(cita)!;
   const segunda = tipoDe(cita) === "segunda";
   return {
-    summary: `CaliDev · ${cita.nombre} · ${segunda ? "Cierre (30 min)" : "Diagnóstico (1 h)"}`,
+    summary: `CaliDev · ${cita.nombre} · ${esSesion(cita) ? `${NOMBRE_PROGRAMA} · ${rotuloSesion(cita)} (1 h)` : segunda ? "Cierre (30 min)" : "Diagnóstico (1 h)"}`,
     description: `${describir(h)}\nCorreo: ${cita.correo}\nMeet: ${ENLACE_VIDEOLLAMADA}\nFicha: https://calidev.dev/servinomic/leads`,
     location: ENLACE_VIDEOLLAMADA,
     inicio: local(h.inicio),

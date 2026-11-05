@@ -1,5 +1,6 @@
 import { ENLACE_VIDEOLLAMADA, type Horario } from "@/lib/citas/horarios";
 import type { Cita } from "@/lib/citas/datos";
+import { NOMBRE_PROGRAMA, esSesion, rotuloSesion } from "@/lib/citas/sesion";
 
 /**
  * Invitación de calendario (.ics) y enlace de «Agregar a Google Calendar».
@@ -45,9 +46,16 @@ function plegar(linea: string): string {
   return partes.join("\r\n ");
 }
 
+/** Lo que se ve en el calendario. */
+function tituloEvento(cita: Pick<Cita, "tipo" | "mensaje" | "nombre">): string {
+  const que = esSesion(cita) ? `${NOMBRE_PROGRAMA} · ${rotuloSesion(cita)} (CaliDev)` : TITULO;
+  return `${que} · ${cita.nombre}`;
+}
+
 function descripcion(cita: Pick<Cita, "tipo">): string {
-  const que =
-    cita.tipo === "segunda"
+  const que = esSesion(cita)
+    ? "Sesión de Dirección Estratégica, incluida en tu contrato."
+    : cita.tipo === "segunda"
       ? "Revisamos juntos la propuesta de trabajo y sus opciones."
       : "Conversamos sobre tu negocio y sus procesos. Después te envío una propuesta de trabajo.";
   return `Enlace de la videollamada: ${ENLACE_VIDEOLLAMADA}\n\n${que}`;
@@ -66,7 +74,7 @@ export function ics(cita: Cita, h: Horario, metodo: "REQUEST" | "PUBLISH"): stri
     `DTSTAMP:${fechaIcs(new Date())}`,
     `DTSTART:${fechaIcs(h.inicio)}`,
     `DTEND:${fechaIcs(h.fin)}`,
-    `SUMMARY:${escaparIcs(`${TITULO} · ${cita.nombre}`)}`,
+    `SUMMARY:${escaparIcs(tituloEvento(cita))}`,
     `DESCRIPTION:${escaparIcs(descripcion(cita))}`,
     `LOCATION:${escaparIcs(ENLACE_VIDEOLLAMADA)}`,
     `URL:${ENLACE_VIDEOLLAMADA}`,
@@ -88,7 +96,7 @@ export function ics(cita: Cita, h: Horario, metodo: "REQUEST" | "PUBLISH"): stri
 export function enlaceGoogleCalendar(cita: Cita, h: Horario): string {
   const p = new URLSearchParams({
     action: "TEMPLATE",
-    text: `${TITULO} · ${cita.nombre}`,
+    text: tituloEvento(cita),
     dates: `${fechaIcs(h.inicio)}/${fechaIcs(h.fin)}`,
     details: descripcion(cita),
     location: ENLACE_VIDEOLLAMADA,

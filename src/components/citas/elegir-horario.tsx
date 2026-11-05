@@ -25,11 +25,17 @@ export function ElegirHorario({
   grupos: gruposIniciales,
   inicial,
   reservado,
+  nombreCita,
+  siguiente,
 }: {
   token: string;
   grupos: GrupoHorarios[];
   inicial: string | null;
   reservado: Reserva | null;
+  /** Cómo se llama esta cita en los botones: «videollamada» o «Sesión 1 de 3». */
+  nombreCita: string;
+  /** La siguiente sesión sin hora, si la hay. */
+  siguiente: { rotulo: string; enlace: string } | null;
 }) {
   const [grupos, setGrupos] = useState(gruposIniciales);
   const libre = (id: string | null) =>
@@ -79,7 +85,7 @@ export function ElegirHorario({
   }
 
   if (reserva && !cambiando) {
-    return <CitaConfirmada token={token} reserva={reserva} onCambiar={() => setCambiando(true)} />;
+    return <CitaConfirmada token={token} reserva={reserva} nombreCita={nombreCita} siguiente={siguiente} onCambiar={() => setCambiando(true)} />;
   }
 
   return (
@@ -137,7 +143,7 @@ export function ElegirHorario({
           disabled={!elegido || enviando}
           className="mt-2.5 h-14 w-full cursor-pointer rounded-2xl bg-[var(--lima)] text-base font-bold text-[var(--tinta)] shadow-[0_6px_18px_rgba(10,61,46,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--verde)] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {enviando ? "Confirmando…" : cambiando ? "Confirmar el cambio" : "Confirmar videollamada"}
+          {enviando ? "Confirmando…" : cambiando ? "Confirmar el cambio" : `Confirmar ${nombreCita === "videollamada" ? nombreCita : nombreCita.toLowerCase()}`}
         </button>
         {cambiando && (
           <button

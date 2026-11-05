@@ -159,7 +159,8 @@ export async function armarPersonas(): Promise<Persona[]> {
   };
   for (const l of leadsR.rows) grupo(clavePor(l.email, l.whatsapp)).leads.push(l);
   // Una cita se une al lead que dejó ese mismo correo; si no lo hay, es su propia persona.
-  for (const c of [...citas].sort((a, b) => +new Date(a.created_at) - +new Date(b.created_at))) {
+  // Las sesiones son de clientes, no del embudo: no cuentan aquí.
+  for (const c of citas.filter((x) => tipoDe(x) !== "sesion").sort((a, b) => +new Date(a.created_at) - +new Date(b.created_at))) {
     grupo(clavePor(c.correo, null)).citas.push(c);
   }
 
