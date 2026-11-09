@@ -1,8 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SECCIONES } from "./esquema";
+import { SECCIONES, type Campo, type Respuestas, type Seccion } from "./esquema";
 import { SECCIONES_SEIRILEGAL } from "./esquema-seirilegal";
-import { avance, errorCampo, limpiarSeccion, seccionCompleta } from "./validar";
+import { avance, errorCampo, limpiarSeccion, seccionCompleta, visible } from "./validar";
+import { respuestasAnteriores } from "./anteriores";
+import { plantillaDe } from "./plantillas";
 import { filasAElementos } from "./excel";
 
 const seccion = (id: string) => SECCIONES.find((s) => s.id === id)!;
@@ -73,25 +75,30 @@ test("SeiriLegal: teléfono internacional con prefijo", () => {
   assert.notEqual(errorCampo(c, { telefono: "600" }), null);
 });
 
-test("SeiriLegal: los documentos de ejemplo piden su mínimo", () => {
-  const c = legal("muestras").campos.find((x) => x.id === "documentos")!;
+// El campo de muestras ya no está en el formulario de SeiriLegal, pero sigue disponible: se prueba suelto.
+const MUESTRAS: Campo = { id: "documentos", etiqueta: "Ejemplos", tipo: "muestras", requerido: true, minimo: 3 };
+const SECCION_MUESTRAS: Seccion = { id: "muestras", titulo: "Ejemplos", intro: "", logro: "", tipo: "campos", campos: [MUESTRAS] };
+
+test("muestras: piden su mínimo", () => {
   const una = JSON.stringify({ tipo: "Pasaporte", paginas: [`${BLOB}/muestras/p.jpg`] });
-  assert.match(errorCampo(c, { subirEjemplos: "Sí, ahora", documentos: [una, una] }) ?? "", /faltan 1/);
-  assert.equal(errorCampo(c, { subirEjemplos: "Sí, ahora", documentos: Array(3).fill(una) }), null);
-  assert.equal(errorCampo(c, { subirEjemplos: "Mejor los vemos en la llamada" }), null, "si los deja para la llamada, no se piden");
+  assert.match(errorCampo(MUESTRAS, { documentos: [una, una] }) ?? "", /faltan 1/);
+  assert.equal(errorCampo(MUESTRAS, { documentos: Array(3).fill(una) }), null);
 });
 
-test("SeiriLegal: solo se guardan archivos de la carpeta del propio enlace", () => {
+// Tampoco quedan subidas de archivos en SeiriLegal; la regla de la carpeta se prueba con una sección suelta.
+const SECCION_ARCHIVOS: Seccion = { id: "archivos", titulo: "Archivos", intro: "", logro: "", tipo: "campos", campos: [{ id: "archivos", etiqueta: "Archivos", tipo: "archivos", requerido: true }] };
+
+test("archivos: solo se guardan los de la carpeta del propio enlace", () => {
   const propio = JSON.stringify({ url: `${BLOB}/plantillas/hoja.docx`, nombre: "hoja.docx" });
   const ajeno = JSON.stringify({ url: `https://abc.public.blob.vercel-storage.com/arranques/${"b".repeat(32)}/x.docx`, nombre: "x" });
   const otroSitio = JSON.stringify({ url: "https://malo.com/arranques/x.docx", nombre: "x" });
-  const v = limpiarSeccion(legal("plantillas"), { archivos: [propio, ajeno, otroSitio, "basura"] }, TOKEN) as Record<string, string[]>;
+  const v = limpiarSeccion(SECCION_ARCHIVOS, { archivos: [propio, ajeno, otroSitio, "basura"] }, TOKEN) as Record<string, string[]>;
   assert.deepEqual(v.archivos, [propio]);
 });
 
-test("SeiriLegal: una muestra con tipo inventado no se guarda", () => {
+test("muestras: una con tipo inventado no se guarda", () => {
   const raro = JSON.stringify({ tipo: "Inventado", paginas: [`${BLOB}/muestras/p.jpg`] });
-  const v = limpiarSeccion(legal("muestras"), { documentos: [raro] }, TOKEN) as Record<string, string[]>;
+  const v = limpiarSeccion(SECCION_MUESTRAS, { documentos: [raro] }, TOKEN) as Record<string, string[]>;
   assert.deepEqual(v.documentos, []);
 });
 
@@ -100,11 +107,12 @@ test("SeiriLegal: el avance se mide con sus propias secciones", () => {
   assert.equal(avance({}, SECCIONES_SEIRILEGAL).completas.length, 0);
 });
 
-test("SeiriLegal · oficinas: «Otra provincia» en una pregunta de varias respuestas pide cuáles, y «En toda España» es válida", () => {
+test("SeiriLegal · oficinas: «Otra provincia» muestra «¿Cuáles otras?» sin exigirla, y «En toda España» es válida", () => {
   const despacho = SECCIONES_SEIRILEGAL.find((s) => s.id === "despacho")!;
   const otras = despacho.campos.find((c) => c.id === "otrasOficinas")!;
   const oficinas = despacho.campos.find((c) => c.id === "oficinas")!;
-  assert.notEqual(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"] }), null, "con «Otra provincia» marcada, «¿Cuáles otras?» aparece y es obligatoria");
+  assert.equal(visible(otras, { oficinas: ["Bizkaia", "Otra provincia"] }), true, "con «Otra provincia» marcada, «¿Cuáles otras?» aparece");
+  assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"] }), null, "pero no bloquea la sección si se deja en blanco");
   assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Otra provincia"], otrasOficinas: "Cantabria" }), null);
   assert.equal(errorCampo(otras, { oficinas: ["Bizkaia", "Gipuzkoa"] }), null, "sin «Otra provincia» no se pide");
   assert.equal(errorCampo(oficinas, { oficinas: ["En toda España"] }), null);
@@ -120,9 +128,44 @@ test("SeiriLegal · trámites: lo ya respondido sigue completo y cada trámite t
   assert.equal(errorCampo(visibles[0], { tramite: "Renovación de residencia", [visibles[0].id]: ["Vida laboral", "Pasaporte completo"] }), null);
 });
 
-test("SeiriLegal · familias: las preguntas de familia solo aparecen si lleva familias", () => {
-  const s = legal("clientesCobros");
-  const cobro = s.campos.find((c) => c.id === "cobroFamilia")!;
-  assert.equal(errorCampo(cobro, { familias: "No" }), null);
-  assert.notEqual(errorCampo(cobro, { familias: "A veces" }), null);
+// Cobro, familias y contratos no se preguntan: ya los sabemos por su contrato,
+// por lo que contó el 2-nov y por los modelos que ya envió.
+const DOS_TOQUES = { abiertos: "Entre 30 y 100", traspaso: "Mejor los cargamos juntos el día de la entrega" };
+
+test("SeiriLegal · para terminar: solo dos preguntas, un toque cada una", () => {
+  const s = legal("cierre");
+  assert.deepEqual(s.campos.map((c) => c.id), ["abiertos", "traspaso"]);
+  assert.ok(s.campos.every((c) => c.tipo === "opcion" && c.requerido && !c.visibleSi));
+  assert.equal(seccionCompleta(s, { cierre: DOS_TOQUES }), true);
+  assert.equal(seccionCompleta(s, { cierre: { abiertos: "Entre 30 y 100" } }), false);
+  assert.equal(seccionCompleta(s, { cierre: {} }), false);
+});
+
+// Control positivo: la forma exacta de lo que una clienta real guardó antes del
+// 8-nov (datos ficticios; opciones tal cual, incluida «Sí, siempre» de Mercurio).
+const COMO_LO_DEJO: Respuestas = {
+  despacho: { nombreDespacho: "Despacho Ejemplo", responsable: "Ana Prueba", correo: "ana@ejemplo.com", telefono: "+34 600 000 000", municipio: "basauri", oficinas: ["Bizkaia", "Otra provincia", "Araba", "Gipuzkoa"], otrasOficinas: "" },
+  usuarios: [{ nombre: "Luis Prueba", correo: "luis@ejemplo.com", funcion: "Abogada o abogado", economia: "No" }],
+  tramites: [{ tramite: "Renovación de residencia", volumen: "De 3 a 5", documentos: "pasaporte completo", honorarios: "230 € con IVA" }],
+  trabajo: { dondeHoy: ["Otro programa"], programa: "", mercurio: "Sí, siempre", contencioso: "No", urgentes: "No", canales: ["WhatsApp", "Correo"], idiomas: ["Español"] },
+  plantillas: { faltan: "La designación la rellena el otro abogado" },
+};
+
+test("SeiriLegal · lo que ya respondió cuenta: 4 de 5 secciones completas y solo falta «Para terminar»", () => {
+  const { completas, porcentaje } = avance(COMO_LO_DEJO, SECCIONES_SEIRILEGAL);
+  assert.deepEqual(completas, ["despacho", "usuarios", "tramites", "trabajo"]);
+  assert.equal(porcentaje, 80);
+  assert.equal(SECCIONES_SEIRILEGAL.length, 5);
+  assert.equal(avance({ ...COMO_LO_DEJO, cierre: DOS_TOQUES }, SECCIONES_SEIRILEGAL).porcentaje, 100, "con dos toques queda al 100 %");
+});
+
+test("SeiriLegal · lo respondido en preguntas quitadas sigue a la vista en el panel", () => {
+  const a = respuestasAnteriores(COMO_LO_DEJO, SECCIONES_SEIRILEGAL);
+  assert.deepEqual(a, [{ seccion: "plantillas", campo: "faltan", indice: undefined, valor: "La designación la rellena el otro abogado" }]);
+  assert.equal(plantillaDe("seirilegal").anteriores?.["plantillas.faltan"], "¿Alguna que hagas a mano?");
+});
+
+test("envío a medias: SeiriLegal sí, ServiNomic no", () => {
+  assert.equal(plantillaDe("seirilegal").envioLibre, true);
+  assert.ok(!plantillaDe("servinomic").envioLibre);
 });

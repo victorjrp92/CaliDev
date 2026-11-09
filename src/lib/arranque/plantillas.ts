@@ -1,5 +1,5 @@
 import { SECCIONES, type Seccion } from "@/lib/arranque/esquema";
-import { SECCIONES_SEIRILEGAL } from "@/lib/arranque/esquema-seirilegal";
+import { ANTERIORES_SEIRILEGAL, SECCIONES_SEIRILEGAL } from "@/lib/arranque/esquema-seirilegal";
 
 /**
  * Un arranque por producto: cada plantilla trae sus secciones y los textos que
@@ -16,6 +16,13 @@ export type Plantilla = {
   puntos: readonly string[];
   /** Lo que se le dice al enviar. */
   gracias: string;
+  /**
+   * Se puede enviar aunque falten secciones: lo que falte se ve en la
+   * entrega. Sin esto, «Enviar» solo aparece con todo completo.
+   */
+  envioLibre?: boolean;
+  /** Nombre de secciones (`seccion`) y preguntas (`seccion.campo`) que se quitaron, para el panel. */
+  anteriores?: Readonly<Record<string, string>>;
 };
 
 export const PLANTILLAS: Record<string, Plantilla> = {
@@ -31,13 +38,15 @@ export const PLANTILLAS: Record<string, Plantilla> = {
     id: "seirilegal",
     producto: "SeiriLegal",
     secciones: SECCIONES_SEIRILEGAL,
-    bienvenida: "Son {n} pasos sobre tu despacho, tus trámites y tus documentos. Con esto dejamos SeiriLegal configurado a tu forma de trabajar.",
+    bienvenida: "Son {n} pasos cortos sobre tu despacho, tu equipo y tus trámites. Con esto dejamos SeiriLegal configurado a tu forma de trabajar.",
     puntos: [
+      "Casi todo se responde tocando una opción.",
       "Se guarda solo: puedes cerrar y seguir después con este mismo enlace.",
-      "Si no sabes algo, sigue adelante y lo completas luego.",
-      "Los datos de tus clientes los tapas tú antes de subir nada.",
+      "Puedes enviarlo cuando quieras: lo que falte lo vemos en la entrega.",
     ],
-    gracias: "Recibimos toda la información. Con esto configuramos SeiriLegal para tu despacho y te escribimos para la llamada de los plazos.",
+    gracias: "Recibimos tu información. Con esto configuramos SeiriLegal para tu despacho y te escribimos por WhatsApp para acordar el día de la entrega.",
+    envioLibre: true,
+    anteriores: ANTERIORES_SEIRILEGAL,
   },
 };
 

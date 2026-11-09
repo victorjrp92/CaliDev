@@ -8,6 +8,8 @@ import { plantillaDe } from "@/lib/arranque/plantillas";
 import { seccionCompleta, visible } from "@/lib/arranque/validar";
 import { Puerta } from "../../leads/puerta";
 import { ValorArchivos } from "./valor-archivos";
+import { RespuestasAnteriores } from "./respuestas-anteriores";
+import { respuestasAnteriores } from "@/lib/arranque/anteriores";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +30,7 @@ export default async function RespuestasArranque({ params }: { params: Promise<{
   const a = await arranquePorId(Number((await params).id));
   if (!a) notFound();
   const r = respuestasDe(a);
-  const { secciones, producto } = plantillaDe(a.plantilla);
+  const { secciones, producto, anteriores } = plantillaDe(a.plantilla);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-10">
@@ -99,6 +101,7 @@ export default async function RespuestasArranque({ params }: { params: Promise<{
           </section>
         );
       })}
+      <RespuestasAnteriores anteriores={respuestasAnteriores(r, secciones)} nombres={anteriores} />
     </main>
   );
 }

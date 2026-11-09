@@ -201,7 +201,7 @@ export function FormularioArranque({
           </div>
         )}
 
-        {paso === N + 1 && <ResumenEnvio secciones={secciones} respuestas={respuestas} completas={completas} onIr={ir} onEnviar={enviar} enviando={enviando} error={errorEnvio} />}
+        {paso === N + 1 && <ResumenEnvio secciones={secciones} respuestas={respuestas} completas={completas} onIr={ir} onEnviar={enviar} enviando={enviando} error={errorEnvio} envioLibre={plantilla.envioLibre} />}
       </main>
 
       {celebrar && (

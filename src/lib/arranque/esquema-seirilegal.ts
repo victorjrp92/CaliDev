@@ -4,12 +4,16 @@ import type { Seccion } from "@/lib/arranque/esquema";
  * El formulario de arranque de SeiriLegal: lo que un despacho de extranjería
  * nos cuenta para dejarle la app configurada a su forma de trabajar.
  *
- * Los documentos de ejemplo NO llegan como son: la abogada tapa los datos de
- * sus clientes en su propio navegador y solo se sube la versión tapada.
- * Sirven para conocer qué documentos llegan, en qué formato y con qué calidad;
- * la prueba de lectura con datos reales se hace después, dentro de SeiriLegal.
+ * Solo se pregunta lo que únicamente el despacho sabe y hace falta para la
+ * entrega (Victor, 8 nov 2026: «convertiste el arranque en una tortura»). Lo
+ * que se deduce de sus documentos, de la ley o de un valor que luego cambia en
+ * la app, no se pregunta. Se quitaron «Familias y cobros» (casi todo), las
+ * plantillas, los documentos de ejemplo y la llamada: lo que ya se respondió
+ * ahí sigue guardado y el panel lo muestra aparte.
  *
- * Mismas reglas que el de ServiNomic: los ids son estables.
+ * Mismas reglas que el de ServiNomic: los ids son estables, y el texto de una
+ * opción tampoco se cambia una vez respondida (la respuesta vieja deja de
+ * valer y la sección no se completa nunca).
  */
 const SI_NO = ["Sí", "No"] as const;
 
@@ -33,7 +37,10 @@ export const TRAMITES = [
   "Otro",
 ] as const;
 
-/** Tipos de documento que pedimos de ejemplo, y qué hay que tapar en cada uno. */
+/**
+ * Tipos de documento de ejemplo y qué hay que tapar en cada uno. El formulario
+ * ya no pide ejemplos (8 nov 2026), pero el campo «muestras» sigue disponible.
+ */
 export const TIPOS_MUESTRA: readonly { tipo: string; tapar: string }[] = [
   { tipo: "Pasaporte", tapar: "nombre, número, fechas, foto, firma y las dos líneas de letras de abajo" },
   { tipo: "NIE o TIE", tapar: "nombre, NIE, fechas, foto, firma y dirección" },
@@ -107,7 +114,7 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
         opciones: ["Bizkaia", "Gipuzkoa", "Araba", "En toda España", "Otra provincia"],
         ayuda: "Marca todas las que apliquen. Si presentas en cualquier provincia, marca «En toda España» y no hace falta escribir ninguna.",
       },
-      { id: "otrasOficinas", etiqueta: "¿Cuáles otras?", tipo: "texto", requerido: true, visibleSi: { campo: "oficinas", valores: ["Otra provincia"] }, ejemplo: "Cantabria, Madrid" },
+      { id: "otrasOficinas", etiqueta: "¿Cuáles otras?", tipo: "texto", visibleSi: { campo: "oficinas", valores: ["Otra provincia"] }, ejemplo: "Cantabria, Madrid" },
     ],
   },
   {
@@ -140,15 +147,15 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
       ...CASILLAS_DOCUMENTOS,
       { id: "documentos", etiqueta: "¿Algún documento más?", tipo: "area", ayuda: "Solo los que no estén en la lista de arriba, uno por línea.", ejemplo: "Abono de transporte personalizado" },
       { id: "honorarios", etiqueta: "Tus honorarios habituales", tipo: "texto", ejemplo: "230 € con IVA" },
-      { id: "particular", etiqueta: "¿Tu oficina pide algo distinto a la norma?", tipo: "area", ayuda: "Si no se te ocurre nada, déjalo en blanco: lo vemos en la llamada." },
+      { id: "particular", etiqueta: "¿Tu oficina pide algo distinto a la norma?", tipo: "area", ayuda: "Si no se te ocurre nada, déjalo en blanco: lo vemos en la entrega." },
       { id: "formulario", etiqueta: "Formulario y tasa", tipo: "texto", ejemplo: "EX-10 y tasa 790-052" },
     ],
   },
   {
     id: "trabajo",
     titulo: "Cómo trabajas hoy",
-    intro: "Marca lo que corresponda. Son casi todo casillas: unos 2 minutos.",
-    logro: "Ya entendemos tu día a día. Ya pasaste la mitad.",
+    intro: "Solo casillas: menos de un minuto.",
+    logro: "Ya entendemos tu día a día. Queda un paso.",
     tipo: "campos",
     campos: [
       {
@@ -158,14 +165,13 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
         requerido: true,
         opciones: ["Excel o Google Sheets", "Word", "Carpetas en el ordenador", "Papel o libreta", "WhatsApp", "Otro programa"],
       },
-      { id: "programa", etiqueta: "¿Qué programa?", tipo: "texto", requerido: true, visibleSi: { campo: "dondeHoy", valores: ["Otro programa"] } },
-      { id: "mercurio", etiqueta: "¿Presentas las solicitudes por internet (plataforma Mercurio)?", tipo: "opcion", requerido: true, opciones: ["Sí, casi siempre", "A veces", "No, en persona", "No sé qué es"] },
+      { id: "programa", etiqueta: "¿Qué programa?", tipo: "texto", visibleSi: { campo: "dondeHoy", valores: ["Otro programa"] } },
+      // «Sí, siempre» es el texto con que se respondió el 31-oct: no se toca (ver arriba).
+      { id: "mercurio", etiqueta: "¿Presentas las solicitudes por internet (plataforma Mercurio)?", tipo: "opcion", requerido: true, opciones: ["Sí, siempre", "A veces", "No, en persona", "No sé qué es"] },
       { id: "contencioso", etiqueta: "¿Llevas recursos ante el juzgado (contencioso)?", tipo: "opcion", requerido: true, opciones: SI_NO },
       { id: "lexnet", etiqueta: "¿Recibes notificaciones por LexNET?", tipo: "opcion", requerido: true, opciones: SI_NO, visibleSi: { campo: "contencioso", valores: ["Sí"] } },
       { id: "urgentes", etiqueta: "¿Llevas casos urgentes, como expulsiones o internamientos (CIE)?", tipo: "opcion", requerido: true, opciones: ["Sí", "A veces", "No"] },
       { id: "canales", etiqueta: "¿Cómo te mandan los documentos tus clientes?", tipo: "opciones", requerido: true, opciones: ["WhatsApp", "Correo", "En persona", "Otro"] },
-      { id: "mismoCorreo", etiqueta: "¿Los documentos y los avisos de la Administración te llegan a tu correo de arriba?", tipo: "opcion", requerido: true, opciones: ["Sí, al mismo", "No, a otro correo"] },
-      { id: "correoDocs", etiqueta: "¿A qué correo?", tipo: "correo", requerido: true, visibleSi: { campo: "mismoCorreo", valores: ["No, a otro correo"] } },
       {
         id: "idiomas",
         etiqueta: "¿En qué idiomas te escriben tus clientes?",
@@ -173,119 +179,45 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
         requerido: true,
         opciones: ["Español", "Inglés", "Francés", "Árabe", "Portugués", "Ucraniano", "Ruso", "Chino", "Urdu", "Otro"],
       },
-      {
-        id: "datosCliente",
-        etiqueta: "¿Qué datos le pides a un cliente nuevo?",
-        tipo: "opciones",
-        requerido: true,
-        opciones: ["Nombre y apellidos", "NIE o pasaporte", "Nacionalidad", "Fecha de nacimiento", "Teléfono", "Correo", "Dirección", "Estado civil", "Profesión", "Nombre de los padres"],
-      },
-      {
-        id: "dolor",
-        etiqueta: "¿Qué es lo que más tiempo te quita hoy?",
-        tipo: "opciones",
-        requerido: true,
-        opciones: [
-          "Pedir y perseguir los papeles a los clientes",
-          "Controlar plazos y fechas",
-          "Rellenar formularios y tasas",
-          "Cobrar las cuotas",
-          "Contestar mensajes de WhatsApp",
-          "Buscar los papeles de un cliente",
-          "Llevar las cuentas y el IVA",
-          "Otra cosa",
-        ],
-        ayuda: "Marca todas las que apliquen.",
-      },
-      { id: "dolorOtro", etiqueta: "¿Cuál?", tipo: "texto", requerido: true, visibleSi: { campo: "dolor", valores: ["Otra cosa"] } },
     ],
   },
   {
-    id: "clientesCobros",
-    titulo: "Familias y cobros",
-    intro: "Cómo son tus casos y cómo te pagan. Todo con casillas: 1 minuto.",
-    logro: "Ya sabemos cómo organizar tus casos y tus cobros.",
+    // Lo único que falta para cargar lo que ya lleva: un toque por pregunta. Cobro,
+    // familias y contratos no se preguntan: ya los sabemos por su contrato y por
+    // los modelos que envió (9 nov 2026).
+    id: "cierre",
+    titulo: "Para terminar",
+    intro: "Dos preguntas, un toque cada una. Lo que no tengas claro lo vemos el día de la entrega.",
+    logro: "Ya tenemos lo necesario para configurar SeiriLegal.",
     tipo: "campos",
     campos: [
-      { id: "familias", etiqueta: "¿Llevas casos de familias enteras (varios miembros a la vez)?", tipo: "opcion", requerido: true, opciones: ["Sí, a menudo", "A veces", "No"] },
+      { id: "abiertos", etiqueta: "¿Cuántos expedientes tienes abiertos ahora, más o menos?", tipo: "opcion", requerido: true, opciones: ["Menos de 30", "Entre 30 y 100", "Más de 100"] },
       {
-        id: "cobroFamilia",
-        etiqueta: "¿Cómo le cobras a una familia?",
+        id: "traspaso",
+        etiqueta: "¿Cómo pasamos esos expedientes a SeiriLegal?",
         tipo: "opcion",
         requerido: true,
-        opciones: ["Un precio por toda la familia", "Un precio por cada persona", "Un precio base y un extra por cada miembro", "Depende del caso"],
-        visibleSi: { campo: "familias", valores: ["Sí, a menudo", "A veces"] },
+        opciones: ["Puedo enviar un Excel o una exportación", "Solo los tengo en papel o en carpetas", "Mejor los cargamos juntos el día de la entrega"],
       },
-      {
-        id: "presentacionFamilia",
-        etiqueta: "¿Presentas a todos los miembros a la vez?",
-        tipo: "opcion",
-        requerido: true,
-        opciones: ["Sí, a todos a la vez", "No, por partes (primero uno y luego los demás)", "Depende del caso"],
-        visibleSi: { campo: "familias", valores: ["Sí, a menudo", "A veces"] },
-      },
-      {
-        id: "contactoFamilia",
-        etiqueta: "¿Con quién hablas en una familia?",
-        tipo: "opcion",
-        requerido: true,
-        opciones: ["Con una sola persona, que es la que paga", "Con una persona, pero paga otra", "Con cada miembro por separado"],
-        visibleSi: { campo: "familias", valores: ["Sí, a menudo", "A veces"] },
-      },
-      { id: "empresas", etiqueta: "¿Te llegan empresas que tramitan a varios trabajadores?", tipo: "opcion", requerido: true, opciones: ["Sí", "A veces", "No"] },
-      { id: "cuotas", etiqueta: "¿Tus clientes te pagan en cuotas?", tipo: "opcion", requerido: true, opciones: ["Sí, casi siempre", "A veces", "No, todo de una vez"] },
-      { id: "mediosPago", etiqueta: "¿Cómo te pagan?", tipo: "opciones", requerido: true, opciones: ["Transferencia", "Bizum", "Efectivo", "Tarjeta"] },
-      { id: "tasasAparte", etiqueta: "Las tasas, traducciones y apostillas…", tipo: "opcion", requerido: true, opciones: ["Las paga el cliente aparte", "Van incluidas en mi precio", "Depende del caso"] },
-      { id: "quienIva", etiqueta: "¿Quién te hace hoy el IVA y el IRPF de cada trimestre?", tipo: "opcion", requerido: true, opciones: ["Una gestoría o asesor", "Yo misma", "Todavía nadie"] },
-      { id: "local", etiqueta: "¿Tu despacho está en un local alquilado?", tipo: "opcion", requerido: true, opciones: ["Sí", "No"] },
-      { id: "empleados", etiqueta: "¿Tienes personas contratadas en nómina?", tipo: "opcion", requerido: true, opciones: ["Sí", "No"] },
-    ],
-  },
-  {
-    id: "plantillas",
-    titulo: "Tus plantillas",
-    intro: "Los documentos que hoy rellenas a mano (hoja de encargo, presupuesto, designación de representante…). SeiriLegal los rellenará solo con los datos de cada cliente.",
-    logro: "Plantillas listas. Ya casi terminas.",
-    tipo: "campos",
-    campos: [
-      { id: "usaPlantillas", etiqueta: "¿Usas plantillas propias?", tipo: "opcion", requerido: true, opciones: ["Sí, las subo ahora", "Sí, pero las mando después", "No uso plantillas"] },
-      { id: "archivos", etiqueta: "Sube tus plantillas", tipo: "archivos", requerido: true, visibleSi: { campo: "usaPlantillas", valores: ["Sí, las subo ahora"] }, ayuda: "Mejor en Word; en PDF también sirve." },
-      { id: "faltan", etiqueta: "¿Alguna que hagas a mano?", tipo: "area", ejemplo: "La designación de representante la hago a mano en el formulario EX" },
-    ],
-  },
-  {
-    id: "muestras",
-    titulo: "Documentos de ejemplo",
-    intro:
-      "Ejemplos de documentos que te llegan, para preparar la lectura automática. Antes de subir cada uno, tapas los datos de tu cliente con el dedo o el ratón: el original no sale de tu dispositivo.",
-    logro: "¡Último gran paso superado! Solo falta agendar la llamada.",
-    tipo: "campos",
-    campos: [
-      { id: "subirEjemplos", etiqueta: "¿Puedes subir algunos ahora?", tipo: "opcion", requerido: true, opciones: ["Sí, ahora", "Mejor los vemos en la llamada"] },
-      {
-        id: "documentos",
-        etiqueta: "Tus documentos de ejemplo",
-        tipo: "muestras",
-        requerido: true,
-        minimo: 3,
-        visibleSi: { campo: "subirEjemplos", valores: ["Sí, ahora"] },
-        ayuda: "Con 3 basta; si subes más, mejor. Fotos de móvil también sirven: así es como te llegan de verdad.",
-      },
-      { id: "notasMuestras", etiqueta: "¿Algún documento que te llegue a menudo y no esté en la lista?", tipo: "area" },
-    ],
-  },
-  {
-    id: "llamada",
-    titulo: "La llamada",
-    intro: "30 minutos para revisar contigo cómo calcula SeiriLegal los plazos: días hábiles, festivos y requerimientos. Es lo que no puede fallar.",
-    logro: "¡Lo tienes todo! Revisa y envíanoslo.",
-    tipo: "campos",
-    campos: [
-      { id: "dias", etiqueta: "¿Qué días te vienen bien?", tipo: "opciones", requerido: true, opciones: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] },
-      { id: "franja", etiqueta: "¿A qué hora?", tipo: "opciones", requerido: true, opciones: ["Mañana (9 a 13 h)", "Mediodía (13 a 16 h)", "Tarde (16 a 19 h)"] },
-      { id: "medio", etiqueta: "¿Cómo prefieres la llamada?", tipo: "opcion", requerido: true, opciones: ["Videollamada", "Llamada de teléfono", "WhatsApp"] },
-      { id: "horarios", etiqueta: "¿Alguna preferencia concreta?", tipo: "area", ejemplo: "Mejor el martes a las 10:00" },
-      { id: "comentarios", etiqueta: "¿Algo más que debamos saber?", tipo: "area" },
     ],
   },
 ];
+
+/**
+ * Nombres de lo que se quitó del formulario el 8 nov 2026, para que el panel
+ * muestre con su pregunta original lo que ya se había respondido ahí.
+ */
+export const ANTERIORES_SEIRILEGAL: Readonly<Record<string, string>> = {
+  clientesCobros: "Familias y cobros",
+  plantillas: "Tus plantillas",
+  "plantillas.usaPlantillas": "¿Usas plantillas propias?",
+  "plantillas.archivos": "Plantillas subidas",
+  "plantillas.faltan": "¿Alguna que hagas a mano?",
+  muestras: "Documentos de ejemplo",
+  llamada: "La llamada",
+  "trabajo.mismoCorreo": "¿Los avisos de la Administración te llegan a tu correo?",
+  "trabajo.correoDocs": "¿A qué correo?",
+  "trabajo.datosCliente": "¿Qué datos le pides a un cliente nuevo?",
+  "trabajo.dolor": "¿Qué es lo que más tiempo te quita hoy?",
+  "trabajo.dolorOtro": "¿Cuál?",
+};
