@@ -1,11 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SECCIONES, type Campo, type Respuestas, type Seccion } from "./esquema";
+import { SECCIONES, type Campo, type Respuestas, type Seccion, type Valores } from "./esquema";
 import { SECCIONES_SEIRILEGAL } from "./esquema-seirilegal";
 import { avance, errorCampo, limpiarSeccion, seccionCompleta, visible } from "./validar";
 import { respuestasAnteriores } from "./anteriores";
 import { plantillaDe } from "./plantillas";
 import { filasAElementos } from "./excel";
+import { aplicarEleccion, elegidos } from "./elegir";
 
 const seccion = (id: string) => SECCIONES.find((s) => s.id === id)!;
 const campo = (s: string, c: string) => seccion(s).campos.find((x) => x.id === c)!;
@@ -130,14 +131,18 @@ test("SeiriLegal · trámites: lo ya respondido sigue completo y cada trámite t
 
 // Cobro, familias y contratos no se preguntan: ya los sabemos por su contrato,
 // por lo que contó el 2-nov y por los modelos que ya envió.
-const DOS_TOQUES = { abiertos: "Entre 30 y 100", traspaso: "Mejor los cargamos juntos el día de la entrega" };
+const TOQUES = { abiertos: "Entre 30 y 100", traspaso: "Mejor los cargamos juntos el día de la entrega", notificaciones: "A los dos", firma: "De las dos formas" };
+const DRIVE = "Están en Google Drive: puedo compartir la carpeta";
 
-test("SeiriLegal · para terminar: solo dos preguntas, un toque cada una", () => {
+test("SeiriLegal · para terminar: cuatro preguntas de un toque, y la de carpetas solo si están en Drive", () => {
   const s = legal("cierre");
-  assert.deepEqual(s.campos.map((c) => c.id), ["abiertos", "traspaso"]);
-  assert.ok(s.campos.every((c) => c.tipo === "opcion" && c.requerido && !c.visibleSi));
-  assert.equal(seccionCompleta(s, { cierre: DOS_TOQUES }), true);
-  assert.equal(seccionCompleta(s, { cierre: { abiertos: "Entre 30 y 100" } }), false);
+  assert.deepEqual(s.campos.map((c) => c.id), ["abiertos", "traspaso", "carpetas", "notificaciones", "firma"]);
+  assert.ok(s.campos.every((c) => c.tipo === "opcion" && c.requerido));
+  assert.deepEqual(s.campos.filter((c) => c.visibleSi).map((c) => c.id), ["carpetas"]);
+  assert.equal(seccionCompleta(s, { cierre: TOQUES }), true);
+  assert.equal(seccionCompleta(s, { cierre: { ...TOQUES, traspaso: DRIVE } }), false, "con Drive falta decir cómo están las carpetas");
+  assert.equal(seccionCompleta(s, { cierre: { ...TOQUES, traspaso: DRIVE, carpetas: "Una por cliente" } }), true);
+  assert.equal(seccionCompleta(s, { cierre: { abiertos: "Entre 30 y 100", traspaso: TOQUES.traspaso } }), false);
   assert.equal(seccionCompleta(s, { cierre: {} }), false);
 });
 
@@ -156,7 +161,7 @@ test("SeiriLegal · lo que ya respondió cuenta: 4 de 5 secciones completas y so
   assert.deepEqual(completas, ["despacho", "usuarios", "tramites", "trabajo"]);
   assert.equal(porcentaje, 80);
   assert.equal(SECCIONES_SEIRILEGAL.length, 5);
-  assert.equal(avance({ ...COMO_LO_DEJO, cierre: DOS_TOQUES }, SECCIONES_SEIRILEGAL).porcentaje, 100, "con dos toques queda al 100 %");
+  assert.equal(avance({ ...COMO_LO_DEJO, cierre: TOQUES }, SECCIONES_SEIRILEGAL).porcentaje, 100, "con cuatro toques queda al 100 %");
 });
 
 test("SeiriLegal · lo respondido en preguntas quitadas sigue a la vista en el panel", () => {
@@ -168,4 +173,56 @@ test("SeiriLegal · lo respondido en preguntas quitadas sigue a la vista en el p
 test("envío a medias: SeiriLegal sí, ServiNomic no", () => {
   assert.equal(plantillaDe("seirilegal").envioLibre, true);
   assert.ok(!plantillaDe("servinomic").envioLibre);
+});
+
+test("SeiriLegal · trámites: se marcan todos de una vez y cada uno nace con sus documentos ya marcados", () => {
+  const s = legal("tramites");
+  assert.equal(s.item?.elegir?.campo, "tramite");
+  assert.ok(!s.campos.some((c) => c.id === "formulario"), "«Formulario y tasa» ya no se pregunta: lo fija la norma");
+  const { items } = aplicarEleccion([], ["Arraigo sociolaboral", "Renovación de residencia"], "tramite", s.item!.elegir!.alElegir);
+  assert.deepEqual(elegidos(items, "tramite"), ["Arraigo sociolaboral", "Renovación de residencia"]);
+  const docs = items[1]["docs-renovacion-de-residencia"] as string[];
+  assert.ok(docs.includes("Vida laboral") && !docs.some((d) => d.startsWith("Formulario")), "lo que trae el cliente va marcado; el formulario, no");
+  // Lo ya marcado es válido y sobrevive a la limpieza del servidor.
+  assert.deepEqual(limpiarSeccion(s, items), items);
+  // Solo falta un toque por trámite: cuántos al mes.
+  assert.equal(seccionCompleta(s, { tramites: items }), false);
+  assert.equal(seccionCompleta(s, { tramites: items.map((it) => ({ ...it, volumen: "1 o 2" })) }), true);
+});
+
+test("SeiriLegal · trámites: desmarcar aparta lo llenado y volver a marcar lo recupera; lo de antes no se toca", () => {
+  const alElegir = legal("tramites").item!.elegir!.alElegir;
+  const antes = COMO_LO_DEJO.tramites as Valores[];
+  const r1 = aplicarEleccion(antes, ["Renovación de residencia", "Arraigo social"], "tramite", alElegir);
+  assert.equal(r1.items[0], antes[0], "lo que ya respondió queda tal cual, sin documentos añadidos");
+  const llenado = { ...r1.items[1], volumen: "De 6 a 10", honorarios: "300 €" };
+  const r2 = aplicarEleccion([r1.items[0], llenado], ["Renovación de residencia"], "tramite", alElegir);
+  assert.equal(r2.items.length, 1);
+  const r3 = aplicarEleccion(r2.items, ["Renovación de residencia", "Arraigo social"], "tramite", alElegir, r2.apartados);
+  assert.deepEqual(r3.items[1], llenado, "vuelve con lo que ya había escrito");
+  assert.deepEqual(r3.apartados, {});
+});
+
+test("SeiriLegal · Google Drive como opción donde se apuntan los casos y para pasar los expedientes", () => {
+  assert.ok(legal("trabajo").campos.find((c) => c.id === "dondeHoy")!.opciones!.includes("Google Drive"));
+  assert.ok(legal("cierre").campos.find((c) => c.id === "traspaso")!.opciones!.some((o) => o.includes("Google Drive")));
+});
+
+test("SeiriLegal · lo respondido en «Formulario y tasa» sigue a la vista en el panel", () => {
+  const conFormulario: Respuestas = { ...COMO_LO_DEJO, tramites: [{ ...(COMO_LO_DEJO.tramites as Valores[])[0], formulario: "EX-10 y tasa 790-052" }] };
+  const a = respuestasAnteriores(conFormulario, SECCIONES_SEIRILEGAL);
+  assert.ok(a.some((x) => x.seccion === "tramites" && x.campo === "formulario" && x.indice === 1 && x.valor === "EX-10 y tasa 790-052"));
+  assert.equal(plantillaDe("seirilegal").anteriores?.["tramites.formulario"], "Formulario y tasa");
+  assert.deepEqual(avance(conFormulario, SECCIONES_SEIRILEGAL).completas, ["despacho", "usuarios", "tramites", "trabajo"]);
+});
+
+test("SeiriLegal · trámites nuevos: circunstancias excepcionales, modificación y paso a ordinaria tras la regularización", () => {
+  const s = legal("tramites");
+  const opciones = s.campos.find((c) => c.id === "tramite")!.opciones!;
+  const nuevos = ["Circunstancias excepcionales (razones humanitarias, víctimas…)", "Modificación de residencia", "Regularización 2026: paso a autorización ordinaria"];
+  for (const t of nuevos) assert.ok(opciones.includes(t), t);
+  assert.equal(opciones.at(-1), "Otro");
+  const { items } = aplicarEleccion([], nuevos, "tramite", s.item!.elegir!.alElegir);
+  for (const it of items) assert.ok(Object.keys(it).some((k) => k.startsWith("docs-") && (it[k] as string[]).length > 0), `${it.tramite} nace con documentos`);
+  assert.equal(seccionCompleta(s, { tramites: items.map((it) => ({ ...it, volumen: "1 o 2" })) }), true);
 });

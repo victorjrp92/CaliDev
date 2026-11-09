@@ -23,10 +23,13 @@ export const TRAMITES = [
   "Arraigo social",
   "Arraigo familiar",
   "Arraigo de segunda oportunidad",
+  "Circunstancias excepcionales (razones humanitarias, víctimas…)",
   "Reagrupación familiar",
   "Familiar de ciudadano español o de la UE",
   "Nacionalidad por residencia",
   "Renovación de residencia",
+  "Modificación de residencia",
+  "Regularización 2026: paso a autorización ordinaria",
   "Residencia de larga duración",
   "Estancia por estudios",
   "Residencia no lucrativa",
@@ -67,10 +70,15 @@ export const DOCUMENTOS_POR_TRAMITE: Record<(typeof TRAMITES)[number], readonly 
   "Arraigo social": [...BASE, "Informe de inserción social", "Prueba de medios económicos", "Formulario EX y tasa 790-052"],
   "Arraigo familiar": [...BASE, "Certificado de nacimiento o matrimonio (vínculo)", "DNI o TIE del familiar", "Formulario EX y tasa 790-052"],
   "Arraigo de segunda oportunidad": [...BASE, "TIE anterior", "Formulario EX y tasa 790-052"],
+  "Circunstancias excepcionales (razones humanitarias, víctimas…)": ["Pasaporte completo", "Empadronamiento", "Documento que acredita la circunstancia (resolución, informe, denuncia…)"],
   "Reagrupación familiar": ["Pasaporte del familiar", "TIE del reagrupante", "Certificado de matrimonio o nacimiento", "Nóminas, contrato o medios económicos", "Informe de vivienda adecuada", "Seguro médico", "Formulario EX-02 y tasa"],
   "Familiar de ciudadano español o de la UE": ["Pasaporte completo", "DNI o certificado UE del familiar", "Certificado de matrimonio, pareja o nacimiento", "Empadronamiento", "Medios económicos o seguro médico", "Formulario EX-19 y tasa"],
   "Nacionalidad por residencia": ["Examen CCSE y DELE (o título de la ESO)", "Pasaporte completo", "TIE en vigor (ambas caras)", "Antecedentes penales apostillados", "Certificado de nacimiento apostillado", "Certificado de matrimonio (si procede)", "Nacimiento de los hijos menores (si procede)", "Pruebas de integración (cursos, trabajo, carnet…)"],
   "Renovación de residencia": ["Pasaporte completo", "TIE (ambas caras)", "Certificado de empadronamiento", "Contrato de trabajo", "Vida laboral", "Formulario EX y tasas"],
+  // Los dos siguientes, como en el catálogo de LEGAL ESTATUS: lo propio de cada caso lo concreta la abogada.
+  "Modificación de residencia": ["Pasaporte completo", "TIE actual", "Documentación de la nueva situación"],
+  // La autorización de la regularización (RD 316/2026) dura un año y no se renueva: pasa a una figura ordinaria.
+  "Regularización 2026: paso a autorización ordinaria": ["Pasaporte completo", "TIE de la regularización", "Documentación de la nueva autorización"],
   "Residencia de larga duración": ["Pasaporte completo", "TIE (ambas caras)", "Vida laboral", "Medios económicos", "Seguro médico (si no cotiza)", "Formulario EX-11 y tasa"],
   "Estancia por estudios": ["Pasaporte completo", "Matrícula o carta de admisión", "Seguro médico", "Medios económicos", "Formulario EX-00 y tasa"],
   "Residencia no lucrativa": ["Pasaporte completo", "Medios económicos", "Seguro médico privado", "Antecedentes penales", "Certificado médico", "Formulario EX-01 y tasa"],
@@ -82,16 +90,27 @@ export const DOCUMENTOS_POR_TRAMITE: Record<(typeof TRAMITES)[number], readonly 
 };
 
 const slug = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const CON_DOCUMENTOS = TRAMITES.filter((t) => DOCUMENTOS_POR_TRAMITE[t].length);
 
 /** Una casilla de documentos por trámite: solo aparece la del trámite elegido. */
-const CASILLAS_DOCUMENTOS = TRAMITES.filter((t) => DOCUMENTOS_POR_TRAMITE[t].length).map((t) => ({
+const CASILLAS_DOCUMENTOS = CON_DOCUMENTOS.map((t) => ({
   id: `docs-${slug(t)}`,
   etiqueta: "¿Qué documentos le pides al cliente?",
   tipo: "opciones" as const,
   opciones: [...DOCUMENTOS_POR_TRAMITE[t], OTRO_DOC],
-  ayuda: "Marca los que pides. Si falta alguno, escríbelo abajo.",
+  ayuda: "Deja marcados solo los que pides. Si falta alguno, escríbelo abajo.",
   visibleSi: { campo: "tramite", valores: [t] },
 }));
+
+/**
+ * Cada trámite nace con sus documentos habituales ya marcados: la abogada solo
+ * quita los que no pide (Victor, 9 nov 2026: elegir uno, llenarlo todo y
+ * agregar el siguiente «no es intuitivo»). El formulario y la tasa los prepara
+ * el despacho, no los trae el cliente: siguen en la lista, pero sin marcar.
+ */
+const DOCUMENTOS_YA_MARCADOS = Object.fromEntries(
+  CON_DOCUMENTOS.map((t) => [t, { [`docs-${slug(t)}`]: DOCUMENTOS_POR_TRAMITE[t].filter((d) => !d.startsWith("Formulario")) }]),
+);
 
 export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
   {
@@ -124,7 +143,7 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
     logro: "Tu equipo ya tiene sus accesos. Vas bien.",
     tipo: "lista",
     sinExcel: true,
-    item: { singular: "persona", plural: "personas", minimo: 1, tituloDe: "nombre" },
+    item: { singular: "persona", plural: "personas", minimo: 1, tituloDe: "nombre", femenino: true },
     campos: [
       { id: "nombre", etiqueta: "Nombre completo", tipo: "texto", requerido: true },
       { id: "correo", etiqueta: "Correo", tipo: "correo", requerido: true },
@@ -135,11 +154,18 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
   {
     id: "tramites",
     titulo: "Tus trámites",
-    intro: "Los trámites que más llevas (con 3 o 4 basta). Por cada uno, marca los documentos que pides: así armamos la lista de cada expediente.",
+    intro: "Marca todos los trámites que llevas. Debajo aparece cada uno con sus documentos habituales ya marcados: quita los que no pidas e indica cuántos llevas al mes.",
     logro: "Tus trámites ya tienen su lista de documentos. Es la parte que más nos sirve.",
     tipo: "lista",
     sinExcel: true,
-    item: { singular: "trámite", plural: "trámites", minimo: 1, tituloDe: "tramite" },
+    item: {
+      singular: "trámite",
+      plural: "trámites",
+      minimo: 1,
+      tituloDe: "tramite",
+      elegir: { campo: "tramite", etiqueta: "¿Qué trámites llevas?", ayuda: "Marca todos los que apliquen.", alElegir: DOCUMENTOS_YA_MARCADOS },
+    },
+    // «Formulario y tasa» se quitó el 9 nov 2026: los fija la norma para cada trámite.
     campos: [
       { id: "tramite", etiqueta: "Trámite", tipo: "opcion", requerido: true, opciones: TRAMITES },
       { id: "otroTramite", etiqueta: "¿Cuál?", tipo: "texto", requerido: true, visibleSi: { campo: "tramite", valores: ["Otro"] } },
@@ -148,7 +174,6 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
       { id: "documentos", etiqueta: "¿Algún documento más?", tipo: "area", ayuda: "Solo los que no estén en la lista de arriba, uno por línea.", ejemplo: "Abono de transporte personalizado" },
       { id: "honorarios", etiqueta: "Tus honorarios habituales", tipo: "texto", ejemplo: "230 € con IVA" },
       { id: "particular", etiqueta: "¿Tu oficina pide algo distinto a la norma?", tipo: "area", ayuda: "Si no se te ocurre nada, déjalo en blanco: lo vemos en la entrega." },
-      { id: "formulario", etiqueta: "Formulario y tasa", tipo: "texto", ejemplo: "EX-10 y tasa 790-052" },
     ],
   },
   {
@@ -163,7 +188,7 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
         etiqueta: "¿Dónde apuntas hoy tus casos?",
         tipo: "opciones",
         requerido: true,
-        opciones: ["Excel o Google Sheets", "Word", "Carpetas en el ordenador", "Papel o libreta", "WhatsApp", "Otro programa"],
+        opciones: ["Excel o Google Sheets", "Google Drive", "Word", "Carpetas en el ordenador", "Papel o libreta", "WhatsApp", "Otro programa"],
       },
       { id: "programa", etiqueta: "¿Qué programa?", tipo: "texto", visibleSi: { campo: "dondeHoy", valores: ["Otro programa"] } },
       // «Sí, siempre» es el texto con que se respondió el 31-oct: no se toca (ver arriba).
@@ -184,10 +209,11 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
   {
     // Lo único que falta para cargar lo que ya lleva: un toque por pregunta. Cobro,
     // familias y contratos no se preguntan: ya los sabemos por su contrato y por
-    // los modelos que envió (9 nov 2026).
+    // los modelos que envió (9 nov 2026). Notificaciones, firma y carpetas, a
+    // partir de la investigación sobre despachos de extranjería (Victor, 9 nov).
     id: "cierre",
     titulo: "Para terminar",
-    intro: "Dos preguntas, un toque cada una. Lo que no tengas claro lo vemos el día de la entrega.",
+    intro: "Cuatro preguntas, un toque cada una. Lo que no tengas claro lo vemos el día de la entrega.",
     logro: "Ya tenemos lo necesario para configurar SeiriLegal.",
     tipo: "campos",
     campos: [
@@ -197,7 +223,35 @@ export const SECCIONES_SEIRILEGAL: readonly Seccion[] = [
         etiqueta: "¿Cómo pasamos esos expedientes a SeiriLegal?",
         tipo: "opcion",
         requerido: true,
-        opciones: ["Puedo enviar un Excel o una exportación", "Solo los tengo en papel o en carpetas", "Mejor los cargamos juntos el día de la entrega"],
+        opciones: [
+          "Puedo enviar un Excel o una exportación",
+          "Están en Google Drive: puedo compartir la carpeta",
+          "En papel o en carpetas del ordenador",
+          "Mejor los cargamos juntos el día de la entrega",
+        ],
+      },
+      {
+        id: "carpetas",
+        etiqueta: "¿Cómo están organizadas esas carpetas?",
+        tipo: "opcion",
+        requerido: true,
+        opciones: ["Una por cliente", "Una por familia", "Una por trámite", "Sin un orden fijo"],
+        visibleSi: { campo: "traspaso", valores: ["Están en Google Drive: puedo compartir la carpeta"] },
+      },
+      {
+        id: "notificaciones",
+        etiqueta: "¿A quién le llegan las notificaciones de extranjería?",
+        ayuda: "Las de la sede electrónica o la DEHú.",
+        tipo: "opcion",
+        requerido: true,
+        opciones: ["Al despacho", "Al cliente", "A los dos"],
+      },
+      {
+        id: "firma",
+        etiqueta: "¿Cómo firma el cliente la hoja de encargo y la designación de representante?",
+        tipo: "opcion",
+        requerido: true,
+        opciones: ["En papel, y se escanea", "Con firma electrónica", "De las dos formas"],
       },
     ],
   },
@@ -215,6 +269,9 @@ export const ANTERIORES_SEIRILEGAL: Readonly<Record<string, string>> = {
   "plantillas.faltan": "¿Alguna que hagas a mano?",
   muestras: "Documentos de ejemplo",
   llamada: "La llamada",
+  tramites: "Tus trámites",
+  "tramites.formulario": "Formulario y tasa",
+  trabajo: "Cómo trabajas hoy",
   "trabajo.mismoCorreo": "¿Los avisos de la Administración te llegan a tu correo?",
   "trabajo.correoDocs": "¿A qué correo?",
   "trabajo.datosCliente": "¿Qué datos le pides a un cliente nuevo?",

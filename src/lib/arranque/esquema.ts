@@ -57,7 +57,21 @@ export type Seccion = {
   tipo: "campos" | "lista";
   campos: readonly Campo[];
   /** Solo listas. */
-  item?: { singular: string; plural: string; minimo: number; tituloDe: string };
+  item?: {
+    singular: string;
+    plural: string;
+    minimo: number;
+    tituloDe: string;
+    /** Para la concordancia del contador («2 personas listas» / «2 trámites listos»). */
+    femenino?: boolean;
+    /**
+     * Lista que se arma eligiendo: arriba se marcan de una vez todas las
+     * opciones de `campo` (un elemento por opción) y debajo se completa cada
+     * una. Sin botón «Agregar». `alElegir`: valores con que nace cada elemento,
+     * por opción (por ejemplo, sus documentos ya marcados).
+     */
+    elegir?: { campo: string; etiqueta: string; ayuda?: string; alElegir?: Readonly<Record<string, Valores>> };
+  };
   /** Listas que no tiene sentido llenar desde un Excel. */
   sinExcel?: boolean;
 };
@@ -134,7 +148,7 @@ export const SECCIONES: readonly Seccion[] = [
     intro: "Las personas que hacen los servicios. Con su cédula la app les liquida la nómina.",
     logro: "Tu equipo ya está adentro. Ya casi terminas.",
     tipo: "lista",
-    item: { singular: "persona", plural: "personas", minimo: 1, tituloDe: "nombre" },
+    item: { singular: "persona", plural: "personas", minimo: 1, tituloDe: "nombre", femenino: true },
     campos: [
       { id: "nombre", etiqueta: "Nombre completo", tipo: "texto", requerido: true, alias: ["nombre completo"] },
       { id: "documento", etiqueta: "Cédula", tipo: "documento", requerido: true, alias: ["cédula", "cedula", "documento"] },
