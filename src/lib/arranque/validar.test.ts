@@ -26,9 +26,9 @@ test("celular colombiano de 10 dígitos, con o sin +57", () => {
 });
 
 test("un campo condicional solo se exige si aplica", () => {
-  const c = campo("clientes", "conjunto");
-  assert.equal(errorCampo(c, { vivienda: "Casa" }), null);
-  assert.notEqual(errorCampo(c, { vivienda: "Apartamento" }), null);
+  const c = campo("pago", "jornada");
+  assert.equal(errorCampo(c, { contrato: "Prestación de servicios" }), null);
+  assert.notEqual(errorCampo(c, { contrato: "Contrato laboral" }), null);
 });
 
 test("porcentaje entre 0 y 100", () => {
@@ -170,9 +170,9 @@ test("SeiriLegal · lo respondido en preguntas quitadas sigue a la vista en el p
   assert.equal(plantillaDe("seirilegal").anteriores?.["plantillas.faltan"], "¿Alguna que hagas a mano?");
 });
 
-test("envío a medias: SeiriLegal sí, ServiNomic no", () => {
+test("envío a medias en los dos: lo que falte se ve en la entrega", () => {
   assert.equal(plantillaDe("seirilegal").envioLibre, true);
-  assert.ok(!plantillaDe("servinomic").envioLibre);
+  assert.equal(plantillaDe("servinomic").envioLibre, true);
 });
 
 test("SeiriLegal · trámites: se marcan todos de una vez y cada uno nace con sus documentos ya marcados", () => {
@@ -225,4 +225,52 @@ test("SeiriLegal · trámites nuevos: circunstancias excepcionales, modificació
   const { items } = aplicarEleccion([], nuevos, "tramite", s.item!.elegir!.alElegir);
   for (const it of items) assert.ok(Object.keys(it).some((k) => k.startsWith("docs-") && (it[k] as string[]).length > 0), `${it.tramite} nace con documentos`);
   assert.equal(seccionCompleta(s, { tramites: items.map((it) => ({ ...it, volumen: "1 o 2" })) }), true);
+});
+
+// ── ServiNomic, arranque simplificado (nov 2026) ──────────────────────────
+// Un cliente nuevo responde casi todo tocando. Se cuentan las preguntas que
+// le quedan por escribir: esa es la métrica, no lo «fácil» de cada una.
+const preguntasDeTexto = (secciones: readonly Seccion[]) =>
+  secciones.filter((s) => s.tipo === "campos").flatMap((s) => s.campos.filter((c) => c.requerido && !c.visibleSi && c.tipo !== "opcion" && c.tipo !== "opciones").map((c) => `${s.id}.${c.id}`));
+
+test("ServiNomic · fuera de las listas, solo se escriben los datos de contacto", () => {
+  assert.deepEqual(preguntasDeTexto(SECCIONES), ["negocio.nombreNegocio", "negocio.responsable", "negocio.correo", "negocio.celular"]);
+});
+
+test("ServiNomic · de un toque: ciudades, contrato, inventario y lo que más tiempo quita", () => {
+  const negocio = { nombreNegocio: "Aseo Prueba", responsable: "Ana Prueba", correo: "ana@prueba.co", celular: "3001234567", ciudades: ["Cali"], fuentes: ["Referidos"], quienMas: ["Solo yo"] };
+  assert.equal(seccionCompleta(seccion("negocio"), { negocio }), true);
+  assert.equal(seccionCompleta(seccion("negocio"), { negocio: { ...negocio, ciudades: ["Cali", "Otra"] } }), false, "«Otra» pide cuál");
+  const operacion = { agenda: ["WhatsApp"], quitaTiempo: ["La seguridad social"], inventario: ["Insumos: lo que se gasta en el servicio (cloro, jabón, bolsas…)"] };
+  assert.equal(seccionCompleta(seccion("operacion"), { operacion }), true);
+  const pago = { contrato: "Prestación de servicios", modalidad: "Un porcentaje de lo que paga el cliente", frecuencia: "Semanal", medio: ["Nequi"] };
+  assert.equal(seccionCompleta(seccion("pago"), { pago }), true);
+  assert.equal(seccionCompleta(seccion("pago"), { pago: { ...pago, modalidad: "Mixto" } }), true, "contar cómo lo calcula es opcional");
+  const impuestos = { seguridadSocial: "No", iva: "No sé", ica: "No sé", contador: "No" };
+  assert.equal(seccionCompleta(seccion("impuestos"), { impuestos }), true);
+});
+
+test("ServiNomic · el inventario se pregunta con las cuatro divisiones de la app", () => {
+  const o = campo("operacion", "inventario").opciones!.join(" | ");
+  for (const d of ["Insumos", "Herramientas", "Activos", "Productos que le vendo"]) assert.ok(o.includes(d), d);
+});
+
+test("ServiNomic · en las listas se escribe lo mínimo: persona con nombre, cédula y celular; cliente con nombre, celular y dirección", () => {
+  assert.equal(seccionCompleta(seccion("equipo"), { equipo: [{ nombre: "Ana", documento: "123456", celular: "3001234567" }] }), true);
+  assert.equal(seccionCompleta(seccion("clientes"), { clientes: [{ nombre: "Luis", celular: "3001234567", direccion: "Cra 1 # 2-3" }] }), true);
+  const servicio = { nombre: "Aseo", cobro: "Por hora", valor: "30000", porcentaje: "40", insumos: "Sí" };
+  assert.equal(seccionCompleta(seccion("servicios"), { servicios: [servicio] }), true, "mínimo de personas y de horas son opcionales");
+  assert.equal(seccionCompleta(seccion("servicios"), { servicios: [{ ...servicio, minPersonas: "2", minHoras: "4" }] }), true);
+});
+
+test("ServiNomic · lo que un cliente respondió en preguntas quitadas sigue a la vista en el panel", () => {
+  const antes: Respuestas = {
+    negocio: { nombreNegocio: "Aseo Prueba", ciudad: "Valledupar", zonas: "Norte" },
+    operacion: { agenda: ["WhatsApp"], dolor: "Pagar el sábado" },
+    equipo: [{ nombre: "Ana", cargo: "Operaria" }],
+  };
+  const a = respuestasAnteriores(antes, SECCIONES);
+  const nombres = plantillaDe("servinomic").anteriores!;
+  assert.deepEqual(a.map((x) => `${x.seccion}.${x.campo}`), ["negocio.ciudad", "negocio.zonas", "operacion.dolor", "equipo.cargo"]);
+  for (const x of a) assert.ok(nombres[`${x.seccion}.${x.campo}`], `${x.seccion}.${x.campo} sin nombre en el panel`);
 });

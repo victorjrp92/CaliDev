@@ -1,4 +1,4 @@
-import { SECCIONES, type Seccion } from "@/lib/arranque/esquema";
+import { ANTERIORES_SERVINOMIC, SECCIONES, type Seccion } from "@/lib/arranque/esquema";
 import { ANTERIORES_SEIRILEGAL, SECCIONES_SEIRILEGAL } from "@/lib/arranque/esquema-seirilegal";
 
 /**
@@ -31,8 +31,15 @@ export const PLANTILLAS: Record<string, Plantilla> = {
     producto: "ServiNomic",
     secciones: SECCIONES,
     bienvenida: "Son {n} pasos cortos sobre tu negocio, tu equipo y tus clientes. Con esto dejamos ServiNomic configurado a tu manera.",
-    puntos: ["Se guarda solo: puedes cerrar y seguir después con este mismo enlace.", "Si no sabes algo, sigue adelante y lo completas luego.", "Para listas largas puedes subir un Excel."],
-    gracias: "Recibimos toda la información. Con esto empezamos a configurar ServiNomic para tu negocio y te contamos cuando esté lista para la capacitación.",
+    puntos: [
+      "Casi todo se responde tocando una opción.",
+      "Se guarda solo: puedes cerrar y seguir después con este mismo enlace.",
+      "Puedes enviarlo cuando quieras: lo que falte lo vemos en la entrega.",
+      "Para listas largas puedes subir un Excel.",
+    ],
+    gracias: "Recibimos tu información. Con esto configuramos ServiNomic para tu negocio y te escribimos por WhatsApp para acordar el día de la capacitación.",
+    envioLibre: true,
+    anteriores: ANTERIORES_SERVINOMIC,
   },
   seirilegal: {
     id: "seirilegal",

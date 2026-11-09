@@ -79,6 +79,7 @@ export type Seccion = {
 const SI_NO = ["Sí", "No"] as const;
 const SI_NO_NOSE = ["Sí", "No", "No sé"] as const;
 const FUENTES = ["Instagram", "Facebook", "WhatsApp", "Referidos", "Google", "Volantes", "Otro"] as const;
+const CIUDADES = ["Cali", "Bogotá", "Medellín", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Otra"] as const;
 
 export const SECCIONES: readonly Seccion[] = [
   {
@@ -90,12 +91,12 @@ export const SECCIONES: readonly Seccion[] = [
     campos: [
       { id: "nombreNegocio", etiqueta: "Nombre del negocio", tipo: "texto", requerido: true, ayuda: "Como quieres que aparezca en la app." },
       { id: "responsable", etiqueta: "Tu nombre completo", tipo: "texto", requerido: true },
-      { id: "correo", etiqueta: "Tu correo", tipo: "correo", requerido: true, ayuda: "Con este entras a la app." },
+      { id: "correo", etiqueta: "Tu correo", tipo: "correo", requerido: true, ayuda: "Con este entras a la app. La clave la puedes cambiar cuando quieras." },
       { id: "celular", etiqueta: "Tu celular", tipo: "celular", requerido: true },
-      { id: "ciudad", etiqueta: "Ciudad donde trabajas", tipo: "texto", requerido: true, ejemplo: "Cali" },
-      { id: "zonas", etiqueta: "Zonas o barrios que atiendes", tipo: "area", ejemplo: "Sur de Cali: Ciudad Jardín, Pance, El Ingenio" },
+      { id: "ciudades", etiqueta: "¿En qué ciudades prestas servicios?", tipo: "opciones", requerido: true, opciones: CIUDADES, ayuda: "Marca todas. Con esto la app separa tu equipo y tus servicios por ciudad." },
+      { id: "ciudadOtra", etiqueta: "¿Cuál otra?", tipo: "texto", requerido: true, visibleSi: { campo: "ciudades", valores: ["Otra"] }, ejemplo: "Palmira" },
       { id: "fuentes", etiqueta: "¿Cómo te conocen tus clientes?", tipo: "opciones", requerido: true, opciones: FUENTES, ayuda: "Marca todas las que apliquen." },
-      { id: "otrosUsuarios", etiqueta: "¿Quién más va a usar la app?", tipo: "area", ayuda: "Nombre y qué hace. Déjalo vacío si solo eres tú.", ejemplo: "Laura Gómez, coordinadora" },
+      { id: "quienMas", etiqueta: "¿Quién más va a entrar a la app?", tipo: "opciones", requerido: true, opciones: ["Solo yo", "Una coordinadora o supervisora", "Mi socio o socia", "Mi contador", "Otra persona"], ayuda: "Sus correos los pedimos en la entrega." },
     ],
   },
   {
@@ -106,10 +107,28 @@ export const SECCIONES: readonly Seccion[] = [
     tipo: "campos",
     campos: [
       { id: "agenda", etiqueta: "¿Dónde agendas hoy los servicios?", tipo: "opciones", requerido: true, opciones: ["WhatsApp", "Cuaderno", "Excel", "Google Calendar", "Otra app", "Otro"] },
-      { id: "personas", etiqueta: "¿Cuántas personas trabajan contigo?", tipo: "numero", requerido: true },
-      { id: "serviciosSemana", etiqueta: "¿Cuántos servicios haces a la semana, más o menos?", tipo: "numero", requerido: true },
-      { id: "dolor", etiqueta: "¿Qué es lo que más tiempo te quita hoy?", tipo: "area", requerido: true, ejemplo: "Calcular cuánto le pago a cada una el sábado" },
-      { id: "meta", etiqueta: "Si el 30 de noviembre todo funciona, ¿qué cambió en tu semana?", tipo: "area", requerido: true },
+      {
+        id: "quitaTiempo",
+        etiqueta: "¿Qué es lo que más tiempo te quita hoy?",
+        tipo: "opciones",
+        requerido: true,
+        opciones: ["Calcular lo que le pago a cada persona", "Agendar y cuadrar horarios", "Cobrar a los clientes", "La seguridad social", "Controlar los insumos", "Saber cuánto gana el negocio", "Otro"],
+        ayuda: "Por ahí empezamos la capacitación.",
+      },
+      {
+        id: "inventario",
+        etiqueta: "¿Qué quieres controlar en el inventario?",
+        tipo: "opciones",
+        requerido: true,
+        opciones: [
+          "Insumos: lo que se gasta en el servicio (cloro, jabón, bolsas…)",
+          "Herramientas: lo que se presta y se devuelve (escobas, traperos…)",
+          "Activos: equipos que se deprecian (aspiradoras, hidrolavadoras…)",
+          "Productos que le vendo al cliente",
+          "Nada por ahora",
+        ],
+        ayuda: "Marca todas las que apliquen. El detalle lo cargamos juntos en la entrega.",
+      },
     ],
   },
   {
@@ -119,10 +138,11 @@ export const SECCIONES: readonly Seccion[] = [
     logro: "La liquidación ya tiene sus reglas. Vas muy bien.",
     tipo: "campos",
     campos: [
-      { id: "modalidad", etiqueta: "¿Cómo calculas lo que le pagas a cada persona?", tipo: "opcion", requerido: true, opciones: ["Por hora trabajada", "Por servicio", "Salario fijo", "Mixto"] },
-      { id: "detalleModalidad", etiqueta: "Cuéntanos cómo lo calculas", tipo: "area", requerido: true, visibleSi: { campo: "modalidad", valores: ["Por servicio", "Mixto"] }, ejemplo: "Servicio de 4 horas: $60.000 para ella; si pasa de 4 horas, $15.000 por hora extra" },
+      { id: "contrato", etiqueta: "¿Qué contrato tiene tu equipo?", tipo: "opcion", requerido: true, opciones: ["Prestación de servicios", "Contrato laboral", "No sé"], ayuda: "Si les pagas por servicio u hora, sin contrato de trabajo, es prestación de servicios." },
+      { id: "jornada", etiqueta: "¿Qué jornada tienen?", tipo: "opcion", requerido: true, opciones: ["Tiempo completo", "Tiempo parcial"], visibleSi: { campo: "contrato", valores: ["Contrato laboral"] } },
+      { id: "modalidad", etiqueta: "¿Cómo calculas lo que le pagas a cada persona?", tipo: "opcion", requerido: true, opciones: ["Un porcentaje de lo que paga el cliente", "Por hora trabajada", "Por servicio", "Salario fijo", "Mixto"] },
+      { id: "detalleModalidad", etiqueta: "Cuéntanos cómo lo calculas", tipo: "area", visibleSi: { campo: "modalidad", valores: ["Por servicio", "Mixto"] }, ejemplo: "Servicio de 4 horas: $60.000 para ella; si pasa de 4 horas, $15.000 por hora extra" },
       { id: "frecuencia", etiqueta: "¿Cada cuánto pagas?", tipo: "opcion", requerido: true, opciones: ["Semanal", "Quincenal", "Mensual"] },
-      { id: "dia", etiqueta: "¿Qué día pagas?", tipo: "opcion", requerido: true, opciones: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Varía"] },
       { id: "medio", etiqueta: "¿Cómo pagas?", tipo: "opciones", requerido: true, opciones: ["Transferencia bancaria", "Nequi", "Daviplata", "Efectivo", "Otro"] },
     ],
   },
@@ -136,9 +156,11 @@ export const SECCIONES: readonly Seccion[] = [
     campos: [
       { id: "nombre", etiqueta: "Nombre del servicio", tipo: "texto", requerido: true, ejemplo: "Limpieza general", alias: ["tipo de servicio", "servicio"] },
       { id: "cobro", etiqueta: "¿Cómo lo cobras?", tipo: "opcion", requerido: true, opciones: ["Por hora", "Por servicio"], alias: ["modalidad"] },
-      { id: "valor", etiqueta: "Valor que cobras al cliente", tipo: "pesos", requerido: true, ayuda: "Por hora o por servicio, según lo de arriba.", alias: ["valor por hora", "precio", "valor"] },
+      { id: "valor", etiqueta: "Valor que cobras al cliente, sin IVA", tipo: "pesos", requerido: true, ayuda: "Por hora o por servicio, según lo de arriba, y de una persona si van varias. Si cobras IVA, la app lo suma.", alias: ["valor por hora", "precio", "valor"] },
       { id: "porcentaje", etiqueta: "% que queda para el negocio", tipo: "porcentaje", requerido: true, ayuda: "El resto es para la persona que hace el servicio.", alias: ["% de la empresa", "porcentaje", "% empresa"] },
       { id: "insumos", etiqueta: "¿Incluye insumos?", tipo: "opcion", requerido: true, opciones: SI_NO, alias: ["insumos incluidos"] },
+      { id: "minPersonas", etiqueta: "¿Cuántas personas van como mínimo?", tipo: "opcion", opciones: ["1", "2", "3", "4"], alias: ["mínimo de personas", "personas"] },
+      { id: "minHoras", etiqueta: "Horas mínimas que vendes", tipo: "numero", ejemplo: "4", alias: ["mínimo de horas", "horas mínimas"] },
       { id: "notas", etiqueta: "Notas", tipo: "texto" },
     ],
   },
@@ -154,11 +176,10 @@ export const SECCIONES: readonly Seccion[] = [
       { id: "documento", etiqueta: "Cédula", tipo: "documento", requerido: true, alias: ["cédula", "cedula", "documento"] },
       { id: "celular", etiqueta: "Celular", tipo: "celular", requerido: true },
       { id: "correo", etiqueta: "Correo", tipo: "correo" },
-      { id: "direccion", etiqueta: "Dirección", tipo: "texto" },
+      { id: "ciudadPersona", etiqueta: "Ciudad donde trabaja", tipo: "opcion", opciones: CIUDADES, ayuda: "Solo si trabajas en más de una ciudad.", alias: ["ciudad"] },
       { id: "ingreso", etiqueta: "Fecha de ingreso", tipo: "fecha", alias: ["fecha de ingreso"] },
-      { id: "cargo", etiqueta: "Cargo", tipo: "texto", alias: ["nivel", "nivel o cargo"] },
-      { id: "exentoPension", etiqueta: "¿Está exenta de pensión?", tipo: "opcion", requerido: true, opciones: SI_NO, ayuda: "Por ejemplo, porque ya está pensionada.", alias: ["exento pensión", "exento pension", "exento pensión (s/n)"] },
-      { id: "exentoCaja", etiqueta: "¿Está exenta de caja de compensación?", tipo: "opcion", requerido: true, opciones: SI_NO, alias: ["exento caja", "exento caja (s/n)"] },
+      { id: "exentoPension", etiqueta: "¿Está exenta de pensión?", tipo: "opcion", opciones: SI_NO, ayuda: "Por ejemplo, porque ya está pensionada.", alias: ["exento pensión", "exento pension", "exento pensión (s/n)"] },
+      { id: "exentoCaja", etiqueta: "¿Está exenta de caja de compensación?", tipo: "opcion", opciones: SI_NO, alias: ["exento caja", "exento caja (s/n)"] },
     ],
   },
   {
@@ -171,13 +192,13 @@ export const SECCIONES: readonly Seccion[] = [
     campos: [
       { id: "nombre", etiqueta: "Nombre", tipo: "texto", requerido: true },
       { id: "celular", etiqueta: "Celular", tipo: "celular", requerido: true },
-      { id: "fuente", etiqueta: "¿Cómo te conoció?", tipo: "opcion", requerido: true, opciones: FUENTES, alias: ["cómo nos conoció", "como nos conocio", "fuente"] },
+      { id: "fuente", etiqueta: "¿Cómo te conoció?", tipo: "opcion", opciones: FUENTES, alias: ["cómo nos conoció", "como nos conocio", "fuente"] },
       { id: "direccion", etiqueta: "Dirección", tipo: "texto", requerido: true },
-      { id: "vivienda", etiqueta: "Tipo de lugar", tipo: "opcion", requerido: true, opciones: ["Casa", "Apartamento", "Oficina o local"], alias: ["casa o apartamento", "tipo"] },
-      { id: "conjunto", etiqueta: "Conjunto o edificio", tipo: "texto", requerido: true, visibleSi: { campo: "vivienda", valores: ["Apartamento"] }, alias: ["conjunto o unidad", "unidad"] },
-      { id: "apto", etiqueta: "Número de apartamento", tipo: "texto", requerido: true, visibleSi: { campo: "vivienda", valores: ["Apartamento"] }, alias: ["apto", "apto / casa #"] },
+      { id: "vivienda", etiqueta: "Tipo de lugar", tipo: "opcion", opciones: ["Casa", "Apartamento", "Oficina o local"], alias: ["casa o apartamento", "tipo"] },
+      { id: "conjunto", etiqueta: "Conjunto o edificio", tipo: "texto", visibleSi: { campo: "vivienda", valores: ["Apartamento"] }, alias: ["conjunto o unidad", "unidad"] },
+      { id: "apto", etiqueta: "Número de apartamento", tipo: "texto", visibleSi: { campo: "vivienda", valores: ["Apartamento"] }, alias: ["apto", "apto / casa #"] },
       { id: "barrio", etiqueta: "Barrio o zona", tipo: "texto", alias: ["barrio"] },
-      { id: "ciudad", etiqueta: "Ciudad", tipo: "texto", requerido: true },
+      { id: "ciudad", etiqueta: "Ciudad", tipo: "texto", ayuda: "Solo si trabajas en más de una ciudad." },
       { id: "correo", etiqueta: "Correo", tipo: "correo" },
       { id: "notas", etiqueta: "Notas", tipo: "texto", ejemplo: "Tiene mascota; la llave está en portería" },
     ],
@@ -185,22 +206,16 @@ export const SECCIONES: readonly Seccion[] = [
   {
     id: "impuestos",
     titulo: "Impuestos y obligaciones",
-    intro: "Para que la app tenga en cuenta lo que pagas. Si no sabes algo, marca «No sé» y lo vemos con tu contador.",
+    intro: "Para que la app aparte lo que te toca pagar. Si no sabes algo, marca «No sé» y lo vemos con tu contador.",
     logro: "¡Último paso superado! Revisa y envíanos todo.",
     tipo: "campos",
     campos: [
       { id: "seguridadSocial", etiqueta: "¿Pagas seguridad social de tu equipo?", tipo: "opcion", requerido: true, opciones: ["Sí, de todas las personas", "Sí, de algunas", "No"] },
-      { id: "comoSS", etiqueta: "¿Cómo la pagas?", tipo: "opcion", requerido: true, opciones: ["Planilla PILA por un operador (Aportes en Línea, SOI, Mi Planilla…)", "La paga mi contador", "Otra forma"], visibleSi: { campo: "seguridadSocial", valores: ["Sí, de todas las personas", "Sí, de algunas"] } },
       { id: "baseSS", etiqueta: "¿Sobre qué valor la liquidas?", tipo: "opcion", requerido: true, opciones: ["Salario mínimo", "Lo que gana cada persona", "Un porcentaje de lo que gana", "No sé"], visibleSi: { campo: "seguridadSocial", valores: ["Sí, de todas las personas", "Sí, de algunas"] } },
       { id: "iva", etiqueta: "¿Eres responsable de IVA?", tipo: "opcion", requerido: true, opciones: SI_NO_NOSE, ayuda: "Si cobras IVA en tus facturas, eres responsable." },
-      { id: "regimen", etiqueta: "¿En qué régimen estás?", tipo: "opcion", requerido: true, opciones: ["Régimen Simple de Tributación (SIMPLE)", "Régimen ordinario", "No tengo RUT", "No sé"] },
       { id: "ica", etiqueta: "¿Pagas ICA (industria y comercio)?", tipo: "opcion", requerido: true, opciones: SI_NO_NOSE },
-      { id: "municipioIca", etiqueta: "¿En qué municipio pagas ICA?", tipo: "texto", requerido: true, visibleSi: { campo: "ica", valores: ["Sí"] }, ejemplo: "Cali" },
-      { id: "retencion", etiqueta: "¿Te practican retención en la fuente o la practicas tú?", tipo: "opcion", requerido: true, opciones: SI_NO_NOSE },
-      { id: "factura", etiqueta: "¿Emites factura electrónica?", tipo: "opcion", requerido: true, opciones: SI_NO_NOSE },
-      { id: "otros", etiqueta: "¿Pagas algún otro impuesto o aporte?", tipo: "area", ejemplo: "Predial del local, avisos y tableros…" },
       { id: "contador", etiqueta: "¿Tienes contador?", tipo: "opcion", requerido: true, opciones: SI_NO },
-      { id: "contadorNombre", etiqueta: "Nombre de tu contador", tipo: "texto", requerido: true, visibleSi: { campo: "contador", valores: ["Sí"] } },
+      { id: "contadorNombre", etiqueta: "Nombre de tu contador", tipo: "texto", visibleSi: { campo: "contador", valores: ["Sí"] } },
       { id: "contadorCorreo", etiqueta: "Correo de tu contador", tipo: "correo", requerido: true, visibleSi: { campo: "contador", valores: ["Sí"] }, ayuda: "Le pediremos la información financiera de los meses anteriores." },
       { id: "contadorCelular", etiqueta: "Celular de tu contador", tipo: "celular", visibleSi: { campo: "contador", valores: ["Sí"] } },
     ],
@@ -209,3 +224,27 @@ export const SECCIONES: readonly Seccion[] = [
 
 export type Valores = Record<string, string | string[]>;
 export type Respuestas = Record<string, Valores | Valores[]>;
+
+/**
+ * Preguntas que ServiNomic quitó al simplificar el arranque (nov 2026): la app
+ * no las usa o se ven en la entrega. Lo que un cliente ya respondió sigue a la
+ * vista en el panel con este nombre.
+ */
+export const ANTERIORES_SERVINOMIC: Readonly<Record<string, string>> = {
+  "negocio.ciudad": "Ciudad donde trabajas",
+  "negocio.zonas": "Zonas o barrios que atiendes",
+  "negocio.otrosUsuarios": "¿Quién más va a usar la app?",
+  "operacion.personas": "¿Cuántas personas trabajan contigo?",
+  "operacion.serviciosSemana": "¿Cuántos servicios haces a la semana?",
+  "operacion.dolor": "¿Qué es lo que más tiempo te quita hoy?",
+  "operacion.meta": "¿Qué cambió en tu semana si todo funciona?",
+  "pago.dia": "¿Qué día pagas?",
+  "equipo.direccion": "Dirección",
+  "equipo.cargo": "Cargo",
+  "impuestos.comoSS": "¿Cómo pagas la seguridad social?",
+  "impuestos.regimen": "¿En qué régimen estás?",
+  "impuestos.municipioIca": "¿En qué municipio pagas ICA?",
+  "impuestos.retencion": "¿Retención en la fuente?",
+  "impuestos.factura": "¿Emites factura electrónica?",
+  "impuestos.otros": "¿Otro impuesto o aporte?",
+};
