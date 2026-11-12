@@ -80,6 +80,12 @@ export async function herramienta(slug: string, argumentos: Record<string, unkno
   });
   const res = r.data.results[0];
   if (!res?.response?.successful) throw new Error(`${slug}: ${JSON.stringify(res).slice(0, 400)}`);
+  // Si la respuesta es grande, Composio manda solo «data_preview» (recortada)
+  // y no «data». Pasó con 25+ publicaciones desde el 21 oct 2026 y tumbó el
+  // ciclo 3 semanas con «reading 'data'». Hay que pedir páginas más chicas.
+  if (res.response.data === undefined) {
+    throw new Error(`${slug}: Composio devolvió solo una vista previa (${Object.keys(res.response).join(",")}); pide páginas más chicas`);
+  }
   return res.response.data;
 }
 

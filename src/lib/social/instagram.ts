@@ -35,13 +35,26 @@ export interface MensajeIg {
   from?: { id: string; username: string };
 }
 
+/**
+ * Últimas publicaciones, de 10 en 10: con 25 por página Composio ya no manda
+ * los datos completos, solo una vista previa (ver herramienta()).
+ */
 export async function publicaciones(limite = 25): Promise<PublicacionIg[]> {
-  const r = await herramienta("INSTAGRAM_GET_IG_USER_MEDIA", {
-    ig_user_id: "me",
-    limit: limite,
-    fields: "id,caption,timestamp,permalink,comments_count,media_type,media_product_type,thumbnail_url,media_url,is_shared_to_feed",
-  });
-  return r.data ?? [];
+  const salida: PublicacionIg[] = [];
+  let despues: string | undefined;
+  while (salida.length < limite) {
+    const args: Record<string, unknown> = {
+      ig_user_id: "me",
+      limit: Math.min(10, limite - salida.length),
+      fields: "id,caption,timestamp,permalink,comments_count,media_type,media_product_type,thumbnail_url,media_url,is_shared_to_feed",
+    };
+    if (despues) args.after = despues;
+    const r = await herramienta("INSTAGRAM_GET_IG_USER_MEDIA", args);
+    salida.push(...(r.data ?? []));
+    despues = r.paging?.cursors?.after;
+    if (!despues || !r.data?.length) break;
+  }
+  return salida;
 }
 
 /** Comentarios de primer nivel (pagina hasta el final). */
@@ -50,7 +63,7 @@ export async function comentarios(mediaId: string): Promise<ComentarioIg[]> {
   let despues: string | undefined;
   for (let pagina = 0; pagina < 20; pagina++) {
     const args: Record<string, unknown> = {
-      ig_media_id: mediaId, limit: 50,
+      ig_media_id: mediaId, limit: 25, // 50 arriesga la vista previa recortada de Composio
       fields: "id,text,username,timestamp,from,parent_id,like_count",
     };
     if (despues) args.after = despues;
