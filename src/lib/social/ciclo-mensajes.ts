@@ -104,7 +104,7 @@ export async function cicloMensajes(acc: Acciones): Promise<ResumenMensajes> {
   if (!personas.size) return r;
 
   for (const conv of await ig.conversaciones(25)) {
-    const otra = conv.participants?.data.find((u) => u.username !== CUENTA);
+    const otra = ig.interlocutor(conv, CUENTA);
     const persona = otra && personas.get(otra.id);
     if (!persona) continue;
     const vistos = await datos.idsMensajes(persona.igsid);

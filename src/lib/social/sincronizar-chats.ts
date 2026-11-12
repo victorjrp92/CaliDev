@@ -21,7 +21,7 @@ export async function sincronizarBandeja(forzar = false, topeConversaciones = 6)
   const previo = new Map(rows.map((r) => [r.igsid as string, r.actualizado_ig ? new Date(r.actualizado_ig).getTime() : 0]));
   let traidas = 0;
   for (const c of convs) {
-    const otra = c.participants?.data.find((u) => u.username !== CUENTA);
+    const otra = ig.interlocutor(c, CUENTA);
     if (!otra) continue;
     await sql`
       INSERT INTO social_conversaciones (igsid, conversation_id, usuario, actualizado_ig, sincronizado)
@@ -45,10 +45,10 @@ export async function sincronizarMensajes(igsid: string, conversationId?: string
     conversationId = rows[0]?.conversation_id;
     if (!conversationId) {
       const r = await ig.conversaciones(25);
-      const c = r.find((x) => x.participants?.data.some((u) => u.id === igsid));
+      const c = r.find((x) => ig.interlocutor(x, CUENTA)?.id === igsid);
       if (!c) return 0;
       conversationId = c.id;
-      const otra = c.participants!.data.find((u) => u.id === igsid)!;
+      const otra = ig.interlocutor(c, CUENTA)!;
       await sql`INSERT INTO social_conversaciones (igsid, conversation_id, usuario, actualizado_ig)
         VALUES (${igsid}, ${c.id}, ${otra.username}, ${c.updated_time}) ON CONFLICT (igsid) DO NOTHING`;
     }

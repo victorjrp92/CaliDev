@@ -131,6 +131,20 @@ export async function conversaciones(limite = 25): Promise<
   return r.data ?? [];
 }
 
+/**
+ * La otra persona de un chat uno a uno. Los grupos devuelven null: Instagram
+ * no deja leer sus mensajes por la API («Unsupported get request») y, como la
+ * persona también está en el grupo, el ciclo lo confundía con su chat privado
+ * y se caía entero (12 nov 2026).
+ */
+export function interlocutor(
+  c: { participants?: { data: { id: string; username: string }[] } }, cuenta = "calidevdev",
+): { id: string; username: string } | null {
+  const ps = c.participants?.data ?? [];
+  if (ps.length !== 2) return null;
+  return ps.find((u) => u.username !== cuenta) ?? null;
+}
+
 export async function mensajes(conversationId: string, limite = 15): Promise<MensajeIg[]> {
   const r = await herramienta("INSTAGRAM_LIST_ALL_MESSAGES", {
     conversation_id: conversationId, limit: limite, fields: "id,from,message,created_time",
