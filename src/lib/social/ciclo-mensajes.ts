@@ -99,8 +99,10 @@ async function responder(acc: Acciones, p: datos.Persona, texto: string, a: Auto
 export async function cicloMensajes(acc: Acciones): Promise<ResumenMensajes> {
   const r: ResumenMensajes = { mensajes: 0, respondidos: 0, revision: 0, errores: 0 };
   const personas = new Map((await datos.personasEnFlujo()).map((p) => [p.igsid, p]));
-  // Con personas esperando respuesta se consulta cada ciclo; si no, cada 10 min (para que Chats esté al día).
-  await sincronizarBandeja(personas.size > 0, personas.size > 0 ? 0 : 4);
+  // La copia de la bandeja para Chats va cada 10 min; con personas en flujo,
+  // la lista de conversaciones se pide una sola vez aquí abajo (antes se
+  // pedía dos veces por ciclo, ~4 s cada una).
+  await sincronizarBandeja(false, personas.size > 0 ? 0 : 4);
   if (!personas.size) return r;
 
   for (const conv of await ig.conversaciones(25)) {

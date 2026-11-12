@@ -96,11 +96,14 @@ export async function cicloComentarios(acc: Acciones): Promise<ResumenComentario
   const pendientes = await datos.automatizacionesPendientes();
   if (!pendientes.length) return r;
 
-  // Una sola llamada para saber qué publicaciones tienen algo nuevo.
-  const conteos = new Map((await ig.publicaciones(50)).map((p) => [p.id, p.comments_count ?? 0]));
+  // Una sola llamada (10 publicaciones) para saber cuáles tienen algo nuevo.
+  // Pedir 50 eran 5 llamadas de ~4 s: el ciclo pasaba de 60 s, el reloj lo
+  // encontraba ocupado y la respuesta tardaba 2 min (12 nov 2026).
+  const conteos = new Map((await ig.publicaciones(10)).map((p) => [p.id, p.comments_count ?? 0]));
 
   for (const a of pendientes) {
-    const conteo = conteos.get(a.mediaId) ?? 0;
+    // Si la publicación no está entre las 10 últimas, se leen sus comentarios igual.
+    const conteo = conteos.get(a.mediaId) ?? -1;
     const edad = Date.now() - (a.activadoEn ? Date.parse(a.activadoEn) : Date.now());
     const proxima = siguienteRevision(edad);
     if (proxima === null) {
@@ -130,7 +133,7 @@ export async function cicloComentarios(acc: Acciones): Promise<ResumenComentario
       }
     }
     // Si no alcanzó el tope, el conteo se da por visto; si no, se revisa en el próximo minuto.
-    await datos.programarRevision(a.mediaId, completo ? proxima : 60_000, completo ? conteo : a.conteoVisto);
+    await datos.programarRevision(a.mediaId, completo ? proxima : 60_000, completo && conteo >= 0 ? conteo : a.conteoVisto);
     if (!acc.caben(2)) break;
   }
   return r;
