@@ -1,0 +1,342 @@
+---
+title: "Cómo editar videos con Claude Code: guía completa con comandos y prompts"
+description: "Desde crear la cuenta hasta quitar silencios, poner subtítulos y pasar a vertical escribiendo /silencio. Todo paso a paso, con los comandos listos para copiar y los prompts que usamos."
+date: "2026-11-12"
+tags: ["IA", "Claude Code", "Edición de video", "Productividad", "Claude"]
+category: "IA para negocios"
+locale: "es"
+author: "Victor Ramos"
+---
+
+Claude Code no tiene línea de tiempo ni botones de efectos. Tampoco le hacen falta.
+
+Le dices «quita los silencios de este video» y él escribe y ejecuta el comando que lo hace. Detrás usa **ffmpeg**, el programa gratuito con el que trabajan por dentro casi todos los editores de video. La diferencia es que tú no tienes que aprenderte ffmpeg.
+
+En esta guía vas de cero a editar con comandos como `/silencio` o `/subtitulos`. Al final está la biblioteca de prompts que usamos en Calidev.
+
+## Qué vas a poder hacer (y qué no)
+
+Funciona muy bien para el trabajo repetitivo que se come las horas:
+
+- Quitar silencios y muletillas largas.
+- Generar subtítulos y quemarlos en el video.
+- Pasar un video horizontal a vertical 9:16.
+- Subir el volumen de la voz a un nivel parejo.
+- Acelerar, recortar, unir clips, poner música de fondo.
+- Sacar miniaturas y exportar con la configuración correcta para Instagram o TikTok.
+
+Lo que **no** reemplaza: el criterio creativo, la corrección de color fina o una animación compleja. Para eso sigue tu editor de siempre. Lo potente es combinarlos: Claude Code hace el trabajo pesado y tú solo das el toque final.
+
+Claude no «ve» el video como tú. Lo que sí puede hacer es sacar fotogramas y mirarlos, y transcribir el audio para leer lo que se dice. Con eso decide dónde cortar.
+
+## Paso 1: crea tu cuenta y elige el plan
+
+1. Entra a [claude.ai](https://claude.ai) y crea tu cuenta con tu correo o con Google.
+2. Elige un plan de pago. **Claude Code no está incluido en el plan gratuito.** Lo incluyen Pro, Max, Team y Enterprise.
+3. Para empezar, basta con **Pro**: 20 dólares al mes, o 17 al mes si pagas el año completo (200 dólares de una vez). Según tu país, el precio final puede cambiar por impuestos.
+
+Si solo quieres probar sin pagar, salta a la sección [Sin Claude Code: solo con el chat](#sin-claude-code-solo-con-el-chat). Hay una ruta gratuita, más manual.
+
+## Paso 2: instala Claude Code
+
+Hay dos caminos. Si nunca has abierto una terminal, usa el primero.
+
+### Opción A: la app de escritorio (la más fácil)
+
+1. Descarga la app de Claude:
+   - [Mac](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect)
+   - [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect)
+   - [Windows ARM](https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect) (portátiles con procesador Snapdragon)
+2. Instálala como cualquier programa e inicia sesión con tu cuenta.
+3. Vas a ver una pestaña llamada **Code**. Eso es Claude Code.
+4. Elige la carpeta donde tienes tus videos. Claude trabaja dentro de esa carpeta.
+
+### Opción B: la terminal
+
+En Mac abre la app **Terminal**. En Windows abre **PowerShell**. Pega el comando de tu sistema y presiona Enter.
+
+**Mac, Linux o WSL:**
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+**Windows (CMD):**
+
+```bat
+curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+Para comprobar que quedó instalado:
+
+```bash
+claude --version
+```
+
+En Windows se recomienda tener [Git para Windows](https://git-scm.com/downloads/win), aunque no es obligatorio. Esta instalación se actualiza sola.
+
+Ahora entra a la carpeta de tus videos y abre Claude:
+
+```bash
+cd ~/Videos/mi-proyecto
+claude
+```
+
+La primera vez se abre el navegador para que inicies sesión. Listo.
+
+## Paso 3: instala ffmpeg (Claude lo puede hacer por ti)
+
+ffmpeg es el motor que hace los cortes. No tienes que instalarlo a mano: abre Claude Code y escribe:
+
+> Revisa si tengo ffmpeg instalado. Si no, instálalo y confirma la versión.
+
+En Mac lo instalará con Homebrew y en Windows con winget. Si prefieres hacerlo tú:
+
+```bash
+# Mac (con Homebrew)
+brew install ffmpeg
+
+# Windows
+winget install Gyan.FFmpeg
+```
+
+## Paso 4: entiende los permisos
+
+Antes de ejecutar un comando o modificar un archivo, Claude Code te pregunta. Vas a ver tres opciones:
+
+- **Sí**: lo permite una vez.
+- **Sí, y no volver a preguntar**: lo permite siempre para ese tipo de acción en esta carpeta.
+- **No**: lo cancela, y puedes decirle qué hacer distinto.
+
+Un consejo que te va a ahorrar sustos: **trabaja siempre sobre copias**. Pídele que guarde el resultado con otro nombre (por ejemplo `video-editado.mp4`) y que nunca sobrescriba el original.
+
+## Paso 5: tu primera edición
+
+Pon un video en la carpeta y escribe, tal cual:
+
+> En esta carpeta hay un video llamado entrevista.mp4. Quítale los silencios de más de medio segundo, deja un pequeño margen para que los cortes no se sientan bruscos y guárdalo como entrevista-sin-silencios.mp4. Antes de cortar, dime cuántos segundos vas a quitar.
+
+Claude va a analizar el audio, te va a mostrar lo que encontró y, con tu permiso, ejecuta el corte.
+
+Así de simple. Ahora vamos a convertir esas instrucciones en atajos.
+
+## Los atajos: /silencio, /subtitulos y compañía
+
+En Claude Code, lo que escribes después de una barra `/` es un **comando**. Puedes crear los tuyos: son archivos de texto con instrucciones que Claude sigue cada vez que los llamas. Se llaman **skills**.
+
+Cada skill vive en su propia carpeta con un archivo `SKILL.md`:
+
+- `~/.claude/skills/silencio/SKILL.md` la deja disponible en **todos** tus proyectos.
+- `.claude/skills/silencio/SKILL.md` dentro de una carpeta la deja solo para ese proyecto.
+
+El nombre de la carpeta es el comando. La carpeta `silencio` crea `/silencio`.
+
+La forma más fácil de instalarlas: copia el texto de cada una y dile a Claude:
+
+> Crea una skill personal llamada silencio con este contenido: (y pegas el texto)
+
+Lo que escribas después del comando le llega a la skill como `$ARGUMENTS`. Así, `/zoom entrevista.mp4 0:12` le pasa el archivo y el segundo.
+
+Estas son las ocho que te recomendamos.
+
+### /silencio: quita los silencios
+
+````markdown
+---
+description: Quita los silencios de un video sin desincronizar audio e imagen
+argument-hint: [archivo] [segundos mínimos de silencio, por defecto 0.5]
+---
+
+Quita los silencios del video $ARGUMENTS.
+
+1. Detecta los silencios con:
+   ffmpeg -i ARCHIVO -af silencedetect=noise=-30dB:d=0.5 -f null -
+   Si el audio tiene ruido de fondo, prueba con -35dB o -25dB.
+2. Calcula los tramos con voz. Deja 0.15 s de margen antes y después de cada uno.
+3. Corta audio e imagen juntos (nunca solo el audio) y une los tramos.
+4. Guarda el resultado como NOMBRE-sin-silencios.mp4. Nunca sobrescribas el original.
+5. Dime la duración antes y después.
+````
+
+### /subtitulos: genera y quema los subtítulos
+
+````markdown
+---
+description: Transcribe el video y le pone subtítulos grandes estilo reel
+argument-hint: [archivo]
+---
+
+Ponle subtítulos al video $ARGUMENTS.
+
+1. Transcribe el audio con Whisper (instálalo si no está: pip install openai-whisper).
+   Idioma español, modelo small. Genera un archivo .srt.
+2. Muéstrame el texto para que lo revise antes de quemarlo. Corrige nombres propios si te los digo.
+3. Quema los subtítulos con el filtro subtitles de ffmpeg:
+   letra blanca, borde negro, tamaño grande, centrados en el tercio inferior,
+   máximo 2 líneas y unas 5 palabras por línea.
+4. Guarda como NOMBRE-subtitulado.mp4.
+````
+
+### /vertical: de horizontal a 9:16
+
+````markdown
+---
+description: Convierte un video horizontal a vertical 1080x1920 para reels
+argument-hint: [archivo] [centro | izquierda | derecha | desenfoque]
+---
+
+Convierte $ARGUMENTS a vertical 1080x1920.
+
+- centro, izquierda o derecha: recorta en esa posición.
+- desenfoque: el video completo en el centro y, de fondo, el mismo video ampliado y desenfocado.
+Antes de exportar, saca un fotograma del resultado y míralo para confirmar que la persona no quedó cortada.
+Guarda como NOMBRE-vertical.mp4.
+````
+
+### /zoom: acercamiento en un momento clave
+
+````markdown
+---
+description: Hace un zoom suave en un momento del video para dar énfasis
+argument-hint: [archivo] [segundo de inicio] [segundo final] [porcentaje, por defecto 115]
+---
+
+Aplica un zoom en $ARGUMENTS.
+
+El zoom entra en 0.3 s, se mantiene y sale en 0.3 s, centrado en la cara si la hay.
+Saca un fotograma del momento con más zoom y míralo para confirmar que no se corta nada importante.
+Guarda como NOMBRE-zoom.mp4.
+````
+
+### /volumen: voz a un nivel parejo
+
+````markdown
+---
+description: Normaliza el volumen de la voz al nivel que usan las redes
+argument-hint: [archivo]
+---
+
+Normaliza el volumen de $ARGUMENTS a -14 LUFS con el filtro loudnorm de ffmpeg, en dos pasadas.
+Solo volumen: no ecualices ni comprimas una voz que ya está bien grabada.
+Dime el nivel antes y después. Guarda como NOMBRE-volumen.mp4.
+````
+
+### /velocidad: un poco más rápido
+
+````markdown
+---
+description: Acelera el video sin que la voz suene a ardilla
+argument-hint: [archivo] [velocidad, por ejemplo 1.15]
+---
+
+Acelera $ARGUMENTS. Usa setpts para la imagen y atempo para el audio, así el tono de la voz no cambia.
+Si no te doy velocidad, usa 1.1. Guarda como NOMBRE-rapido.mp4.
+````
+
+### /musica: música de fondo bajo la voz
+
+````markdown
+---
+description: Añade música de fondo baja que no tape la voz
+argument-hint: [video] [archivo de música]
+---
+
+Mezcla la música en $ARGUMENTS.
+
+- La música va unos 20 dB por debajo de la voz.
+- Entra con un fundido de 1 s y sale con otro de 2 s al terminar el video.
+- Si la música es más corta que el video, repítela. Si es más larga, córtala.
+Guarda como NOMBRE-con-musica.mp4.
+````
+
+### /reel: la exportación final
+
+````markdown
+---
+description: Exporta el video listo para Instagram o TikTok
+argument-hint: [archivo]
+---
+
+Exporta $ARGUMENTS para redes:
+H.264, 1080x1920, 30 fps, audio AAC a 48 kHz, con +faststart para que cargue rápido.
+Saca también una miniatura en JPG del fotograma más expresivo del primer tercio del video:
+saca varios candidatos, míralos y elige uno.
+Dime el peso final del archivo. Guarda como NOMBRE-final.mp4.
+````
+
+Puedes encadenarlos. Por ejemplo, pídele: «Pasa entrevista.mp4 por /silencio, /volumen, /subtitulos y /reel, en ese orden».
+
+## Sin Claude Code: solo con el chat
+
+Si no quieres pagar todavía, hay una ruta gratuita. Es más manual: **el chat no edita el video, pero te escribe el comando exacto** y tú lo ejecutas.
+
+1. Instala ffmpeg con los comandos del paso 3.
+2. En [claude.ai](https://claude.ai) escribe algo como:
+
+> Tengo un video llamado entrevista.mp4 en Mac. Dame el comando de ffmpeg para pasarlo a vertical 1080x1920 recortando al centro. Explícame qué hace cada parte.
+
+3. Abre la terminal en la carpeta del video, pega el comando y presiona Enter.
+4. Si sale un error, cópialo y pégaselo a Claude. Te dirá qué cambiar.
+
+Para cortes simples (recortar, vertical, acelerar, volumen) funciona perfecto. Para quitar silencios o poner subtítulos, el ida y vuelta se vuelve largo, y ahí es donde Claude Code se paga solo: hace todo eso sin que copies nada.
+
+## Biblioteca de prompts para editar
+
+Copia, cambia el nombre del archivo y listo. Funcionan igual con o sin los atajos de arriba.
+
+**Limpieza rápida de un video hablado**
+
+> Toma charla.mp4: quita silencios de más de 0.4 s, normaliza el volumen a -14 LUFS y exporta en vertical 1080x1920. Antes de exportar, saca 3 fotogramas del resultado y revísalos.
+
+**Sacar los mejores momentos de un video largo**
+
+> Transcribe podcast.mp4 con tiempos. Léelo y propón los 5 fragmentos de 30 a 60 segundos que mejor funcionarían como reel por sí solos: que tengan una idea completa y un arranque fuerte. Dame inicio, fin y por qué. No cortes nada hasta que yo elija.
+
+**Quitar las muletillas**
+
+> Transcribe clase.mp4 con tiempos por palabra. Marca los «eh», «este», «o sea» y las frases repetidas. Muéstrame la lista y, cuando la apruebe, córtalas dejando 0.1 s de margen.
+
+**Unir varios clips en orden**
+
+> En esta carpeta hay clips numerados 01.mp4, 02.mp4, 03.mp4… Únelos en ese orden, con un corte directo entre cada uno, y deja todo a 1080x1920 y 30 fps aunque los originales sean distintos.
+
+**Gancho en los primeros segundos**
+
+> Del video demo.mp4, encuentra la frase más fuerte (la que más genera curiosidad) y ponla también al inicio como gancho de 3 segundos, antes del video completo.
+
+**Texto en pantalla**
+
+> Pon el texto «3 errores al contratar» en la parte superior de video.mp4 durante los primeros 3 segundos: letra blanca, gruesa, con sombra, sin tapar la cara. Muéstrame un fotograma antes de exportar.
+
+**Revisar antes de publicar**
+
+> Revisa final.mp4: duración, resolución, fps, volumen en LUFS, si hay silencios de más de 1 s y si el audio está desincronizado. Dame un informe corto con lo que corregirías.
+
+**Un video para cada red**
+
+> A partir de master.mp4, exporta tres versiones: vertical 1080x1920 para reels, cuadrado 1080x1080 para el feed y horizontal 1920x1080 para YouTube. En cada versión, saca un fotograma y revisa que la persona quede dentro del cuadro.
+
+**Pedir antes de hacer**
+
+> Antes de tocar cualquier archivo, explícame en una lista qué vas a hacer y qué comandos vas a usar. Espera mi «sí».
+
+Este último es el mejor hábito al empezar. Verás qué hace Claude y en pocos días vas a entender ffmpeg sin haberlo estudiado.
+
+## Errores comunes
+
+- **«ffmpeg no se reconoce como comando»**: cierra y vuelve a abrir la terminal después de instalarlo. Si sigue igual, pídele a Claude que lo revise.
+- **El audio quedó desfasado**: casi siempre pasa al cortar solo el audio. Pídele que corte audio e imagen juntos y que vuelva a codificar.
+- **El video pesa demasiado**: pídele que lo exporte con CRF 23 y preset medium. Baja el peso sin que se note.
+- **Claude dice que no puede ver el video**: pídele que saque fotogramas y los mire, o que lo transcriba primero.
+
+## Esto es solo el comienzo
+
+Lo que acabas de hacer con los videos (convertir una tarea repetitiva en un comando que se ejecuta solo) es lo mismo que hacemos en Calidev con la operación de las empresas: reportes, nómina, inventarios, mensajes a clientes.
+
+Si en tu negocio hay una tarea que alguien repite todos los días, escríbenos. Seguro se puede convertir en un botón.

@@ -22,3 +22,16 @@ test("recorta botones a 20 y exige que sean distintos", () => {
   assert.equal(r.ok && r.valor.textos.botonSi.length <= 20, true);
   assert.equal(validarAutomatizacion({ ...base, textos: { botonSi: "No", botonNo: "No" } }).ok, false);
 });
+test("flujo recurso: completa los textos, exige enlace y botones distintos", () => {
+  const blog = { ...base, landingUrl: "https://calidev.dev/es/blog/como-editar-videos-con-claude-code", palabrasClave: ["editar"] };
+  const r = validarAutomatizacion({ ...blog, textos: { flujoDm: "recurso", recurso: { exigirSeguir: true, botonEnviar: "Envíamelo ya mismo por favor" } } });
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.equal(r.valor.textos.flujoDm, "recurso");
+    assert.equal(r.valor.textos.recurso?.exigirSeguir, true);
+    assert.equal(r.valor.textos.recurso!.botonEnviar.length <= 20, true);
+    assert.equal(r.valor.textos.recurso?.botonSeguido, "Ya te sigo");
+  }
+  assert.equal(validarAutomatizacion({ ...blog, landingUrl: null, textos: { flujoDm: "recurso" } }).ok, false);
+  assert.equal(validarAutomatizacion({ ...blog, textos: { flujoDm: "recurso", recurso: { botonEnviar: "Listo", botonSeguido: "listo" } } }).ok, false);
+});

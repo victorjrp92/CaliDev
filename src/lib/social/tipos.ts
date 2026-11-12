@@ -18,7 +18,10 @@ export type Accion = "ia" | "contacto" | "fijo_aliado" | "fijo_critica" | "ignor
 
 export type Modo = "automatico" | "borradores" | "apagado";
 
-export type Paso = "esperando_boton" | "esperando_texto" | "asesoria_enviada" | "enviado_aliado" | "revision";
+export type Paso =
+  | "esperando_boton" | "esperando_texto" | "asesoria_enviada" | "enviado_aliado" | "revision"
+  // Flujo «recurso»: botón → (si se exige) ¿te sigue? → envío.
+  | "esperando_recurso" | "esperando_seguir" | "esperando_seguir_2" | "recurso_enviado";
 
 export type Boton = "si" | "no" | "aliado";
 
@@ -29,15 +32,35 @@ export interface Tarjeta {
   url: string;
 }
 
+/**
+ * Flujo «recurso» (comenta X y te envío Y). El privado lleva un botón; con el
+ * toque se abre la ventana de 24 h y ya se pueden mandar texto y tarjeta. Si
+ * se exige seguir la cuenta y no la sigue, se le pide; al primer «Ya te sigo»
+ * sin seguirla se le avisa que lo intente de nuevo, y al segundo se le envía
+ * igual (decisión de Victor: nadie se queda sin el recurso por un fallo).
+ */
+export interface Recurso {
+  apertura: string;
+  botonEnviar: string;
+  exigirSeguir: boolean;
+  pedirSeguir: string;
+  botonSeguido: string;
+  reintento: string;
+  entrega: string;
+  tarjeta: Omit<Tarjeta, "url">;
+}
+
 /** Todo lo que Victor puede editar de una automatización. */
 export interface Textos {
   /**
    * Cómo sigue el privado. «botones» (por defecto): pregunta con botones Sí /
    * No / LimpiaExpress. «preguntas»: la pregunta va sin botones (por ejemplo,
    * tipo de negocio, empleados y mayor problema) y, con la primera respuesta,
-   * se envía la tarjeta con el enlace de la landing.
+   * se envía la tarjeta con el enlace de la landing. «recurso»: ver Recurso;
+   * la landing es el recurso que se entrega.
    */
-  flujoDm?: "botones" | "preguntas";
+  flujoDm?: "botones" | "preguntas" | "recurso";
+  recurso?: Recurso;
   pregunta: string;
   si: string;
   no: string;

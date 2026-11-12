@@ -142,15 +142,16 @@ export async function entroPorPublicacion(igsid: string, mediaId: string): Promi
  * landing.
  */
 export async function registrarEntrada(p: {
-  igsid: string; usuario: string | null; codigo: string; mediaId: string; commentId: string;
+  igsid: string; usuario: string | null; codigo: string; mediaId: string; commentId: string; paso?: Paso;
 }) {
+  const paso = p.paso ?? "esperando_boton";
   await sql`INSERT INTO social_entradas (igsid, media_id, comment_id) VALUES (${p.igsid}, ${p.mediaId}, ${p.commentId})
     ON CONFLICT (igsid, media_id) DO NOTHING`;
   await sql`
     INSERT INTO social_personas (igsid, usuario, codigo, media_id, comment_id, paso, desde)
-    VALUES (${p.igsid}, ${p.usuario}, ${p.codigo}, ${p.mediaId}, ${p.commentId}, 'esperando_boton', NOW())
+    VALUES (${p.igsid}, ${p.usuario}, ${p.codigo}, ${p.mediaId}, ${p.commentId}, ${paso}, NOW())
     ON CONFLICT (igsid) DO UPDATE SET usuario = COALESCE(EXCLUDED.usuario, social_personas.usuario),
-      media_id = EXCLUDED.media_id, comment_id = EXCLUDED.comment_id, paso = 'esperando_boton',
+      media_id = EXCLUDED.media_id, comment_id = EXCLUDED.comment_id, paso = ${paso},
       rama = NULL, desde = NOW(), actualizado = NOW()`;
 }
 
@@ -169,7 +170,8 @@ export async function actualizarPersona(igsid: string, paso: Paso, rama: string 
 
 export async function personasEnFlujo(): Promise<Persona[]> {
   const { rows } = await sql`SELECT * FROM social_personas
-    WHERE paso IN ('esperando_boton','esperando_texto','asesoria_enviada','enviado_aliado')`;
+    WHERE paso IN ('esperando_boton','esperando_texto','asesoria_enviada','enviado_aliado',
+      'esperando_recurso','esperando_seguir','esperando_seguir_2','recurso_enviado')`;
   return rows.map(aPersona);
 }
 

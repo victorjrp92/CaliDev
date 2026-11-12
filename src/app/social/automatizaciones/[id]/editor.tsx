@@ -3,7 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Modo, Textos } from "@/lib/social/tipos";
+import { RECURSO_INICIAL } from "@/lib/social/textos";
 import { Flujo } from "./flujo";
+import { FlujoRecurso } from "./flujo-recurso";
 import { Simulador } from "./simulador";
 
 export interface ConfigEditable {
@@ -67,7 +69,7 @@ export function Editor({ mediaId, inicial, landings, otras }: {
 
         <div className="grid gap-4 lg:grid-cols-2">
           <label className="flex flex-col gap-1 text-sm">
-            <span className="font-semibold">Landing del botón «Sí»</span>
+            <span className="font-semibold">{c.textos.flujoDm === "recurso" ? "Enlace del recurso (blog, guía…)" : "Landing del botón «Sí»"}</span>
             <input list="landings" value={c.landingUrl ?? ""} onChange={(e) => set("landingUrl", e.target.value || null)} placeholder="https://calidev.dev/…"
               className="rounded-xl border border-[#D5DAD2] px-3 py-2.5" />
             <datalist id="landings">{landings.map((l) => <option key={l} value={l} />)}</datalist>
@@ -99,15 +101,18 @@ export function Editor({ mediaId, inicial, landings, otras }: {
           {([
             ["botones", "Pregunta con botones (Sí, tengo negocio / No / LimpiaExpress)"],
             ["preguntas", "Preguntas abiertas: con su primera respuesta le llega la tarjeta con el enlace de la landing"],
+            ["recurso", "Enviar un recurso: comenta la palabra clave → toca «Envíamelo» → (si nos sigue) le llega el enlace"],
           ] as const).map(([id, texto]) => (
             <label key={id} className="flex items-start gap-2">
               <input type="radio" name="flujoDm" className="mt-1" checked={(c.textos.flujoDm ?? "botones") === id}
-                onChange={() => set("textos", { ...c.textos, flujoDm: id })} />
+                onChange={() => set("textos", { ...c.textos, flujoDm: id, recurso: c.textos.recurso ?? (id === "recurso" ? RECURSO_INICIAL : undefined) })} />
               <span>{texto}</span>
             </label>
           ))}
         </div>
-        <Flujo t={c.textos} onCambio={(t) => set("textos", t)} />
+        {c.textos.flujoDm === "recurso"
+          ? <FlujoRecurso r={c.textos.recurso ?? RECURSO_INICIAL} onCambio={(r) => set("textos", { ...c.textos, recurso: r })} />
+          : <Flujo t={c.textos} onCambio={(t) => set("textos", t)} />}
       </section>
 
       <Simulador config={config} />

@@ -100,6 +100,17 @@ export async function enviarTarjeta(igsid: string, t: Tarjeta) {
   return proxy("POST", `${API}/me/messages`, { recipient: { id: igsid }, message });
 }
 
+/**
+ * ¿La persona sigue a @calidevdev? Campo is_user_follow_business del perfil
+ * por IGSID (solo responde para quien ya nos escribió). Verificado contra la
+ * API el 12 nov 2026. Si falla, lanza: el ciclo reintenta en el próximo minuto.
+ */
+export async function sigueALaCuenta(igsid: string): Promise<boolean> {
+  const r = await proxy("GET", `${API}/${igsid}`, undefined, { fields: "is_user_follow_business" });
+  if (typeof r?.is_user_follow_business !== "boolean") throw new Error("Instagram no dijo si la persona nos sigue");
+  return r.is_user_follow_business;
+}
+
 export async function conversaciones(limite = 25): Promise<
   { id: string; updated_time: string; participants?: { data: { id: string; username: string }[] } }[]
 > {

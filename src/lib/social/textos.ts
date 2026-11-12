@@ -1,4 +1,4 @@
-import type { Textos } from "./tipos";
+import type { Recurso, Textos } from "./tipos";
 
 /**
  * Valores iniciales de una automatización nueva. Son los que se probaron en
@@ -40,6 +40,18 @@ export const TEXTOS_INICIALES: Textos = {
     boton: "Ir a LimpiaExpress",
     url: "https://www.instagram.com/limpiaexpress_cali/",
   },
+};
+
+/** Partida del flujo «recurso» (comenta X y te envío Y). Victor los edita por publicación. */
+export const RECURSO_INICIAL: Recurso = {
+  apertura: "¡Hola! 👋 Aquí está lo que pediste. Toca el botón y te lo enviamos 👇",
+  botonEnviar: "Envíamelo",
+  exigirSeguir: true,
+  pedirSeguir: "¡Ya casi! 🙌 Este recurso es para nuestra comunidad: síguenos en @calidevdev y luego toca «Ya te sigo».",
+  botonSeguido: "Ya te sigo",
+  reintento: "Parece que algo salió mal 🤔 Inténtalo de nuevo: revisa que nos sigas en @calidevdev y toca «Ya te sigo».",
+  entrega: "¡Listo! 🎉 Aquí lo tienes:",
+  tarjeta: { titulo: "Tu recurso de Calidev", subtitulo: "Ábrelo cuando quieras, es gratis.", boton: "Abrir" },
 };
 
 /** Reglas de voz para Gemini cuando redacta con contexto. */

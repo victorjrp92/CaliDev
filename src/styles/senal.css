@@ -510,6 +510,12 @@
   overflow-x: auto;
 }
 
+/* Una ruta o comando en línea («~/.claude/skills/x/SKILL.md») no tiene
+   espacios donde partir y a 390 px sacaba la página de la pantalla. */
+.articulo :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
 .articulo pre code {
   background: none;
   padding: 0;

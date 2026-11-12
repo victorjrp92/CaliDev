@@ -85,3 +85,16 @@ test("el mensaje se abre una vez por publicación, no una vez por persona", () =
   // Victor la está atendiendo a mano: el agente no la toca
   assert.equal(debeAbrirConversacion(false, "revision"), false);
 });
+
+test("flujo recurso: la clave en cualquier parte abre el privado; el interés sin clave va a la bandeja", () => {
+  const c = { palabrasClave: ["editar"], detectarInteres: true, flujoDm: "recurso" as const };
+  assert.equal(accionFinal("ia", "EDITAR 🔥", c), "contacto");
+  assert.equal(accionFinal("ia", "uff yo quiero aprender a editar así de rápido con eso", c), "contacto");
+  assert.equal(accionFinal("contacto", "¿cuánto cuesta que me lo hagan?", c), "revision");
+  assert.equal(accionFinal("ia", "qué buen video", c), "ia");
+  assert.equal(accionFinal("ignorar", "editar gana plata fácil aquí", c), "ignorar");
+});
+test("en modo borradores o tema sensible la clave no salta la revisión", () => {
+  assert.equal(accionFinal("revision", "editar", { palabrasClave: ["editar"], detectarInteres: true, flujoDm: "recurso", modo: "borradores" }), "revision");
+  assert.equal(accionFinal("revision", "ayuda", { palabrasClave: ["ayuda"], detectarInteres: true, modo: "automatico", sensible: true }), "revision");
+});

@@ -39,7 +39,7 @@ async function procesar(c: ig.ComentarioIg, a: Automatizacion, acc: Acciones, r:
   const usuario = c.from?.username ?? c.username ?? null;
   const igsid = c.from?.id ?? null;
   const { tipo, confianza } = await clasificarComentario(c.text, a.contexto);
-  const accion = accionFinal(decidir(tipo, confianza, a), c.text, a);
+  const accion = accionFinal(decidir(tipo, confianza, a), c.text, { ...a, flujoDm: a.textos.flujoDm });
   const respuesta = await textoPublico(accion, tipo, c.text, a);
 
   const reservado = await datos.reservarComentario({
@@ -66,12 +66,14 @@ async function procesar(c: ig.ComentarioIg, a: Automatizacion, acc: Acciones, r:
       const yaEntro = await datos.entroPorPublicacion(igsid, a.mediaId);
       const previa = await datos.persona(igsid);
       if (debeAbrirConversacion(yaEntro, previa?.paso ?? null)) {
-        const botones = a.textos.flujoDm === "preguntas" ? [] : [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado];
-        await acc.respuestaPrivada(c.id, a.textos.pregunta, botones);
+        const recurso = a.textos.flujoDm === "recurso" ? a.textos.recurso : undefined;
+        const botones = recurso ? [recurso.botonEnviar]
+          : a.textos.flujoDm === "preguntas" ? [] : [a.textos.botonSi, a.textos.botonNo, a.textos.botonAliado];
+        await acc.respuestaPrivada(c.id, recurso ? recurso.apertura : a.textos.pregunta, botones);
         if (!acc.simulacion) {
           await datos.registrarEntrada({
             igsid, usuario, codigo: codigoPersona(igsid, process.env.SOCIAL_SAL ?? "calidev"),
-            mediaId: a.mediaId, commentId: c.id,
+            mediaId: a.mediaId, commentId: c.id, paso: recurso ? "esperando_recurso" : "esperando_boton",
           });
         }
       }

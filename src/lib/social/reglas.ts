@@ -1,4 +1,4 @@
-import type { Accion, Boton, Modo, Paso, TipoComentario } from "./tipos";
+import type { Accion, Boton, Modo, Paso, Textos, TipoComentario } from "./tipos";
 
 const H = 3600_000;
 
@@ -61,11 +61,24 @@ export function contieneClave(texto: string, claves: string[]): boolean {
  * Con la detección de interés apagada, solo quien escribe la palabra clave
  * recibe mensaje privado; el resto de interesados recibe un agradecimiento.
  * Con la detección encendida, la clave también cuenta aunque Jev dude.
+ *
+ * Flujo «recurso» (comenta X y te envío Y): la clave en cualquier parte del
+ * comentario abre el privado; quien muestra interés SIN la clave (precios,
+ * preguntas) va a la bandeja, porque lo que pide no es el recurso.
+ *
+ * En modo borradores o tema sensible nada salta la revisión.
  */
 export function accionFinal(
-  accion: Accion, texto: string, c: { palabrasClave: string[]; detectarInteres: boolean },
+  accion: Accion, texto: string,
+  c: { palabrasClave: string[]; detectarInteres: boolean; flujoDm?: Textos["flujoDm"]; modo?: Modo; sensible?: boolean },
 ): Accion {
+  if (accion === "revision" && ((c.modo && c.modo !== "automatico") || c.sensible)) return accion;
   const tieneClave = contieneClave(texto, c.palabrasClave);
+  if (c.flujoDm === "recurso") {
+    if (accion === "ignorar") return accion;
+    if (tieneClave) return "contacto";
+    return accion === "contacto" ? "revision" : accion;
+  }
   if (accion === "contacto" && !c.detectarInteres && !tieneClave) return "ia";
   // La clave sola («orden», «info 🙌»): Jev la suele tomar por etiqueta o
   // emoji, o dudar; igual es alguien que pide el privado.

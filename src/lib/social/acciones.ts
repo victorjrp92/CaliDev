@@ -31,8 +31,8 @@ export class Acciones {
   respuestaPrivada(id: string, texto: string, botones: string[]) {
     return this.ejecutar(() => ig.respuestaPrivada(id, texto, botones));
   }
-  enviarTexto(igsid: string, texto: string) {
-    return this.ejecutar(() => ig.enviarTexto(igsid, texto));
+  enviarTexto(igsid: string, texto: string, botones?: string[]) {
+    return this.ejecutar(() => ig.enviarTexto(igsid, texto, botones));
   }
   enviarTarjeta(igsid: string, t: Tarjeta) {
     return this.ejecutar(() => ig.enviarTarjeta(igsid, t));

@@ -1,6 +1,6 @@
 import { landingPermitida } from "./enlaces";
-import { TEXTOS_INICIALES } from "./textos";
-import type { Modo, Textos } from "./tipos";
+import { RECURSO_INICIAL, TEXTOS_INICIALES } from "./textos";
+import type { Modo, Recurso, Textos } from "./tipos";
 
 /**
  * Valida lo que llega del editor de automatizaciones antes de guardarlo. Los
@@ -30,7 +30,7 @@ export function validarAutomatizacion(b: Record<string, unknown>): { ok: true; v
   };
   const d = TEXTOS_INICIALES;
   const textos: Textos = {
-    flujoDm: t.flujoDm === "preguntas" ? "preguntas" : "botones",
+    flujoDm: t.flujoDm === "preguntas" || t.flujoDm === "recurso" ? t.flujoDm : "botones",
     pregunta: cad(t.pregunta, 600) || d.pregunta, si: cad(t.si, 600) || d.si, no: cad(t.no, 600) || d.no,
     aliado: cad(t.aliado, 600) || d.aliado,
     botonSi: cad(t.botonSi, 20) || d.botonSi, botonNo: cad(t.botonNo, 20) || d.botonNo, botonAliado: cad(t.botonAliado, 20) || d.botonAliado,
@@ -45,6 +45,24 @@ export function validarAutomatizacion(b: Record<string, unknown>): { ok: true; v
       url: landingPermitida(cad(t.tarjetaAliado?.url, 300)) ? cad(t.tarjetaAliado?.url, 300) : d.tarjetaAliado.url,
     },
   };
+  if (textos.flujoDm === "recurso") {
+    const r = (t.recurso ?? {}) as Partial<Recurso>;
+    const R = RECURSO_INICIAL;
+    textos.recurso = {
+      apertura: cad(r.apertura, 600) || R.apertura, botonEnviar: cad(r.botonEnviar, 20) || R.botonEnviar,
+      exigirSeguir: r.exigirSeguir !== false, pedirSeguir: cad(r.pedirSeguir, 600) || R.pedirSeguir,
+      botonSeguido: cad(r.botonSeguido, 20) || R.botonSeguido, reintento: cad(r.reintento, 600) || R.reintento,
+      entrega: cad(r.entrega, 600) || R.entrega,
+      tarjeta: {
+        titulo: cad(r.tarjeta?.titulo, 80) || R.tarjeta.titulo, subtitulo: cad(r.tarjeta?.subtitulo, 80) || R.tarjeta.subtitulo,
+        boton: cad(r.tarjeta?.boton, 20) || R.tarjeta.boton,
+      },
+    };
+    if (!landing) return { ok: false, error: "Para enviar un recurso, pon su enlace en «Landing» (por ejemplo, el blog)" };
+    if (textos.recurso.botonEnviar.toLowerCase() === textos.recurso.botonSeguido.toLowerCase()) {
+      return { ok: false, error: "Los botones «Envíamelo» y «Ya te sigo» deben tener textos distintos" };
+    }
+  }
   const botones = [textos.botonSi, textos.botonNo, textos.botonAliado].map((x) => x.toLowerCase());
   if (new Set(botones).size < 3) return { ok: false, error: "Los tres botones deben tener textos distintos" };
   return {
