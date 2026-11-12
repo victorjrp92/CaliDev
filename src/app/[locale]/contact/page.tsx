@@ -5,6 +5,7 @@ import { ContactForm } from '@/components/contact-form';
 import { Panel } from '@/components/senal/panel';
 import { Relojes } from '@/components/senal/relojes';
 import { alternatesDe } from '@/lib/canonica';
+import { NUMERO_WHATSAPP_VISIBLE, enlaceWhatsapp } from '@/lib/whatsapp';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -64,6 +65,17 @@ export default function ContactPage() {
             <h1 className="mt-6 max-w-[16ch] text-[clamp(2.2rem,5.5vw,4.2rem)] font-extrabold leading-[1.0] tracking-[-0.035em] text-balance">
               {t('subtitle')}
             </h1>
+            <p className="mt-8 text-lg">
+              <span className="opacity-75">{t('whatsapp_pregunta')} </span>
+              <a
+                href={enlaceWhatsapp(t('whatsapp_mensaje'))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[var(--lima)] underline underline-offset-4 hover:no-underline"
+              >
+                {NUMERO_WHATSAPP_VISIBLE}
+              </a>
+            </p>
             <Relojes className="mt-12 opacity-70" />
           </div>
 

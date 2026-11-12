@@ -124,7 +124,9 @@
     "paso2_titulo": "Eine halbe Stunde zum Verstehen",
     "paso2_desc": "Ein kurzes Gespräch, um zu sehen, wo Zeit oder Geld verloren geht. Keine Verkaufspräsentation, keine Verpflichtung.",
     "paso3_titulo": "Wir sagen Ihnen, was wir tun würden",
-    "paso3_desc": "Und was es kosten würde. Lautet die Antwort, dass Sie nichts brauchen, ist das auch eine Antwort."
+    "paso3_desc": "Und was es kosten würde. Lautet die Antwort, dass Sie nichts brauchen, ist das auch eine Antwort.",
+    "whatsapp_pregunta": "Lieber per WhatsApp?",
+    "whatsapp_mensaje": "Hallo, ich komme von calidev.dev und möchte Ihnen erzählen, was ich brauche."
   },
   "footer": {
     "rights": "Alle Rechte vorbehalten.",
@@ -306,7 +308,9 @@
       "titular": "Was möchten Sie aufbauen oder verbessern?",
       "entrada": "Egal ob schon etwas läuft oder Sie bei null anfangen. Sagen Sie uns, was Sie brauchen, und in einer halben Stunde finden wir heraus, wo man anfängt — und wenn Sie uns nicht brauchen, sagen wir das.",
       "boton": "Sprechen wir",
-      "video_alt": "Ein Video-Call: Auf dem Laptop-Bildschirm hört ein Unternehmer aufmerksam zu, nickt und lächelt."
+      "video_alt": "Ein Video-Call: Auf dem Laptop-Bildschirm hört ein Unternehmer aufmerksam zu, nickt und lächelt.",
+      "whatsapp": "Schreiben Sie uns auf WhatsApp",
+      "whatsapp_mensaje": "Hallo, ich komme von calidev.dev und möchte Ihnen erzählen, was ich brauche."
     },
     "servicios": {
       "etiqueta": "Was wir tun",

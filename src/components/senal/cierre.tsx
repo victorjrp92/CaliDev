@@ -3,6 +3,7 @@ import { Panel } from "@/components/senal/panel";
 import { Boton } from "@/components/senal/boton";
 import { Relojes } from "@/components/senal/relojes";
 import { VideoBucle } from "@/components/senal/video-bucle";
+import { enlaceWhatsapp } from "@/lib/whatsapp";
 
 /**
  * El mismo cierre al final de todas las páginas.
@@ -36,9 +37,14 @@ export function Cierre() {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-x-10 gap-y-6">
-            <Boton forma="verde" href="/contact">
-              {t("boton")}
-            </Boton>
+            <div className="flex flex-wrap gap-3">
+              <Boton forma="verde" href="/contact">
+                {t("boton")}
+              </Boton>
+              <Boton forma="secundario" externo={enlaceWhatsapp(t("whatsapp_mensaje"))}>
+                {t("whatsapp")}
+              </Boton>
+            </div>
             <Relojes
               direccion="columna"
               className="text-[var(--verde)] opacity-80"

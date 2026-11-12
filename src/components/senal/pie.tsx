@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Logo } from "@/components/senal/logo";
 import { Relojes } from "@/components/senal/relojes";
+import { NUMERO_WHATSAPP_VISIBLE, enlaceWhatsapp } from "@/lib/whatsapp";
 
 /**
  * Pie de página.
@@ -16,6 +17,7 @@ import { Relojes } from "@/components/senal/relojes";
  * enlaza hasta tener el texto.
  */
 const REDES = [
+  { nombre: `WhatsApp ${NUMERO_WHATSAPP_VISIBLE}`, url: enlaceWhatsapp() },
   { nombre: "LinkedIn", url: "https://www.linkedin.com/in/victorjrp9/" },
   { nombre: "Instagram", url: "https://instagram.com/calidevdev" },
   { nombre: "GitHub", url: "https://github.com/victorjrp92" },

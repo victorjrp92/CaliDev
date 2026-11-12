@@ -124,7 +124,9 @@
     "paso2_titulo": "Media hora para entender",
     "paso2_desc": "Una llamada corta para ver dónde se te va el tiempo o el dinero. Sin presentación de ventas y sin compromiso.",
     "paso3_titulo": "Te decimos qué haríamos",
-    "paso3_desc": "Y cuánto costaría. Si la respuesta es que no necesitas nada, esa también es una respuesta."
+    "paso3_desc": "Y cuánto costaría. Si la respuesta es que no necesitas nada, esa también es una respuesta.",
+    "whatsapp_pregunta": "¿Prefieres WhatsApp?",
+    "whatsapp_mensaje": "Hola, vengo de calidev.dev y quiero contarles lo que necesito."
   },
   "footer": {
     "rights": "Todos los derechos reservados.",
@@ -306,7 +308,9 @@
       "titular": "¿Qué quieres crear o mejorar?",
       "entrada": "Da igual si ya tienes algo montado o si empiezas de cero. Cuéntanos qué necesitas y en media hora vemos por dónde empezar — y si no te hacemos falta, te lo decimos.",
       "boton": "Hablemos",
-      "video_alt": "Videollamada de trabajo: en la pantalla del portátil, un empresario escucha con atención, asiente y sonríe."
+      "video_alt": "Videollamada de trabajo: en la pantalla del portátil, un empresario escucha con atención, asiente y sonríe.",
+      "whatsapp": "Escríbenos por WhatsApp",
+      "whatsapp_mensaje": "Hola, vengo de calidev.dev y quiero contarles lo que necesito."
     },
     "servicios": {
       "etiqueta": "Qué hacemos",
