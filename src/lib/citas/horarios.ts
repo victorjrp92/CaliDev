@@ -17,7 +17,12 @@ import type { Cita } from "@/lib/citas/datos";
 export const DURACION_MINUTOS = 60;
 export const ZONA_COLOMBIA = "America/Bogota";
 export const ZONA_VICTOR = "Europe/Berlin";
-export const ENLACE_VIDEOLLAMADA = "https://meet.google.com/gep-oaey-gwj";
+/**
+ * Sala de Meet creada por calidevdev@gmail.com (evento «Sala CaliDev» de su
+ * calendario, no borrarlo): en Meet manda quien crea la sala. La anterior
+ * (gep-oaey-gwj) era de la cuenta personal de Víctor y Karen no podía admitir.
+ */
+export const ENLACE_VIDEOLLAMADA = "https://meet.google.com/zjw-fvpy-uoj";
 
 /** Con menos de esto de antelación un horario deja de ofrecerse. */
 const ANTELACION_MINIMA_MS = 60 * 60 * 1000;
