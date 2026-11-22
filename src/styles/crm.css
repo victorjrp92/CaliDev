@@ -1,0 +1,61 @@
+/**
+ * Piezas del CRM que se repiten en todas las pantallas. Todo sale de la paleta
+ * SEÑAL (senal.css): el lima solo como relleno con tinta encima, nunca texto.
+ */
+.senal .campo {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid var(--linea-tinta);
+  background: #fff;
+  padding: 0.55rem 0.85rem;
+  font-size: 15px;
+  color: var(--tinta);
+}
+.senal textarea.campo { min-height: 5.5rem; line-height: 1.5; }
+.senal .campo:focus-visible { outline: 2px solid var(--verde); outline-offset: 1px; border-color: var(--verde); }
+
+.senal .boton-principal,
+.senal .boton-secundario,
+.senal .boton-chico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+.senal .boton-principal { min-height: 2.75rem; padding: 0 1.25rem; background: var(--verde); color: var(--hueso); font-size: 15px; }
+.senal .boton-principal:hover { background: var(--verde-hondo); }
+.senal .boton-secundario { min-height: 2.75rem; padding: 0 1.1rem; border: 1.5px solid var(--verde); color: var(--verde); font-size: 15px; }
+.senal .boton-secundario:hover { background: var(--niebla); }
+.senal .boton-chico { min-height: 2.25rem; padding: 0 0.8rem; border: 1.5px solid var(--linea-tinta); color: var(--tinta); font-size: 13.5px; background: #fff; }
+.senal .boton-chico:hover { border-color: var(--verde); }
+.senal .boton-chico[data-tono="si"] { background: var(--lima); border-color: var(--lima); color: var(--tinta); }
+.senal .boton-chico[data-tono="no"] { color: #B42318; }
+.senal :is(.boton-principal, .boton-secundario, .boton-chico):disabled { opacity: 0.55; cursor: wait; }
+.senal :is(.boton-principal, .boton-secundario, .boton-chico, a):focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
+
+/* Bloque de contenido: borde fino, sin sombra. Lo que pide atención lleva la franja. */
+.senal .bloque { border: 1px solid var(--linea-tinta); border-radius: 1rem; background: #fff; }
+
+.senal .chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--niebla);
+  color: var(--tinta);
+  white-space: nowrap;
+}
+.senal .chip[data-tono="lima"] { background: var(--lima); }
+.senal .chip[data-tono="alerta"] { background: #FDE7E4; color: #8A1C12; }
+.senal .chip[data-tono="verde"] { background: var(--verde); color: var(--hueso); }
+
+.senal .cifra { font-variant-numeric: tabular-nums; }

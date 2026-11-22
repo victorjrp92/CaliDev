@@ -1,0 +1,13 @@
+{
+  "name": "calidev",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CLI del CRM de calidev.dev (docs/crm/spec.md §7)",
+  "type": "module",
+  "bin": {
+    "calidev": "./calidev.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

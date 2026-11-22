@@ -34,7 +34,8 @@ let cliente: ReturnType<typeof postgres> | null = null;
 function supabase() {
   cliente ??= postgres(process.env.SUPABASE_DB_URL!, {
     prepare: false,
-    max: 3,
+    // Las pruebas contra PGlite local usan 1: su socket se desincroniza con conexiones en paralelo.
+    max: Number(process.env.DB_MAX_CONEXIONES) || 3,
     idle_timeout: 20,
     connect_timeout: 15,
     onnotice: () => {}, // los CREATE … IF NOT EXISTS avisan en cada arranque

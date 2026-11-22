@@ -1,5 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { actorPorCookie } from "@/lib/crm/guardia";
+import { COOKIE_SESION } from "@/lib/crm/sesion";
 
 /**
  * Puerta del panel de leads de campaña.
@@ -67,13 +69,27 @@ export async function cerrarPanel() {
   galletas.delete({ name: COOKIE, path: "/servinomic" });
 }
 
+/**
+ * Puente con el CRM (spec §6, «Corte»): quien entró en /crm con su usuario
+ * también abre las sub-rutas viejas (agendar, invitar, recordar, contratos,
+ * arranques) sin la contraseña compartida. La sesión vieja se sigue aceptando
+ * hasta que se borre el último módulo que la usa.
+ */
 export async function panelAbierto(): Promise<boolean> {
   const galletas = await cookies();
   const token = galletas.get(COOKIE)?.value;
-  if (!token) return false;
+  if (token) {
+    try {
+      const { payload } = await jwtVerify(token, secreto());
+      if (payload.panel === "leads") return true;
+    } catch {
+      /* firma mala o vencida: se prueba la sesión del CRM */
+    }
+  }
+  const crm = galletas.get(COOKIE_SESION)?.value;
+  if (!crm) return false;
   try {
-    const { payload } = await jwtVerify(token, secreto());
-    return payload.panel === "leads";
+    return (await actorPorCookie(crm)) !== null;
   } catch {
     return false;
   }

@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
-/** El panel ya no va por campaña: todo el seguimiento vive en /servinomic/leads. */
+/** El panel ya no va por campaña: todo el seguimiento vive en el CRM. */
 export default function PanelViejo() {
-  redirect("/servinomic/leads");
+  permanentRedirect("/crm/ventas");
 }

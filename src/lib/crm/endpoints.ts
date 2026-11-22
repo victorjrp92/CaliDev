@@ -1,0 +1,62 @@
+import type { Permiso } from "./permisos";
+
+/**
+ * La lista de endpoints de /api/crm/v1 (spec §7): la devuelve `GET /api/crm/v1`
+ * y la imprime `calidev api`, para que un agente no tenga que adivinar rutas.
+ * `endpoints.test.ts` comprueba que cada entrada tiene su route.ts y que cada
+ * route.ts exporta los métodos que aquí se declaran: la lista no puede mentir.
+ *
+ * `permiso`: "publico" no pide sesión; "sesion" pide estar autenticado sin un
+ * permiso concreto.
+ */
+export type Endpoint = {
+  metodo: "GET" | "POST" | "PATCH" | "DELETE";
+  ruta: string;
+  permiso: Permiso | "publico" | "sesion";
+  hace: string;
+  cuerpo?: string;
+};
+
+export const ENDPOINTS: Endpoint[] = [
+  { metodo: "GET", ruta: "/api/crm/v1", permiso: "sesion", hace: "Esta lista" },
+  { metodo: "POST", ruta: "/api/crm/v1/sesion", permiso: "publico", hace: "Entrar con correo y contraseña (pone la cookie)", cuerpo: "{correo, contrasena}" },
+  { metodo: "DELETE", ruta: "/api/crm/v1/sesion", permiso: "publico", hace: "Salir (borra la cookie)" },
+  { metodo: "POST", ruta: "/api/crm/v1/invitacion", permiso: "publico", hace: "Aceptar una invitación eligiendo contraseña", cuerpo: "{token, contrasena}" },
+  { metodo: "GET", ruta: "/api/crm/v1/yo", permiso: "sesion", hace: "Quién soy, por dónde entré y qué permisos tengo" },
+  { metodo: "GET", ruta: "/api/crm/v1/hoy", permiso: "sesion", hace: "Citas del día, tareas, oportunidades vencidas, aprobaciones y embudo (?dia=AAAA-MM-DD)" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/personas", permiso: "contactos:leer", hace: "Buscar personas (?q=texto&limite=)" },
+  { metodo: "POST", ruta: "/api/crm/v1/personas", permiso: "contactos:escribir", hace: "Crear persona", cuerpo: "{nombre, correo?, whatsapp?, usuario_ig?, empresa?, origen?, notas?}" },
+  { metodo: "GET", ruta: "/api/crm/v1/personas/[id]", permiso: "contactos:leer", hace: "Persona con línea de tiempo, oportunidades y notas" },
+  { metodo: "PATCH", ruta: "/api/crm/v1/personas/[id]", permiso: "contactos:escribir", hace: "Editar persona", cuerpo: "{nombre?, correo?, whatsapp?, usuario_ig?, empresa?, notas?}" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/oportunidades", permiso: "ventas:leer", hace: "Pipeline (?etapa=&abiertas=1&persona_id=&vencidas=1)" },
+  { metodo: "POST", ruta: "/api/crm/v1/oportunidades", permiso: "ventas:escribir", hace: "Crear oportunidad (próximo paso con fecha obligatorio si queda abierta)", cuerpo: "{titulo, persona_id?, etapa?, proximo_paso, proximo_paso_at, valor_arranque?, valor_mensual?, moneda?}" },
+  { metodo: "GET", ruta: "/api/crm/v1/oportunidades/[id]", permiso: "ventas:leer", hace: "Oportunidad con historial de etapas y notas" },
+  { metodo: "PATCH", ruta: "/api/crm/v1/oportunidades/[id]", permiso: "ventas:escribir", hace: "Editar datos o fijar el próximo paso", cuerpo: "{titulo?, valor_arranque?, valor_mensual?, moneda?, responsable_id?, proximo_paso?, proximo_paso_at?}" },
+  { metodo: "POST", ruta: "/api/crm/v1/oportunidades/[id]/etapa", permiso: "ventas:escribir", hace: "Mover de etapa (ganado exige oportunidad:ganar)", cuerpo: "{a, proximo_paso?, proximo_paso_at?, motivo_perdida?}" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/tareas", permiso: "tareas:leer", hace: "Tareas (?mia=1&area=&estado=abierta)" },
+  { metodo: "POST", ruta: "/api/crm/v1/tareas", permiso: "tareas:escribir", hace: "Crear tarea", cuerpo: "{titulo, area?, entidad?, entidad_id?, asignada_a?, vence_at?}" },
+  { metodo: "PATCH", ruta: "/api/crm/v1/tareas/[id]", permiso: "tareas:escribir", hace: "Tomar o cerrar una tarea", cuerpo: "{accion: tomar|hecha|cancelada}" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/notas", permiso: "notas:leer", hace: "Notas de una entidad (?entidad=persona&id=7)" },
+  { metodo: "POST", ruta: "/api/crm/v1/notas", permiso: "notas:escribir", hace: "Agregar nota o brief", cuerpo: "{entidad, entidad_id, tipo?: nota|brief|resumen_llamada, cuerpo}" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/citas", permiso: "agenda:leer", hace: "Citas de un día (?dia=) o de la semana (?semana=1), y las invitaciones sin hora" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/aprobaciones", permiso: "aprobaciones:leer", hace: "Cola de aprobaciones (?estado=pendiente|aprobada|rechazada|ejecutada|fallida|todas)" },
+  { metodo: "POST", ruta: "/api/crm/v1/aprobaciones", permiso: "aprobaciones:solicitar", hace: "Pedir una acción externa: responde 202 {aprobacion_id}", cuerpo: "{tipo, payload, vista_previa, entidad?, entidad_id?}" },
+  { metodo: "GET", ruta: "/api/crm/v1/aprobaciones/[id]", permiso: "aprobaciones:leer", hace: "Una aprobación" },
+  { metodo: "POST", ruta: "/api/crm/v1/aprobaciones/[id]/decision", permiso: "aprobaciones:decidir", hace: "Aprobar (opcionalmente con payload editado) o rechazar con motivo. Solo humanos", cuerpo: "{decision: aprobar|rechazar, motivo?, payload?}" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/auditoria", permiso: "auditoria:leer", hace: "Registro de auditoría (?entidad=&id=&limite=)" },
+
+  { metodo: "GET", ruta: "/api/crm/v1/usuarios", permiso: "usuarios:gestionar", hace: "Usuarios humanos y agentes" },
+  { metodo: "POST", ruta: "/api/crm/v1/usuarios", permiso: "usuarios:gestionar", hace: "Crear usuario; un humano recibe enlace de invitación", cuerpo: "{nombre, correo, tipo: humano|agente, rol}" },
+  { metodo: "PATCH", ruta: "/api/crm/v1/usuarios/[id]", permiso: "usuarios:gestionar", hace: "Activar/desactivar, reinvitar o cerrar sesiones", cuerpo: "{activo?, reinvitar?, cerrar_sesiones?}" },
+  { metodo: "GET", ruta: "/api/crm/v1/claves", permiso: "claves:propias", hace: "Mis claves (todas si tengo claves:gestionar)" },
+  { metodo: "POST", ruta: "/api/crm/v1/claves", permiso: "claves:propias", hace: "Crear clave cdv_… (se muestra una sola vez)", cuerpo: "{nombre, usuario_id?, alcances?, dias_vigencia?}" },
+  { metodo: "DELETE", ruta: "/api/crm/v1/claves/[id]", permiso: "claves:propias", hace: "Revocar clave" },
+  { metodo: "POST", ruta: "/api/crm/v1/sincronizar", permiso: "sistema:sincronizar", hace: "Traer al CRM leads, citas, contactos e Instagram (idempotente)" },
+];
