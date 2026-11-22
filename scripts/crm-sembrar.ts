@@ -12,13 +12,7 @@
  *
  * Los correos se pasan por argumento para no dejarlos escritos en el repo.
  */
-import { sql } from "@/lib/db";
-import { crearUsuario, reinvitar } from "@/lib/crm/usuarios";
-
-const PERSONAS = [
-  { bandera: "victor", nombre: "Victor Ramos", rol: "dueno" },
-  { bandera: "karen", nombre: "Karen Cortés", rol: "socia" },
-] as const;
+import { PERSONAS_SEMBRADAS, sembrarHumanos } from "@/lib/crm/sembrar";
 
 function leer(argv: string[]): Map<string, string> {
   const m = new Map<string, string>();
@@ -34,36 +28,17 @@ function leer(argv: string[]): Map<string, string> {
 
 async function main(): Promise<number> {
   const args = leer(process.argv.slice(2));
-  const conocidas = new Set(["url", ...PERSONAS.map((p) => p.bandera)]);
+  const conocidas = new Set<string>(["url", ...PERSONAS_SEMBRADAS.map((p) => p.clave)]);
   for (const k of args.keys()) if (!conocidas.has(k)) throw new Error(`Bandera desconocida: --${k}`);
   if (!process.env.SUPABASE_DB_URL) throw new Error("Falta SUPABASE_DB_URL: cárgala con las variables de producción (sin ella el código usaría Neon).");
-  const pedidas = PERSONAS.filter((p) => args.has(p.bandera));
-  if (!pedidas.length) throw new Error("Pasa al menos --victor <correo> o --karen <correo>.");
-  const base = (args.get("url") ?? "https://calidev.dev").replace(/\/+$/, "");
+  if (!PERSONAS_SEMBRADAS.some((p) => args.has(p.clave))) throw new Error("Pasa al menos --victor <correo> o --karen <correo>.");
 
-  const host = new URL(process.env.SUPABASE_DB_URL).host;
-  console.log(`Base: ${host}\n`);
-
-  for (const p of pedidas) {
-    const correo = args.get(p.bandera)!.trim().toLowerCase();
-    const r = await sql<{ id: number; rol: string; tipo: string; hash_clave: string | null; activo: boolean }>`
-      SELECT id, rol, tipo, hash_clave, activo FROM crm_usuarios WHERE correo = ${correo}`;
-    const u = r.rows[0];
-    let token: string;
-    if (!u) {
-      token = (await crearUsuario(null, { nombre: p.nombre, correo, tipo: "humano", rol: p.rol })).invitacion!;
-      console.log(`${p.nombre} <${correo}>: creada como ${p.rol}.`);
-    } else if (u.tipo !== "humano" || u.rol !== p.rol) {
-      console.log(`${p.nombre} <${correo}>: ya existe como ${u.tipo}/${u.rol}, no ${p.rol}. No se cambia; revísalo en Ajustes.`);
-      continue;
-    } else if (u.hash_clave) {
-      console.log(`${p.nombre} <${correo}>: ya eligió contraseña. No se toca.`);
-      continue;
-    } else {
-      token = await reinvitar(null, u.id);
-      console.log(`${p.nombre} <${correo}>: seguía sin entrar; enlace nuevo (el anterior ya no sirve).`);
-    }
-    console.log(`  ${base}/crm/invitacion/${token}\n  Un solo uso, vence en 7 días.\n`);
+  console.log(`Base: ${new URL(process.env.SUPABASE_DB_URL).host}\n`);
+  const r = await sembrarHumanos({ victor: args.get("victor"), karen: args.get("karen") }, args.get("url") ?? "https://calidev.dev");
+  for (const x of r) {
+    console.log(`${x.persona} <${x.correo}>: ${x.mensaje}`);
+    if (x.enlace) console.log(`  ${x.enlace}\n  Un solo uso, vence en 7 días.`);
+    console.log("");
   }
   return 0;
 }
