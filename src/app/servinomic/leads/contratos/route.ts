@@ -2,50 +2,8 @@ import { NextResponse } from "next/server";
 import { panelAbierto } from "@/lib/panel-leads";
 import { borrarContratoSinFirmas, crearContrato, todosLosContratos } from "@/lib/contratos/datos";
 import { enlaceFirmante } from "@/lib/contratos/correos";
-import {
-  EJEMPLO_SERVINOMIC,
-  faltantesServinomic,
-  htmlServinomic,
-  tituloServinomic,
-  type DatosServinomic,
-} from "@/lib/contratos/plantilla-servinomic";
-
-/** Los datos del formulario, con cada campo forzado a su tipo y recortado. */
-function leerDatos(v: unknown): DatosServinomic {
-  const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
-  const txt = (k: keyof DatosServinomic) => (typeof o[k] === "string" ? (o[k] as string).trim().slice(0, 160) : "");
-  const num = (k: keyof DatosServinomic) => Math.max(0, Math.round(Number(o[k]) || 0));
-  const cuotas = Array.isArray(o.cuotas)
-    ? o.cuotas.slice(0, 12).map((c) => {
-        const x = (c ?? {}) as Record<string, unknown>;
-        return { cuando: String(x.cuando ?? "").trim().slice(0, 120), valor: Math.max(0, Math.round(Number(x.valor) || 0)) };
-      })
-    : [];
-  return {
-    ...EJEMPLO_SERVINOMIC,
-    nombre: txt("nombre"),
-    negocio: txt("negocio"),
-    ciudad: txt("ciudad") || "Cali",
-    fecha: txt("fecha"),
-    arranquePublicado: num("arranquePublicado"),
-    arranque: num("arranque"),
-    cuotas,
-    mensualidadPublicada: num("mensualidadPublicada"),
-    mensualidad: num("mensualidad"),
-    personas: num("personas") || 10,
-    personaAdicional: num("personaAdicional"),
-    mensualidadDesde: txt("mensualidadDesde"),
-    mesGratis: txt("mesGratis"),
-    nomina: o.nomina === true,
-    consultorias: Math.min(20, num("consultorias")),
-    consultoriasHasta: txt("consultoriasHasta"),
-    inicio: txt("inicio"),
-    finArranque: txt("finArranque"),
-    permanenciaMeses: Math.min(60, num("permanenciaMeses")),
-    permanenciaDesde: txt("permanenciaDesde"),
-    permanenciaHasta: txt("permanenciaHasta"),
-  };
-}
+import { leerDatosServinomic } from "@/lib/contratos/leer-datos";
+import { faltantesServinomic, htmlServinomic, tituloServinomic } from "@/lib/contratos/plantilla-servinomic";
 
 /**
  * Crear y listar contratos desde el panel. Bajo /servinomic por la cookie del
@@ -85,7 +43,7 @@ export async function POST(request: Request) {
 
   // Desde la plantilla: el servidor arma el HTML, así lo firmado es siempre la plantilla.
   if (body.plantilla === "servinomic") {
-    const datos = leerDatos(body.datos);
+    const datos = leerDatosServinomic(body.datos);
     const faltan = faltantesServinomic(datos);
     if (faltan.length) return NextResponse.json({ error: `Falta ${faltan.join(", ")}.` }, { status: 400 });
     const { contrato, firmantes: creados } = await crearContrato(

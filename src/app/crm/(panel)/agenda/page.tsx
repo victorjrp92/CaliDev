@@ -5,7 +5,8 @@ import { idDesdeInicio } from "@/lib/citas/horarios";
 import { citasEntre, citasSinHora, semanaColombia, type CitaAgenda } from "@/lib/crm/agenda";
 import { diaLargo, fecha, ZONA } from "@/lib/crm/formato";
 import { actorDePagina, tiene } from "@/lib/crm/pagina";
-import { Seccion } from "../seccion";
+import { BarraSeccion } from "../barra-seccion";
+import { Cuerpo } from "../cuerpo";
 import { SinPermiso } from "../sin-permiso";
 import { Vacio } from "../vacio";
 import { FilaCita, NOMBRE_TIPO_CITA } from "./fila-cita";
@@ -14,12 +15,17 @@ export const metadata: Metadata = { title: "Agenda" };
 
 const diaDe = (iso: string) => new Intl.DateTimeFormat("en-CA", { timeZone: ZONA, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso));
 
+type Props = { searchParams: Promise<{ vista?: string; nueva?: string }> };
+
 /** La semana en curso (lunes a domingo, hora de Colombia) por día, y las invitaciones que aún no tienen hora. */
-export default async function Agenda() {
+export default async function Agenda({ searchParams }: Props) {
   const a = await actorDePagina();
-  if (!tiene(a, "agenda:leer")) return <SinPermiso que="la agenda" />;
+  if (!tiene(a, "agenda:leer")) return <><BarraSeccion titulo="Agenda" /><Cuerpo><SinPermiso que="la agenda" /></Cuerpo></>;
+  const sp = await searchParams;
+  const vistaSinHora = sp.vista === "sinhora";
+  const escribir = tiene(a, "agenda:escribir");
   const { desde, hasta } = semanaColombia();
-  const [citas, sinHora, todas] = await Promise.all([citasEntre(desde, hasta), citasSinHora(50), todasLasCitas()]);
+  const [citas, sinHora, todas] = await Promise.all([citasEntre(desde, hasta), citasSinHora(50), escribir ? todasLasCitas() : Promise.resolve([])]);
   const ocupados = todas.map((c) => idDesdeInicio(c.inicio)).filter((x): x is string => Boolean(x));
 
   const porDia = new Map<string, CitaAgenda[]>();
@@ -27,41 +33,45 @@ export default async function Agenda() {
     const d = diaDe(c.inicio);
     porDia.set(d, [...(porDia.get(d) ?? []), c]);
   }
+  const base = vistaSinHora ? "/crm/agenda?vista=sinhora" : "/crm/agenda";
 
   return (
-    <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-1">
-        <p className="mono text-[var(--verde)]">{fecha(desde)} al {fecha(new Date(hasta.getTime() - 864e5))} · hora de Colombia</p>
-        <h1 className="text-[28px] font-extrabold leading-tight tracking-tight md:text-[34px]">Agenda</h1>
-      </header>
+    <>
+      <BarraSeccion
+        titulo="Agenda"
+        subtitulo={`${fecha(desde)} al ${fecha(new Date(hasta.getTime() - 864e5))} · hora de Colombia`}
+        segmentos={[
+          { href: "/crm/agenda", etiqueta: "Semana", cuenta: citas.length, activo: !vistaSinHora },
+          { href: "/crm/agenda?vista=sinhora", etiqueta: "Sin hora", cuenta: sinHora.length, activo: vistaSinHora },
+        ]}
+        accion={escribir ? { href: `${base}${vistaSinHora ? "&" : "?"}nueva=1`, etiqueta: "Nueva cita" } : undefined}
+      />
+      <Cuerpo>
+        {escribir && sp.nueva === "1" && <div className="siempre-claro"><NuevaCita ocupados={ocupados} /></div>}
 
-      {tiene(a, "agenda:escribir") && <NuevaCita ocupados={ocupados} />}
-
-      <Seccion titulo="Esta semana" cuenta={citas.length}>
-        {porDia.size ? (
-          <div className="flex flex-col gap-6">
-            {[...porDia].map(([dia, delDia]) => (
-              <div key={dia} className="flex flex-col gap-2">
-                <h3 className="px-1 text-[14.5px] font-bold capitalize">{diaLargo(dia)}</h3>
-                <div className="bloque divide-y divide-[var(--linea-tinta)]">{delDia.map((c) => <FilaCita key={c.id} c={c} />)}</div>
-              </div>
-            ))}
-          </div>
+        {vistaSinHora ? (
+          sinHora.length ? (
+            <div className="bloque">
+              {sinHora.map((c, i) => (
+                <div key={c.id} className={`fila ${i === 0 ? "!border-t-0" : ""}`}>
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="fuerte truncate">{c.nombre}</span>
+                    <span className="nota break-words">{c.correo} · enviada {fecha(c.creada)}</span>
+                  </span>
+                  <span className="pill pill-neutro">{NOMBRE_TIPO_CITA[c.tipo]}</span>
+                </div>
+              ))}
+            </div>
+          ) : <Vacio>Ninguna invitación espera hora.</Vacio>
+        ) : porDia.size ? (
+          [...porDia].map(([dia, delDia]) => (
+            <section key={dia} className="bloque" aria-label={diaLargo(dia)}>
+              <h2 className="subgrupo"><span className="capitalize-first">{diaLargo(dia)}</span><span className="num">{delDia.length}</span></h2>
+              {delDia.map((c) => <FilaCita key={c.id} c={c} />)}
+            </section>
+          ))
         ) : <Vacio>No hay citas esta semana.</Vacio>}
-      </Seccion>
-
-      <Seccion titulo="Invitaciones sin hora" cuenta={sinHora.length}>
-        {sinHora.length ? (
-          <div className="bloque divide-y divide-[var(--linea-tinta)]">
-            {sinHora.map((c) => (
-              <div key={c.id} className="flex min-w-0 flex-col gap-1 px-4 py-3">
-                <span className="flex flex-wrap items-center gap-2"><span className="font-semibold">{c.nombre}</span><span className="chip">{NOMBRE_TIPO_CITA[c.tipo]}</span></span>
-                <span className="break-words text-[13.5px] text-[#46554D]">{c.correo} · enviada {fecha(c.creada)}</span>
-              </div>
-            ))}
-          </div>
-        ) : <Vacio>Ninguna invitación espera hora.</Vacio>}
-      </Seccion>
-    </div>
+      </Cuerpo>
+    </>
   );
 }

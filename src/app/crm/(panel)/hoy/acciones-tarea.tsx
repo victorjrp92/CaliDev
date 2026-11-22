@@ -13,7 +13,7 @@ export function AccionesTarea({ id, mia }: { id: number; mia: boolean }) {
         {!mia && <button type="button" disabled={enviando} onClick={() => hacer("tomar")} className="boton-chico">Tomar</button>}
         <button type="button" disabled={enviando} onClick={() => hacer("hecha")} className="boton-chico" data-tono="si">Hecha</button>
       </div>
-      {error && <p role="alert" className="text-[12.5px] text-[#B42318]">{error}</p>}
+      {error && <p role="alert" className="text-[12.5px] text-[var(--peligro)]">{error}</p>}
     </div>
   );
 }

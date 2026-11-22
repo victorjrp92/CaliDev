@@ -1,6 +1,6 @@
 import { type Etapa, NOMBRE_ETAPA } from "@/lib/crm/etapas";
 
-const TONO: Partial<Record<Etapa, string>> = { ganado: "verde", perdido: "alerta", propuesta: "lima", negociacion: "lima" };
+const TONO: Partial<Record<Etapa, string>> = { ganado: "verde", perdido: "alerta", propuesta: "info", negociacion: "info" };
 
 export function EtiquetaEtapa({ etapa }: { etapa: Etapa | string | null }) {
   if (!etapa) return null;

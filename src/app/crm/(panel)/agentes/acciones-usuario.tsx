@@ -26,7 +26,7 @@ export function AccionesUsuario({ id, activo, humano, yo }: { id: number; activo
           </button>
         )}
       </div>
-      {error && <p role="alert" className="text-[13px] text-[#B42318]">{error}</p>}
+      {error && <p role="alert" className="text-[13px] text-[var(--peligro)]">{error}</p>}
       {enlace && <MostrarUnaVez titulo="Enlace nuevo" valor={enlace} aviso="Sirve una sola vez." />}
     </div>
   );

@@ -20,7 +20,7 @@ export async function login(a: Args): Promise<Resultado> {
   if (!/^https?:\/\/[^\s/]+/.test(url)) throw errorUso(`--url no parece una URL: «${url}».`, "url");
 
   const clave = process.stdin.isTTY ? await preguntarOculto("Clave del CRM (cdv_…): ") : (await leerStdin()).trim();
-  if (!clave.startsWith("cdv_")) throw errorUso("La clave empieza por cdv_. Créala en Ajustes → Claves del CRM.", "clave");
+  if (!clave.startsWith("cdv_")) throw errorUso("La clave empieza por cdv_. Créala en Agentes → Claves del CRM.", "clave");
 
   const config = { url, clave };
   const { cuerpo } = await pedir<Yo>("/yo", { config });

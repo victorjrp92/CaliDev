@@ -9,7 +9,7 @@ import { Campo } from "../campo";
 const VACIA = { nombre: "", empresa: "", correo: "", whatsapp: "", usuario_ig: "", origen: "", notas: "" };
 
 /** Persona nueva. Solo el nombre es obligatorio; al crearla se abre su ficha. */
-export function NuevaPersona() {
+export function NuevaPersona({ abierta = false }: { abierta?: boolean }) {
   const router = useRouter();
   const [f, setF] = useState(VACIA);
   const [clave] = useState(() => crypto.randomUUID());
@@ -25,8 +25,8 @@ export function NuevaPersona() {
   }
 
   return (
-    <details className="bloque group px-4 py-3">
-      <summary className="cursor-pointer select-none font-semibold text-[var(--verde)]">Nueva persona</summary>
+    <details open={abierta} className="bloque group px-4 py-3">
+      <summary className="cursor-pointer select-none font-semibold text-[var(--acento-texto)]">Nueva persona</summary>
       <form onSubmit={crear} className="mt-4 grid gap-4 sm:grid-cols-2">
         <Campo etiqueta="Nombre" className="sm:col-span-2"><input required maxLength={160} value={f.nombre} onChange={pon("nombre")} className="campo" /></Campo>
         <Campo etiqueta="Empresa"><input maxLength={200} value={f.empresa} onChange={pon("empresa")} className="campo" /></Campo>
@@ -37,7 +37,7 @@ export function NuevaPersona() {
         <Campo etiqueta="Notas" className="sm:col-span-2"><textarea rows={3} maxLength={5000} value={f.notas} onChange={pon("notas")} className="campo" /></Campo>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
           <button type="submit" disabled={enviando} className="boton-principal">{enviando ? "Creando…" : "Crear persona"}</button>
-          {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+          {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
         </div>
       </form>
     </details>

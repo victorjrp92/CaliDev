@@ -194,6 +194,21 @@ export async function lineaDeTiempo(id: number, limite = 100): Promise<Hito[]> {
     const r = await opcional("contactos", () => sql<{ id: number; created_at: string; mensaje: string }>`SELECT id, created_at, mensaje FROM contactos WHERE id = ANY(${contactos})`);
     for (const c of r) hitos.push({ at: c.created_at, tipo: "contacto", titulo: "Escribió por el formulario de contacto", detalle: c.mensaje, entidad: "contacto", entidad_id: String(c.id) });
   }
+  const firmantes = de("contrato_firmantes").map(Number).filter(Number.isFinite);
+  if (firmantes.length) {
+    const r = await opcional("contrato_firmantes", () => sql<{ id: number; contrato_id: number; titulo: string; creado: string; abierto_at: string | null; firmado_at: string | null }>`
+      SELECT f.id, f.contrato_id, c.titulo, c.created_at AS creado, f.abierto_at, f.firmado_at
+      FROM contrato_firmantes f JOIN contratos c ON c.id = f.contrato_id WHERE f.id = ANY(${firmantes})`);
+    for (const f of r) {
+      const ent = { entidad: "contrato", entidad_id: String(f.contrato_id) };
+      hitos.push({ at: f.creado, tipo: "contrato", titulo: "Contrato creado", detalle: f.titulo, ...ent });
+      if (f.abierto_at) hitos.push({ at: f.abierto_at, tipo: "contrato", titulo: "Abrió el contrato", detalle: f.titulo, ...ent });
+      if (f.firmado_at) hitos.push({ at: f.firmado_at, tipo: "contrato", titulo: "Firmó el contrato", detalle: f.titulo, ...ent });
+    }
+    const envios = await sql<{ id: number; contrato_id: number; correo: string; ok: boolean; at: string }>`
+      SELECT id, contrato_id, correo, ok, at FROM crm_contrato_envios WHERE firmante_id = ANY(${firmantes})`;
+    for (const e of envios.rows) hitos.push({ at: e.at, tipo: "contrato", titulo: e.ok ? "Enlace de firma enviado" : "Falló el envío del enlace", detalle: e.correo, entidad: "contrato", entidad_id: String(e.contrato_id) });
+  }
   if (p.igsid) {
     const r = await opcional("social_mensajes", () => sql<{ id: string; texto: string | null; nuestro: boolean; ts: string }>`
       SELECT id, texto, nuestro, ts FROM social_mensajes WHERE igsid = ${p.igsid} ORDER BY ts DESC LIMIT 30`);

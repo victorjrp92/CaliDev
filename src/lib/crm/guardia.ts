@@ -36,9 +36,9 @@ async function actorPorClave(bearer: string): Promise<Actor> {
   const c = r.rows[0];
   // Se compara aunque no exista la fila, con un hash de relleno, para no delatar prefijos por el tiempo.
   const ok = secretoCorrecto(partes.secreto, c?.hash ?? "0".repeat(64));
-  if (!c || !ok) throw new ErrorCrm(401, "clave_invalida", "Clave desconocida. Pide una nueva en Ajustes → Claves.");
-  if (c.revocada_at) throw new ErrorCrm(401, "clave_revocada", "Esta clave fue revocada. Pide una nueva en Ajustes → Claves.");
-  if (c.expira_at && Date.parse(c.expira_at) < Date.now()) throw new ErrorCrm(401, "clave_vencida", "Esta clave venció. Pide una nueva en Ajustes → Claves.");
+  if (!c || !ok) throw new ErrorCrm(401, "clave_invalida", "Clave desconocida. Pide una nueva en Agentes → Claves.");
+  if (c.revocada_at) throw new ErrorCrm(401, "clave_revocada", "Esta clave fue revocada. Pide una nueva en Agentes → Claves.");
+  if (c.expira_at && Date.parse(c.expira_at) < Date.now()) throw new ErrorCrm(401, "clave_vencida", "Esta clave venció. Pide una nueva en Agentes → Claves.");
   const u = await usuarioPorId(c.usuario_id);
   if (!u || !u.activo) throw new ErrorCrm(401, "usuario_inactivo", "El usuario de esta clave está desactivado.");
   sql`UPDATE crm_claves SET ultimo_uso_at = NOW() WHERE id = ${c.id}`.catch(() => {});

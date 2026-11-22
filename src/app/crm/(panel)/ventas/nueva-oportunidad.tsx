@@ -34,7 +34,7 @@ export function NuevaOportunidad({ personas, personaInicial, fechaInicial, preci
 
   return (
     <details open={abierta} className="bloque group px-4 py-3">
-      <summary className="cursor-pointer select-none font-semibold text-[var(--verde)]">Nueva oportunidad</summary>
+      <summary className="cursor-pointer select-none font-semibold text-[var(--acento-texto)]">Nueva oportunidad</summary>
       <form onSubmit={crear} className="mt-4 grid gap-4 sm:grid-cols-2">
         <Campo etiqueta="Título" className="sm:col-span-2">
           <input required maxLength={200} value={f.titulo} onChange={pon("titulo")} placeholder="ServiNomic para Limpia Express" className="campo" />
@@ -66,7 +66,7 @@ export function NuevaOportunidad({ personas, personaInicial, fechaInicial, preci
         )}
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
           <button type="submit" disabled={enviando} className="boton-principal">{enviando ? "Creando…" : "Crear oportunidad"}</button>
-          {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+          {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
         </div>
       </form>
     </details>

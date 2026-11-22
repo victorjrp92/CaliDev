@@ -24,14 +24,14 @@ export function FormularioEntrar() {
   }
 
   return (
-    <form onSubmit={entrar} className="mt-8 flex flex-col gap-4">
+    <form onSubmit={entrar} className="mt-6 flex flex-col gap-4">
       <Campo etiqueta="Correo">
         <input type="email" required autoComplete="username" value={correo} onChange={(e) => setCorreo(e.target.value)} className="campo" />
       </Campo>
       <Campo etiqueta="Contraseña">
         <input type="password" required autoComplete="current-password" value={contrasena} onChange={(e) => setContrasena(e.target.value)} className="campo" />
       </Campo>
-      {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+      {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       <button type="submit" disabled={enviando} className="boton-principal mt-2">
         {enviando ? "Entrando…" : "Entrar"}
       </button>

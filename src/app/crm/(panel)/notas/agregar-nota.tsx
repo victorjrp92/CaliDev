@@ -33,7 +33,7 @@ export function AgregarNota({ entidad, id }: { entidad: string; id: number }) {
           {TIPOS.map((x) => <option key={x.v} value={x.v}>{x.t}</option>)}
         </select>
         <button type="submit" disabled={enviando || !cuerpo.trim()} className="boton-chico" data-tono="si">{enviando ? "Guardando…" : "Guardar nota"}</button>
-        {error && <p role="alert" className="text-[13px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[13px] text-[var(--peligro)]">{error}</p>}
       </div>
     </form>
   );

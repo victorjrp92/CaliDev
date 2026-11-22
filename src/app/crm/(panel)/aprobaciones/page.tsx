@@ -4,50 +4,70 @@ import { listarAprobaciones } from "@/lib/crm/aprobaciones";
 import { listarAuditoria } from "@/lib/crm/auditoria";
 import { actorDePagina, tiene } from "@/lib/crm/pagina";
 import { Registro } from "../auditoria/registro";
+import { BarraSeccion } from "../barra-seccion";
+import { Cuerpo } from "../cuerpo";
 import { SinPermiso } from "../sin-permiso";
 import { Vacio } from "../vacio";
 import { TarjetaAprobacion } from "./tarjeta-aprobacion";
 
 export const metadata: Metadata = { title: "Aprobaciones" };
 
-const ESTADOS = ["pendiente", "ejecutada", "aprobada", "rechazada", "fallida", "todas"] as const;
+const ESTADOS = ["ejecutada", "aprobada", "rechazada", "fallida", "todas"] as const;
 const NOMBRE: Record<(typeof ESTADOS)[number], string> = {
-  pendiente: "Pendientes", ejecutada: "Ejecutadas", aprobada: "Aprobadas", rechazada: "Rechazadas", fallida: "Fallidas", todas: "Todas",
+  ejecutada: "Ejecutadas", aprobada: "Aprobadas", rechazada: "Rechazadas", fallida: "Fallidas", todas: "Todas",
 };
+const SUBTITULO = "Nada de lo que un agente quiere mandar hacia afuera sale sin tu visto bueno; lo que corrijas es lo que sale.";
+
+type Props = { searchParams: Promise<{ vista?: string; estado?: string }> };
 
 /**
  * La cola: todo lo que un agente quiere hacer hacia afuera (mandar un mensaje,
  * un contrato, un cobro) espera aquí a que Victor o Karen lo vean tal cual.
  */
-export default async function AprobacionesPagina({ searchParams }: { searchParams: Promise<{ estado?: string }> }) {
+export default async function AprobacionesPagina({ searchParams }: Props) {
   const a = await actorDePagina();
-  if (!tiene(a, "aprobaciones:leer")) return <SinPermiso que="las aprobaciones" />;
-  const pedido = (await searchParams).estado;
-  const estado = ESTADOS.find((e) => e === pedido) ?? "pendiente";
-  const [lista, registro] = await Promise.all([
-    listarAprobaciones(estado === "todas" ? null : estado, 200),
-    tiene(a, "auditoria:leer") ? listarAuditoria({ entidad: "aprobacion", limite: 50 }) : Promise.resolve(null),
-  ]);
+  if (!tiene(a, "aprobaciones:leer")) return <><BarraSeccion titulo="Aprobaciones" /><Cuerpo><SinPermiso que="las aprobaciones" /></Cuerpo></>;
+  const sp = await searchParams;
+  const auditoria = tiene(a, "auditoria:leer");
+  const vista = sp.vista === "historial" || (sp.vista === "auditoria" && auditoria) ? sp.vista : "pendientes";
+  const estado = ESTADOS.find((e) => e === sp.estado) ?? "todas";
   const decidir = tiene(a, "aprobaciones:decidir") && a.usuario.tipo === "humano";
 
+  const [pendientes, historial, registro] = await Promise.all([
+    listarAprobaciones("pendiente", 200),
+    vista === "historial" ? listarAprobaciones(estado === "todas" ? null : estado, 200) : Promise.resolve([]),
+    vista === "auditoria" ? listarAuditoria({ entidad: "aprobacion", limite: 100 }) : Promise.resolve([]),
+  ]);
+  const segmentos = [
+    { href: "/crm/aprobaciones", etiqueta: "Pendientes", cuenta: pendientes.length, activo: vista === "pendientes" },
+    { href: "/crm/aprobaciones?vista=historial", etiqueta: "Historial", activo: vista === "historial" },
+    ...(auditoria ? [{ href: "/crm/aprobaciones?vista=auditoria", etiqueta: "Auditoría", activo: vista === "auditoria" }] : []),
+  ];
+
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-[26px] font-extrabold tracking-tight md:text-[32px]">Aprobaciones</h1>
-        <p className="max-w-prose text-[15px] text-[#46554D]">Lo que un agente quiere mandar hacia afuera. Nada sale sin que lo apruebes; lo que corrijas es lo que sale.</p>
-      </header>
-      <nav aria-label="Filtrar por estado" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
-        {ESTADOS.map((e) => (
-          <Link key={e} href={e === "pendiente" ? "/crm/aprobaciones" : `/crm/aprobaciones?estado=${e}`} aria-current={e === estado ? "page" : undefined}
-            className={`chip shrink-0 ${e === estado ? "!bg-[var(--verde)] !text-[var(--hueso)]" : ""}`}>{NOMBRE[e]}</Link>
-        ))}
-      </nav>
-      {lista.length ? (
-        <div className="flex flex-col gap-4">{lista.map((x) => <TarjetaAprobacion key={x.id} a={x} decidir={decidir} />)}</div>
-      ) : (
-        <Vacio>{estado === "pendiente" ? "Nada esperando tu decisión." : `No hay aprobaciones ${NOMBRE[estado].toLowerCase()}.`}</Vacio>
-      )}
-      {registro && <Registro filas={registro} titulo="Registro de decisiones" />}
-    </div>
+    <>
+      <BarraSeccion titulo="Aprobaciones" subtitulo={SUBTITULO} segmentos={segmentos} />
+      <Cuerpo>
+        {vista === "pendientes" && (pendientes.length
+          ? <div className="flex flex-col gap-4">{pendientes.map((x) => <TarjetaAprobacion key={x.id} a={x} decidir={decidir} />)}</div>
+          : <Vacio>Nada esperando tu decisión.</Vacio>)}
+
+        {vista === "historial" && (
+          <>
+            <nav aria-label="Filtrar por estado" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+              {ESTADOS.map((e) => (
+                <Link key={e} href={e === "todas" ? "/crm/aprobaciones?vista=historial" : `/crm/aprobaciones?vista=historial&estado=${e}`} aria-current={e === estado ? "page" : undefined}
+                  className={`chip shrink-0 ${e === estado ? "!bg-[var(--acento)] !text-[var(--sobre-acento)]" : ""}`}>{NOMBRE[e]}</Link>
+              ))}
+            </nav>
+            {historial.length
+              ? <div className="flex flex-col gap-4">{historial.filter((x) => x.estado !== "pendiente").map((x) => <TarjetaAprobacion key={x.id} a={x} decidir={false} />)}</div>
+              : <Vacio>{estado === "todas" ? "Todavía no hay decisiones." : `No hay aprobaciones ${NOMBRE[estado].toLowerCase()}.`}</Vacio>}
+          </>
+        )}
+
+        {vista === "auditoria" && <Registro filas={registro} plegado={false} />}
+      </Cuerpo>
+    </>
   );
 }

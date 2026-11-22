@@ -44,7 +44,7 @@ export async function sembrarHumanos(correos: Partial<Record<ClaveSembrada, stri
       const token = (await crearUsuario(null, { nombre: p.nombre, correo, tipo: "humano", rol: p.rol })).invitacion!;
       salida.push(fila("creada", `Creada como ${p.rol}.`, token));
     } else if (u.tipo !== "humano" || u.rol !== p.rol) {
-      salida.push(fila("otro_rol", `Ya existe como ${u.tipo}/${u.rol}, no ${p.rol}. No se cambia; revísalo en Ajustes.`, null));
+      salida.push(fila("otro_rol", `Ya existe como ${u.tipo}/${u.rol}, no ${p.rol}. No se cambia; revísalo en Agentes.`, null));
     } else if (u.hash_clave) {
       salida.push(fila("ya_entro", "Ya eligió contraseña. No se toca.", null));
     } else {

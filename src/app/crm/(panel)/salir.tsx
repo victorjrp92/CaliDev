@@ -8,7 +8,7 @@ export function Salir() {
     window.location.assign("/crm/entrar");
   }
   return (
-    <button type="button" onClick={salir} className="rounded px-1 text-[var(--hueso)]/80 underline-offset-4 hover:text-[var(--hueso)] hover:underline">
+    <button type="button" onClick={salir} className="boton boton-sec">
       Salir
     </button>
   );

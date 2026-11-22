@@ -34,7 +34,7 @@ export function DecidirAprobacion({ id, payload }: { id: number; payload: Record
   return (
     <div className="flex flex-col gap-4">
       <details>
-        <summary className="cursor-pointer select-none text-[14px] font-semibold text-[var(--verde)]">Ver o corregir los datos exactos{texto !== original ? " · editado" : ""}</summary>
+        <summary className="cursor-pointer select-none text-[14px] font-semibold text-[var(--acento-texto)]">Ver o corregir los datos exactos{texto !== original ? " · editado" : ""}</summary>
         <textarea value={texto} onChange={(e) => setTexto(e.target.value)} rows={Math.min(16, original.split("\n").length + 1)} spellCheck={false}
           className="campo mono mt-3 w-full text-[13px] leading-relaxed !normal-case !tracking-normal" aria-label="Datos de la acción en JSON" />
       </details>
@@ -44,7 +44,7 @@ export function DecidirAprobacion({ id, payload }: { id: number; payload: Record
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" disabled={enviando} onClick={() => decidir("aprobar")} className="boton-principal">{enviando ? "Guardando…" : texto !== original ? "Aprobar con cambios" : "Aprobar"}</button>
         <button type="button" disabled={enviando} onClick={() => decidir("rechazar")} className="boton-secundario">Rechazar</button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
     </div>
   );

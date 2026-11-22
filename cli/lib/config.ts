@@ -29,7 +29,7 @@ function leerArchivo(): Partial<Config> {
 export function leerConfig(): Config {
   const f = leerArchivo();
   const clave = process.env.CALIDEV_CLAVE || f.clave;
-  if (!clave) throw new ErrorCli(SALIDA.otro, "sin_clave", "No hay clave. Crea una en calidev.dev/crm/ajustes y corre: calidev login");
+  if (!clave) throw new ErrorCli(SALIDA.otro, "sin_clave", "No hay clave. Crea una en calidev.dev/crm/agentes y corre: calidev login");
   return { url: limpiarUrl(process.env.CALIDEV_URL || f.url || URL_POR_DEFECTO), clave };
 }
 

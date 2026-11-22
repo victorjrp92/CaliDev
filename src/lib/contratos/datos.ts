@@ -57,7 +57,8 @@ export type Firmante = {
 };
 
 let tabla: Promise<unknown> | null = null;
-function asegurarTabla() {
+/** Crea `contratos` y `contrato_firmantes` si faltan. La exporta para el CRM, que las lee con sus propios JOIN. */
+export function asegurarTabla() {
   tabla ??= (async () => {
     await sql`
       CREATE TABLE IF NOT EXISTS contratos (

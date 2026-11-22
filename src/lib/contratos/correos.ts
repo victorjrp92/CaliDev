@@ -84,3 +84,25 @@ export function correoCompleto(f: Firmante, contrato: Contrato): Correo {
     ),
   };
 }
+
+/**
+ * El enlace de firma para una persona. Lo manda el CRM (directo si lo pide un
+ * humano con `contrato:enviar`, o al aprobarse si lo pidió un agente). El
+ * código de verificación no va aquí: lo pide la persona al firmar.
+ */
+export function correoEnlace(f: Firmante, contrato: Contrato, para: string, nombre: string | null): Correo {
+  const enlace = enlaceFirmante(f);
+  const hola = nombre?.trim() ? `Hola ${nombre.trim()}.` : "Hola.";
+  return {
+    para,
+    asunto: `Para firmar: ${contrato.titulo}`,
+    texto: `${hola}\n\nAquí está el contrato «${contrato.titulo}» para que lo leas y lo firmes: ${enlace}\n\nAl firmar te pedimos tus datos y un código que te llega a este correo. Es tu enlace personal: no lo reenvíes.\n\nCaliDev`,
+    html: envolver(
+      `<p>${escapar(hola)}</p>
+       <p>Aquí está <b>${escapar(contrato.titulo)}</b> para que lo leas y lo firmes:</p>
+       <p><a href="${enlace}" ${ENLACE}>Leer y firmar el contrato</a></p>
+       <p>Al firmar te pedimos tus datos y un código que te llega a este correo. Es tu enlace personal: no lo reenvíes.</p>
+       <p>CaliDev</p>`
+    ),
+  };
+}

@@ -216,4 +216,33 @@ async function crear() {
       resultado JSONB
     )`;
   await sql`CREATE INDEX IF NOT EXISTS crm_aprobaciones_estado ON crm_aprobaciones (estado, created_at)`;
+
+  // Contratos (1b). El texto y las firmas siguen en las tablas viejas
+  // `contratos` y `contrato_firmantes`; aquí solo se une cada contrato con su
+  // oportunidad, persona y empresa. Sin FK a `contratos`: esa tabla la crea su
+  // propio módulo y puede no existir todavía cuando corre este esquema.
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_contratos (
+      contrato_id INT PRIMARY KEY,
+      oportunidad_id INT REFERENCES crm_oportunidades(id),
+      persona_id INT REFERENCES crm_personas(id),
+      empresa_id INT REFERENCES crm_empresas(id),
+      plantilla TEXT NOT NULL,
+      creado_por INT REFERENCES crm_usuarios(id),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_contratos_oportunidad ON crm_contratos (oportunidad_id)`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_contratos_persona ON crm_contratos (persona_id)`;
+  // Cada envío del enlace de firma por correo, salga o no.
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_contrato_envios (
+      id SERIAL PRIMARY KEY,
+      contrato_id INT NOT NULL,
+      firmante_id INT NOT NULL,
+      correo TEXT NOT NULL,
+      enviado_por INT REFERENCES crm_usuarios(id),
+      ok BOOLEAN NOT NULL,
+      at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_contrato_envios_contrato ON crm_contrato_envios (contrato_id, at)`;
 }

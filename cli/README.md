@@ -8,7 +8,7 @@ Necesita Node 22.18 o superior (corre el TypeScript directo, sin compilar).
 
 ```sh
 cd cli && npm link
-calidev login          # pega la clave cdv_… creada en /crm/ajustes
+calidev login          # pega la clave cdv_… creada en /crm/agentes
 calidev hoy
 ```
 

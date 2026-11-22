@@ -48,7 +48,7 @@ export function MoverEtapa({ id, etapa, paso, fecha, puedeGanar }: { id: number;
       )}
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button type="submit" disabled={enviando} className="boton-principal">{enviando ? "Guardando…" : a === etapa ? "Guardar próximo paso" : `Mover a ${NOMBRE_ETAPA[a]}`}</button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
     </form>
   );

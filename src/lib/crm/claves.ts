@@ -2,7 +2,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 
 /**
  * Claves de agente y de CLI: `cdv_<prefijo>_<secreto>`. El prefijo se guarda
- * visible para encontrar la fila y mostrarla en Ajustes; del secreto solo se
+ * visible para encontrar la fila y mostrarla en Agentes; del secreto solo se
  * guarda el hash. El secreto tiene 32 bytes al azar, así que basta un SHA-256
  * (bcrypt es para contraseñas que una persona puede adivinar).
  */

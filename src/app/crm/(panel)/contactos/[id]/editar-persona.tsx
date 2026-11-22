@@ -32,7 +32,7 @@ export function EditarPersona({ id, inicial }: { id: number; inicial: Valores })
       <Campo etiqueta="Notas" className="sm:col-span-2"><textarea rows={3} maxLength={5000} value={f.notas} onChange={pon("notas")} className="campo" /></Campo>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button type="submit" disabled={enviando} className="boton-secundario">{enviando ? "Guardando…" : "Guardar cambios"}</button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
     </form>
   );

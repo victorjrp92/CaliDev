@@ -9,5 +9,5 @@ export const POST = api(async (request) => {
   return conSesion(u, { usuario: { id: u.id, nombre: u.nombre, rol: u.rol } });
 });
 
-/** Salir: borra la cookie de este navegador. Para cerrar todas, Ajustes → Cerrar sesiones. */
+/** Salir: borra la cookie de este navegador. Para cerrar todas, Agentes → Equipo → Cerrar sesiones. */
 export const DELETE = api(async () => sinSesion());

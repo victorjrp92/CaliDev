@@ -7,46 +7,36 @@ import type { Embudo } from "@/lib/crm/hoy";
  */
 export function MetaSemana({ e }: { e: Embudo }) {
   const pasos = [
-    { n: e.conversaciones, t: "conversaciones" },
-    { n: e.calificados, t: "calificados" },
-    { n: e.diagnosticos_agendados, t: "diagnósticos agendados" },
-    { n: e.diagnosticos_hechos, t: "diagnósticos hechos" },
-    { n: e.propuestas, t: "propuestas" },
+    { n: e.conversaciones, t: "Conversaciones" },
+    { n: e.calificados, t: "Calificados" },
+    { n: e.diagnosticos_agendados, t: "Diagnósticos agendados" },
+    { n: e.diagnosticos_hechos, t: "Diagnósticos hechos" },
+    { n: e.propuestas, t: "Propuestas" },
   ];
-  const faltan = Math.max(e.meta.cierresNecesariosMes - e.cierres_mes, 0);
+  const tope = Math.max(...pasos.map((p) => p.n), 1);
   const mesMeta = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${e.meta.mes}-15T00:00:00Z`));
+  const semana = e.meta.diagnosticos_semana_necesarios;
   return (
-    <section className="overflow-hidden rounded-2xl bg-[var(--azul)] text-[var(--niebla)]">
-      <div className="flex flex-col gap-1 px-5 pt-5">
-        <p className="mono text-[var(--lima)]">Esta semana</p>
-        <p className="text-[14.5px] text-[var(--niebla)]/80">
-          Meta: COP 20 M al mes en {mesMeta}. Hacen falta unos {e.meta.cierresNecesariosMes} cierres al mes (hoy la base son {e.meta.cierresBaseMes}).
-        </p>
+    <section className="panel flex flex-col gap-4 px-[18px] pb-[18px] pt-4" aria-labelledby="t-embudo">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="t-embudo" className="titulo-2">Embudo de la semana</h2>
+        <span className="nota num">
+          Cierres del mes: {e.cierres_mes} de {e.meta.cierresNecesariosMes} necesarios
+          {semana !== null
+            ? ` · hacen falta ${semana} diagnósticos por semana (cierre ${Math.round((e.tasa_cierre ?? 0) * 100)} %)`
+            : " · aún no hay diagnósticos registrados para calcular la tasa de cierre"}
+        </span>
       </div>
-      <ol className="grid grid-cols-2 gap-px bg-white/10 sm:grid-cols-5 mt-4">
+      <div className="flex flex-wrap gap-5">
         {pasos.map((p) => (
-          <li key={p.t} className="flex flex-col gap-1 bg-[var(--azul)] px-5 py-4">
-            <span className="cifra text-[28px] font-extrabold leading-none text-[var(--hueso)]">{p.n}</span>
-            <span className="text-[13px] text-[var(--niebla)]/75">{p.t}</span>
-          </li>
+          <div key={p.t} className="flex min-w-0 flex-[1_1_130px] flex-col gap-1.5">
+            <span className="numero-grande">{p.n}</span>
+            <span className="nota">{p.t}</span>
+            <span className="riel" aria-hidden="true"><span style={{ width: `${Math.round((p.n / tope) * 100)}%` }} /></span>
+          </div>
         ))}
-      </ol>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 px-5 py-4 text-[14px]">
-        <span>
-          <strong className="cifra text-[var(--hueso)]">{e.cierres_mes}</strong> cierres este mes
-          {faltan > 0 ? <> · faltan <strong className="cifra text-[var(--lima)]">{faltan}</strong></> : <> · <strong className="text-[var(--lima)]">meta del mes cumplida</strong></>}
-        </span>
-        <span>
-          {e.meta.diagnosticos_semana_necesarios !== null ? (
-            <>
-              Diagnósticos por semana necesarios: <strong className="cifra text-[var(--hueso)]">{e.meta.diagnosticos_semana_necesarios}</strong>
-              {" "}(tasa de cierre {Math.round((e.tasa_cierre ?? 0) * 100)} %)
-            </>
-          ) : (
-            "Aún no hay diagnósticos registrados para calcular la tasa de cierre."
-          )}
-        </span>
       </div>
+      <p className="nota">Meta: COP 20 M al mes en {mesMeta}; con la base de hoy ({e.meta.cierresBaseMes} cierres al mes) no alcanza.</p>
     </section>
   );
 }

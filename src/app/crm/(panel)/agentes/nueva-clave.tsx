@@ -46,7 +46,7 @@ export function NuevaClave({ yo, usuarios }: { yo: number; usuarios: { id: numbe
       </Campo>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button type="submit" disabled={enviando} className="boton-principal">{enviando ? "Creando…" : "Crear clave"}</button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
       {clave && <div className="sm:col-span-2"><MostrarUnaVez titulo="Clave nueva" valor={clave} aviso="Guárdala ahora: no se vuelve a mostrar." /></div>}
     </form>

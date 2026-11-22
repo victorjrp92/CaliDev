@@ -20,7 +20,10 @@ const nextConfig: NextConfig = {
   // El panel viejo de leads vive ahora en el CRM. Solo la página: las rutas
   // hijas (/servinomic/leads/agendar, /contratos…) siguen sirviendo al CRM.
   async redirects() {
-    return [{ source: "/servinomic/leads", destination: "/crm/ventas", permanent: true }];
+    return [
+      { source: "/servinomic/leads", destination: "/crm/ventas", permanent: true },
+      { source: "/servinomic/contratos", destination: "/crm/contratos", permanent: true },
+    ];
   },
 };
 

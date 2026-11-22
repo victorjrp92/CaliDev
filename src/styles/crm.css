@@ -1,61 +1,264 @@
 /**
- * Piezas del CRM que se repiten en todas las pantallas. Todo sale de la paleta
- * SEÑAL (senal.css): el lima solo como relleno con tinta encima, nunca texto.
+ * CRM de Calidev. Lenguaje Apple: fuente del sistema, materiales translúcidos
+ * en el menú y la barra, control segmentado por sección y el verde de Calidev
+ * como único acento. Claro y oscuro salen de los mismos tokens; los
+ * componentes nunca usan un color literal.
+ *
+ * Contrastes (WCAG) del texto sobre su fondo:
+ *   claro  texto/lienzo 16.4 · texto-2/lienzo 6.6 · acento-texto/lienzo 6.9
+ *   oscuro texto/lienzo 14.9 · texto-2/lienzo 6.9 · acento-texto/lienzo 9.8
  */
-.senal .campo {
-  width: 100%;
-  min-height: 2.75rem;
-  border-radius: 0.75rem;
-  border: 1.5px solid var(--linea-tinta);
-  background: #fff;
-  padding: 0.55rem 0.85rem;
-  font-size: 15px;
-  color: var(--tinta);
+.crm {
+  --suelo: #ECEEEA;
+  --suelo-solido: #F1F2EF;
+  --contenido: #F7F8F6;
+  --material: rgba(241, 243, 239, 0.78);
+  --material-barra: rgba(247, 248, 246, 0.8);
+  --lienzo: #FFFFFF;
+  --texto: #1A1D1B;
+  --texto-2: #575E59;
+  --linea: rgba(26, 40, 32, 0.1);
+  --relleno: rgba(26, 40, 32, 0.07);
+  --hover: rgba(26, 40, 32, 0.045);
+  --seg-activo: #FFFFFF;
+  --columna: rgba(26, 40, 32, 0.045);
+  --acento: #17784F;
+  --acento-texto: #136843;
+  --acento-suave: rgba(23, 120, 79, 0.13);
+  --sobre-acento: #FFFFFF;
+  --ok: #136843;
+  --ok-fondo: rgba(23, 120, 79, 0.12);
+  --aviso: #8A4B00;
+  --aviso-fondo: rgba(255, 149, 0, 0.17);
+  --info: #0B5CAD;
+  --info-fondo: rgba(10, 132, 255, 0.12);
+  --peligro: #B42318;
+  --peligro-fondo: rgba(220, 38, 38, 0.1);
+  --sombra: 0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --fuente: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --fuente-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+
+  color-scheme: light;
+  font-family: var(--fuente);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--texto);
+  background: var(--suelo);
+  -webkit-font-smoothing: antialiased;
 }
-.senal textarea.campo { min-height: 5.5rem; line-height: 1.5; }
-.senal .campo:focus-visible { outline: 2px solid var(--verde); outline-offset: 1px; border-color: var(--verde); }
 
-.senal .boton-principal,
-.senal .boton-secundario,
-.senal .boton-chico {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+@media (prefers-color-scheme: dark) {
+  .crm {
+    --suelo: #121413;
+    --suelo-solido: #1A1C1B;
+    --contenido: #161817;
+    --material: rgba(32, 35, 33, 0.78);
+    --material-barra: rgba(24, 26, 25, 0.8);
+    --lienzo: #1E2120;
+    --texto: #F1F3F1;
+    --texto-2: #A3AAA5;
+    --linea: rgba(255, 255, 255, 0.09);
+    --relleno: rgba(255, 255, 255, 0.08);
+    --hover: rgba(255, 255, 255, 0.05);
+    --seg-activo: #3A3E3C;
+    --columna: rgba(255, 255, 255, 0.035);
+    --acento: #3FCB8A;
+    --acento-texto: #5FD9A0;
+    --acento-suave: rgba(63, 203, 138, 0.16);
+    --sobre-acento: #05140C;
+    --ok: #5FD9A0;
+    --ok-fondo: rgba(63, 203, 138, 0.14);
+    --aviso: #FFB547;
+    --aviso-fondo: rgba(255, 159, 10, 0.16);
+    --info: #6CB4FF;
+    --info-fondo: rgba(10, 132, 255, 0.18);
+    --peligro: #FF8A80;
+    --peligro-fondo: rgba(255, 69, 58, 0.16);
+    --sombra: 0 0 0 0.5px rgba(255, 255, 255, 0.07);
+    color-scheme: dark;
+  }
 }
-.senal .boton-principal { min-height: 2.75rem; padding: 0 1.25rem; background: var(--verde); color: var(--hueso); font-size: 15px; }
-.senal .boton-principal:hover { background: var(--verde-hondo); }
-.senal .boton-secundario { min-height: 2.75rem; padding: 0 1.1rem; border: 1.5px solid var(--verde); color: var(--verde); font-size: 15px; }
-.senal .boton-secundario:hover { background: var(--niebla); }
-.senal .boton-chico { min-height: 2.25rem; padding: 0 0.8rem; border: 1.5px solid var(--linea-tinta); color: var(--tinta); font-size: 13.5px; background: #fff; }
-.senal .boton-chico:hover { border-color: var(--verde); }
-.senal .boton-chico[data-tono="si"] { background: var(--lima); border-color: var(--lima); color: var(--tinta); }
-.senal .boton-chico[data-tono="no"] { color: #B42318; }
-.senal :is(.boton-principal, .boton-secundario, .boton-chico):disabled { opacity: 0.55; cursor: wait; }
-.senal :is(.boton-principal, .boton-secundario, .boton-chico, a):focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
 
-/* Bloque de contenido: borde fino, sin sombra. Lo que pide atención lleva la franja. */
-.senal .bloque { border: 1px solid var(--linea-tinta); border-radius: 1rem; background: #fff; }
+/* Piezas ajenas al CRM (la Nueva cita de ServiNomic) traen colores fijos de
+   fondo claro: se pintan siempre en claro para que su texto se lea. */
+.crm .siempre-claro { color-scheme: light; color: #1A1D1B; }
 
-.senal .chip {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 0.15rem 0.55rem;
-  font-family: var(--font-plex), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: var(--niebla);
-  color: var(--tinta);
-  white-space: nowrap;
+.crm a { color: var(--acento-texto); text-decoration: none; }
+.crm a:hover { color: var(--texto); }
+.crm :focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.crm .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Marco: menú lateral + contenido ─────────────────────────────────── */
+.crm .marco { display: flex; flex-wrap: wrap; align-items: stretch; min-height: 100dvh; }
+.crm .lateral {
+  flex: 1 1 248px;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 16px 10px;
+  position: sticky; top: 0; align-self: flex-start; height: 100dvh; overflow-y: auto;
+  background: var(--material);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  border-right: 1px solid var(--linea);
 }
-.senal .chip[data-tono="lima"] { background: var(--lima); }
-.senal .chip[data-tono="alerta"] { background: #FDE7E4; color: #8A1C12; }
-.senal .chip[data-tono="verde"] { background: var(--verde); color: var(--hueso); }
+.crm .principal { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; background: var(--contenido); }
+.crm .marca { display: flex; align-items: center; gap: 10px; padding: 2px 8px; color: var(--texto); }
+.crm .marca:hover { color: var(--texto); }
+.crm .marca-nombre { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
 
-.senal .cifra { font-variant-numeric: tabular-nums; }
+.crm .buscador {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 10px; min-height: 34px; border-radius: 9px;
+  background: var(--relleno); color: var(--texto-2);
+}
+.crm .buscador:focus-within { box-shadow: 0 0 0 3px var(--acento-suave); }
+.crm .buscador input { border: 0; background: transparent; font: inherit; font-size: 13px; color: var(--texto); outline: none; flex: 1; min-width: 0; }
+.crm .buscador input::placeholder { color: var(--texto-2); }
+
+.crm .nav { display: flex; flex-direction: column; gap: 2px; }
+.crm .grupo { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); padding: 14px 10px 4px; margin: 0; }
+.crm .nav-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; min-height: 36px; padding: 7px 10px; border-radius: 8px;
+  font-size: 14px; color: var(--texto);
+  transition: background-color 0.15s ease, transform 0.1s ease-out;
+}
+.crm .nav-item svg { color: var(--acento-texto); flex: none; }
+.crm a.nav-item:hover { background: var(--hover); color: var(--texto); }
+.crm a.nav-item:active { transform: scale(0.98); background: var(--relleno); }
+.crm .nav-item[aria-current="page"] { background: var(--acento-suave); font-weight: 600; }
+.crm .nav-item.pronto, .crm .nav-item.pronto svg { color: var(--texto-2); cursor: default; }
+.crm .contador { margin-left: auto; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--texto-2); }
+.crm .etq-pronto { margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; padding: 2px 7px; border-radius: 999px; background: var(--relleno); color: var(--texto-2); }
+
+.crm .pie-lateral { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; border-top: 1px solid var(--linea); }
+.crm .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--acento-suave); color: var(--acento-texto); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none; }
+.crm .quien { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+/* ── Barra de la sección: título, submenú segmentado y acción ───────── */
+.crm .barra {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+  padding: 16px 28px;
+  background: var(--material-barra);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--linea);
+}
+.crm .barra-titulos { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 240px; }
+.crm .barra-acciones { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.crm .volver { font-size: 13px; font-weight: 600; width: fit-content; }
+.crm .cuerpo { padding: 24px 28px 56px; display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 1240px; }
+
+.crm .segmentado { display: inline-flex; flex-wrap: wrap; padding: 2px; border-radius: 9px; background: var(--relleno); gap: 2px; }
+.crm .seg {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--texto);
+  padding: 6px 14px; min-height: 32px; border-radius: 7px;
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease-out;
+}
+.crm .seg:hover { background: var(--hover); color: var(--texto); }
+.crm .seg:active { transform: scale(0.97); }
+.crm .seg[aria-current="page"] { background: var(--seg-activo); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.06); font-weight: 600; }
+.crm .seg .num { color: var(--texto-2); font-weight: 500; }
+
+/* ── Tipografía ──────────────────────────────────────────────────────── */
+.crm .titulo-grande { font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.022em; margin: 0; text-wrap: balance; overflow-wrap: anywhere; }
+.crm .titulo-2 { font-size: 17px; line-height: 1.25; font-weight: 600; letter-spacing: -0.012em; margin: 0; }
+.crm .titulo-3 { font-size: 13px; line-height: 1.3; font-weight: 600; margin: 0; }
+.crm .nota { font-size: 12.5px; color: var(--texto-2); margin: 0; }
+.crm .fuerte { font-size: 14px; font-weight: 600; color: var(--texto); }
+.crm .num, .crm .cifra { font-variant-numeric: tabular-nums; }
+.crm .numero-grande { font-size: 28px; font-weight: 700; letter-spacing: -0.022em; line-height: 1; font-variant-numeric: tabular-nums; }
+.crm .mono { font-family: var(--fuente-mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ── Superficies y filas ─────────────────────────────────────────────── */
+.crm .panel { background: var(--lienzo); border-radius: 14px; box-shadow: var(--sombra); }
+.crm .bloque { background: var(--lienzo); border-radius: 14px; box-shadow: var(--sombra); overflow: hidden; }
+.crm .panel-cabeza { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 18px 12px; }
+.crm .fila { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-top: 1px solid var(--linea); color: var(--texto); }
+.crm a.fila:hover { background: var(--hover); color: var(--texto); }
+.crm .hora { font-size: 15px; font-weight: 600; width: 48px; flex: none; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.crm .subgrupo { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); padding: 14px 18px 6px; display: flex; justify-content: space-between; margin: 0; }
+.crm .fila-enlace {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 18px; min-height: 44px;
+  color: var(--texto); border-top: 1px solid var(--linea);
+  transition: background-color 0.15s ease;
+}
+.crm .fila-enlace:hover { background: var(--hover); color: var(--texto); }
+.crm .fila-enlace:active { background: var(--relleno); }
+.crm .fila-enlace > svg { color: var(--texto-2); flex: none; }
+.crm .riel { display: block; height: 6px; border-radius: 3px; background: var(--relleno); overflow: hidden; }
+.crm .riel > span { display: block; height: 100%; background: var(--acento); border-radius: 3px; }
+
+.crm .pill { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.crm .pill-ok { background: var(--ok-fondo); color: var(--ok); }
+.crm .pill-aviso { background: var(--aviso-fondo); color: var(--aviso); }
+.crm .pill-info { background: var(--info-fondo); color: var(--info); }
+.crm .pill-neutro { background: var(--relleno); color: var(--texto-2); }
+
+/* Chip: la misma pastilla, con el tono que piden las pantallas de la 1a. */
+.crm .chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; background: var(--relleno); color: var(--texto-2); }
+.crm .chip[data-tono="lima"], .crm .chip[data-tono="verde"] { background: var(--ok-fondo); color: var(--ok); }
+.crm .chip[data-tono="alerta"] { background: var(--aviso-fondo); color: var(--aviso); }
+.crm .chip[data-tono="info"] { background: var(--info-fondo); color: var(--info); }
+
+/* ── Formularios y botones ───────────────────────────────────────────── */
+.crm .campo {
+  width: 100%; min-height: 2.5rem;
+  border-radius: 9px; border: 1px solid var(--linea);
+  background: var(--lienzo); color: var(--texto);
+  padding: 0.5rem 0.75rem; font: inherit; font-size: 15px;
+}
+.crm textarea.campo { min-height: 5.5rem; line-height: 1.5; }
+.crm .campo:focus-visible { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
+
+.crm :is(.boton, .boton-principal, .boton-secundario, .boton-chico) {
+  appearance: none; border: 0; font: inherit; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border-radius: 999px; white-space: nowrap; cursor: pointer;
+  transition: transform 0.1s ease-out, filter 0.15s ease, background-color 0.15s ease;
+}
+.crm :is(.boton, .boton-principal) { min-height: 34px; padding: 7px 14px; font-size: 13px; background: var(--acento); color: var(--sobre-acento); }
+.crm .boton-principal { min-height: 40px; padding: 8px 18px; font-size: 14px; }
+.crm :is(.boton, .boton-principal):hover { filter: brightness(1.07); color: var(--sobre-acento); }
+.crm :is(.boton-sec, .boton-secundario) { background: var(--relleno); color: var(--texto); }
+.crm .boton-secundario { min-height: 40px; padding: 8px 16px; font-size: 14px; }
+.crm :is(.boton-sec, .boton-secundario):hover { background: var(--linea); color: var(--texto); filter: none; }
+.crm .boton-chico { min-height: 30px; padding: 4px 12px; font-size: 13px; background: var(--relleno); color: var(--texto); }
+.crm .boton-chico:hover { background: var(--linea); }
+.crm .boton-chico[data-tono="si"] { background: var(--acento); color: var(--sobre-acento); }
+.crm .boton-chico[data-tono="si"]:hover { filter: brightness(1.07); }
+.crm .boton-chico[data-tono="no"] { color: var(--peligro); }
+.crm :is(.boton, .boton-principal, .boton-secundario, .boton-chico, .boton-sec):active { transform: scale(0.97); }
+.crm :is(.boton, .boton-principal, .boton-secundario, .boton-chico):disabled { opacity: 0.55; cursor: wait; transform: none; }
+
+/* Disclosure de los formularios de alta */
+.crm details > summary { list-style: none; }
+.crm details > summary::-webkit-details-marker { display: none; }
+
+/* ── Teléfono ────────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .crm .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px 6px; border-right: 0; border-bottom: 1px solid var(--linea); }
+  .crm .marca { flex: 1; }
+  .crm .pie-lateral { order: 2; margin: 0; padding: 0; border: 0; }
+  .crm .pie-lateral .quien, .crm .pie-lateral .avatar, .crm .buscador, .crm .nav .grupo { display: none; }
+  .crm .nav { order: 3; width: 100%; position: relative; flex-direction: row; overflow-x: auto; gap: 4px; scrollbar-width: none; }
+  .crm .nav-item { width: auto; white-space: nowrap; min-height: 44px; }
+  .crm .nav-item.pronto { display: none; }
+  .crm .barra { padding: 12px 16px; }
+  .crm .barra .segmentado { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  .crm .seg { min-height: 44px; white-space: nowrap; flex: 1 0 auto; justify-content: center; }
+  .crm .cuerpo { padding: 16px 16px 48px; }
+  .crm .fila, .crm .fila-enlace, .crm .panel-cabeza, .crm .subgrupo { padding-left: 14px; padding-right: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crm * { transition: none !important; animation: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .crm :is(.lateral, .barra) { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--suelo-solido); }
+}
+
+.crm .capitalize-first { display: inline-block; }
+.crm .capitalize-first::first-letter { text-transform: uppercase; }

@@ -1,5 +1,7 @@
 import { ErrorCrm } from "@/lib/crm/actor";
 import { decidir } from "@/lib/crm/aprobaciones";
+// Registra el ejecutor `enviar_contrato` antes de decidir.
+import "@/lib/crm/contratos";
 import { api, cuerpo, idempotente, requerir } from "@/lib/crm/guardia";
 import { idDe, objeto, texto, textoReq } from "@/lib/crm/http";
 

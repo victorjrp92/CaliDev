@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ETAPAS_ABIERTAS, ETAPAS_CERRADAS, NOMBRE_ETAPA } from "@/lib/crm/etapas";
-import { paraInputFecha } from "@/lib/crm/formato";
+import { paraInputFecha, plata } from "@/lib/crm/formato";
 import { listarOportunidades } from "@/lib/crm/oportunidades";
 import { actorDePagina, tiene } from "@/lib/crm/pagina";
 import { buscarPersonas } from "@/lib/crm/personas";
+import { BarraSeccion } from "../barra-seccion";
+import { Cuerpo } from "../cuerpo";
+import { Seccion } from "../seccion";
 import { SinPermiso } from "../sin-permiso";
 import { Vacio } from "../vacio";
 import { ColumnaEtapa } from "./columna-etapa";
@@ -13,60 +15,71 @@ import { NuevaOportunidad } from "./nueva-oportunidad";
 
 export const metadata: Metadata = { title: "Ventas" };
 
-/** Pipeline: las abiertas por etapa, de izquierda a derecha; las cerradas aparte. */
-export default async function Ventas({ searchParams }: { searchParams: Promise<{ vista?: string; nueva?: string; persona?: string }> }) {
-  const a = await actorDePagina();
-  if (!tiene(a, "ventas:leer")) return <SinPermiso que="las ventas" />;
-  const sp = await searchParams;
-  const cerradas = sp.vista === "cerradas";
-  const ahora = new Date();
-  const todas = await listarOportunidades({ limite: 1000 });
-  const personas = tiene(a, "ventas:escribir") && tiene(a, "contactos:leer") ? await buscarPersonas(null, 200) : [];
-  const personaInicial = Number(sp.persona) || null;
+type Props = { searchParams: Promise<{ vista?: string; nueva?: string; persona?: string }> };
 
-  const pestana = (v: string | null, t: string, n: number) => (
-    <Link href={v ? `/crm/ventas?vista=${v}` : "/crm/ventas"} aria-current={(v === "cerradas") === cerradas ? "page" : undefined}
-      className={`rounded-full px-3.5 py-1.5 text-[14px] font-medium ${(v === "cerradas") === cerradas ? "bg-[var(--verde)] text-[var(--hueso)]" : "text-[var(--verde)] hover:bg-[var(--niebla)]"}`}>
-      {t} <span className="cifra opacity-75">{n}</span>
-    </Link>
-  );
+const t = (v: string | Date | null) => (v ? new Date(v).getTime() : Number.POSITIVE_INFINITY);
+
+/** Pipeline: las abiertas por etapa, de izquierda a derecha; la lista por próximo paso; las cerradas aparte. */
+export default async function Ventas({ searchParams }: Props) {
+  const a = await actorDePagina();
+  if (!tiene(a, "ventas:leer")) return <><BarraSeccion titulo="Ventas" /><Cuerpo><SinPermiso que="las ventas" /></Cuerpo></>;
+  const sp = await searchParams;
+  const vista = sp.vista === "cerradas" || sp.vista === "lista" ? sp.vista : "pipeline";
+  const ahora = new Date();
+  const escribir = tiene(a, "ventas:escribir");
+  const todas = await listarOportunidades({ limite: 1000 });
+  const personaInicial = Number(sp.persona) || null;
+  const abierta = sp.nueva === "1" || !!personaInicial;
+  const personas = escribir && abierta && tiene(a, "contactos:leer") ? await buscarPersonas(null, 200) : [];
+
   const abiertas = todas.filter((o) => ETAPAS_ABIERTAS.includes(o.etapa));
   const fin = todas.filter((o) => ETAPAS_CERRADAS.includes(o.etapa));
+  const enJuego = abiertas.filter((o) => o.moneda === "COP").reduce((s, o) => s + Number(o.valor_arranque ?? 0), 0);
+  const href = (v: string) => (v === "pipeline" ? "/crm/ventas" : `/crm/ventas?vista=${v}`);
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <p className="mono text-[var(--verde)]">Pipeline</p>
-          <h1 className="text-[28px] font-extrabold leading-tight tracking-tight md:text-[34px]">Ventas</h1>
-        </div>
-        <nav aria-label="Vista" className="flex gap-1">{pestana(null, "Abiertas", abiertas.length)}{pestana("cerradas", "Cerradas", fin.length)}</nav>
-      </header>
+    <>
+      <BarraSeccion
+        titulo="Ventas"
+        subtitulo={`${abiertas.length} abiertas${enJuego > 0 ? ` · ${plata(enJuego)} de arranque cotizado` : ""}`}
+        segmentos={[
+          { href: href("pipeline"), etiqueta: "Pipeline", activo: vista === "pipeline" },
+          { href: href("lista"), etiqueta: "Lista", cuenta: abiertas.length, activo: vista === "lista" },
+          { href: href("cerradas"), etiqueta: "Cerradas", cuenta: fin.length, activo: vista === "cerradas" },
+        ]}
+        accion={escribir ? { href: `${href(vista)}${vista === "pipeline" ? "?" : "&"}nueva=1`, etiqueta: "Nueva oportunidad" } : undefined}
+      />
+      <Cuerpo>
+        {escribir && abierta && (
+          <NuevaOportunidad personas={personas.map((p) => ({ id: p.id, nombre: p.nombre, empresa: p.empresa }))} personaInicial={personaInicial}
+            fechaInicial={paraInputFecha(new Date(ahora.getTime() + 2 * 864e5))} precio={tiene(a, "precio:fijar")} abierta />
+        )}
 
-      {tiene(a, "ventas:escribir") && (
-        <NuevaOportunidad personas={personas.map((p) => ({ id: p.id, nombre: p.nombre, empresa: p.empresa }))} personaInicial={personaInicial}
-          fechaInicial={paraInputFecha(new Date(ahora.getTime() + 2 * 864e5))} precio={tiene(a, "precio:fijar")} abierta={sp.nueva === "1" || !!personaInicial} />
-      )}
-
-      {cerradas ? (
-        <div className="grid gap-8 lg:grid-cols-3">
-          {ETAPAS_CERRADAS.map((e) => {
-            const ops = fin.filter((o) => o.etapa === e);
-            return (
-              <section key={e} className="flex flex-col gap-2">
-                <h2 className="px-1 text-[14.5px] font-bold">{NOMBRE_ETAPA[e]} <span className="cifra font-normal text-[#5F6B64]">{ops.length}</span></h2>
-                {ops.length ? <div className="bloque divide-y divide-[var(--linea-tinta)]">{ops.map((o) => <FilaOportunidad key={o.id} o={o} conEtapa={false} ahora={ahora} />)}</div> : <Vacio>Ninguna.</Vacio>}
-              </section>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
-          <div className="flex flex-col gap-6 md:flex-row md:gap-4">
-            {ETAPAS_ABIERTAS.map((e) => <ColumnaEtapa key={e} etapa={e} ops={abiertas.filter((o) => o.etapa === e)} ahora={ahora} />)}
+        {vista === "cerradas" ? (
+          <div className="grid gap-6 lg:grid-cols-3">
+            {ETAPAS_CERRADAS.map((e) => {
+              const ops = fin.filter((o) => o.etapa === e);
+              return (
+                <Seccion key={e} titulo={NOMBRE_ETAPA[e]} cuenta={ops.length}>
+                  {ops.length ? <div className="bloque divide-y divide-[var(--linea)]">{ops.map((o) => <FilaOportunidad key={o.id} o={o} conEtapa={false} ahora={ahora} />)}</div> : <Vacio>Ninguna.</Vacio>}
+                </Seccion>
+              );
+            })}
           </div>
-        </div>
-      )}
-    </div>
+        ) : vista === "lista" ? (
+          abiertas.length ? (
+            <div className="bloque divide-y divide-[var(--linea)]">
+              {[...abiertas].sort((x, y) => t(x.proximo_paso_at) - t(y.proximo_paso_at)).map((o) => <FilaOportunidad key={o.id} o={o} ahora={ahora} />)}
+            </div>
+          ) : <Vacio>No hay oportunidades abiertas.</Vacio>
+        ) : (
+          <div className="-mx-4 overflow-x-auto px-4 pb-2 md:-mx-7 md:px-7">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start">
+              {ETAPAS_ABIERTAS.map((e) => <ColumnaEtapa key={e} etapa={e} ops={abiertas.filter((o) => o.etapa === e)} ahora={ahora} />)}
+            </div>
+          </div>
+        )}
+      </Cuerpo>
+    </>
   );
 }

@@ -43,6 +43,13 @@ export const ENDPOINTS: Endpoint[] = [
   { metodo: "GET", ruta: "/api/crm/v1/notas", permiso: "notas:leer", hace: "Notas de una entidad (?entidad=persona&id=7)" },
   { metodo: "POST", ruta: "/api/crm/v1/notas", permiso: "notas:escribir", hace: "Agregar nota o brief", cuerpo: "{entidad, entidad_id, tipo?: nota|brief|resumen_llamada, cuerpo}" },
 
+  { metodo: "GET", ruta: "/api/crm/v1/contratos", permiso: "contratos:leer", hace: "Contratos con sus firmantes (?estado=esperando|firmado&oportunidad_id=&persona_id=)" },
+  { metodo: "POST", ruta: "/api/crm/v1/contratos", permiso: "contratos:escribir", hace: "Crear contrato con la plantilla de ServiNomic o con texto propio", cuerpo: "{plantilla?: servinomic|libre, datos?, titulo?, html?, firmantes?, oportunidad_id?, persona_id?, empresa_id?}" },
+  { metodo: "GET", ruta: "/api/crm/v1/contratos/borrador", permiso: "contratos:leer", hace: "Datos de la plantilla ya llenos desde una oportunidad (?oportunidad_id=). No crea nada" },
+  { metodo: "GET", ruta: "/api/crm/v1/contratos/[id]", permiso: "contratos:leer", hace: "Contrato con firmantes y envíos (el enlace de firma solo con contrato:enviar)" },
+  { metodo: "DELETE", ruta: "/api/crm/v1/contratos/[id]", permiso: "contratos:escribir", hace: "Borrar un contrato que nadie ha firmado" },
+  { metodo: "POST", ruta: "/api/crm/v1/contratos/[id]/enviar", permiso: "contratos:leer", hace: "Mandar o reenviar el enlace de firma: 200 si sale ya; 202 {aprobacion} si lo pide un agente", cuerpo: "{firmante_id?, correo?}" },
+
   { metodo: "GET", ruta: "/api/crm/v1/citas", permiso: "agenda:leer", hace: "Citas de un día (?dia=) o de la semana (?semana=1), y las invitaciones sin hora" },
 
   { metodo: "GET", ruta: "/api/crm/v1/aprobaciones", permiso: "aprobaciones:leer", hace: "Cola de aprobaciones (?estado=pendiente|aprobada|rechazada|ejecutada|fallida|todas)" },

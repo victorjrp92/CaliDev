@@ -9,9 +9,9 @@ import { MostrarUnaVez } from "./mostrar-una-vez";
 const ROLES = { humano: [["socia", "Socia (todo menos usuarios y claves ajenas)"], ["dueno", "Dueño (todo)"]], agente: [["agente", "Agente (prepara, no cierra)"], ["sistema", "Sistema (crons)"]] } as const;
 
 /** Una persona recibe un enlace de invitación de un solo uso; un agente no entra con contraseña, se le crea una clave después. */
-export function NuevoUsuario() {
-  const [tipo, setTipo] = useState<"humano" | "agente">("humano");
-  const [f, setF] = useState({ nombre: "", correo: "", rol: "socia" });
+export function NuevoUsuario({ tipoInicial = "humano" }: { tipoInicial?: "humano" | "agente" }) {
+  const [tipo, setTipo] = useState<"humano" | "agente">(tipoInicial);
+  const [f, setF] = useState({ nombre: "", correo: "", rol: ROLES[tipoInicial][0][0] as string });
   const [enlace, setEnlace] = useState<string | null>(null);
   const { enviando, error, correr } = useAccion();
 
@@ -43,7 +43,7 @@ export function NuevoUsuario() {
       </Campo>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button type="submit" disabled={enviando} className="boton-principal">{enviando ? "Creando…" : tipo === "humano" ? "Crear e invitar" : "Crear agente"}</button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
       {enlace && <div className="sm:col-span-2"><MostrarUnaVez titulo="Enlace de invitación" valor={enlace} aviso="Mándaselo tú por WhatsApp; sirve una sola vez." /></div>}
     </form>

@@ -25,7 +25,7 @@ export function FormularioInvitacion({ token, correo }: { token: string; correo:
   }
 
   return (
-    <form onSubmit={aceptar} className="mt-8 flex flex-col gap-4">
+    <form onSubmit={aceptar} className="mt-6 flex flex-col gap-4">
       {/* Para que el gestor de contraseñas la guarde con el correo correcto. */}
       <input type="email" autoComplete="username" value={correo} readOnly hidden />
       <Campo etiqueta="Contraseña nueva">
@@ -34,7 +34,7 @@ export function FormularioInvitacion({ token, correo }: { token: string; correo:
       <Campo etiqueta="Repítela">
         <input type="password" required minLength={10} autoComplete="new-password" value={repetida} onChange={(e) => setRepetida(e.target.value)} className="campo" />
       </Campo>
-      {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+      {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       <button type="submit" disabled={enviando} className="boton-principal mt-2">
         {enviando ? "Guardando…" : "Guardar y entrar"}
       </button>

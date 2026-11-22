@@ -17,12 +17,12 @@ export function Sincronizar() {
           onClick={async () => { const x = await correr(() => llamar<{ resumen: Resumen | null }>("POST", "/sincronizar")); if (x) setR(x.resumen); }}>
           {enviando ? "Sincronizando…" : "Sincronizar ahora"}
         </button>
-        {error && <p role="alert" className="text-[14px] text-[#B42318]">{error}</p>}
+        {error && <p role="alert" className="text-[14px] text-[var(--peligro)]">{error}</p>}
       </div>
       {r && (
-        <p role="status" className="cifra text-[14px] text-[#46554D]">
+        <p role="status" className="cifra text-[14px] text-[var(--texto-2)]">
           {r.personas} personas nuevas · {r.enlaces} enlaces · {r.oportunidades} oportunidades · {r.avances} avances de etapa
-          {r.errores.length > 0 && <span className="block text-[#B42318]">Con errores: {r.errores.join(" · ")}</span>}
+          {r.errores.length > 0 && <span className="block text-[var(--peligro)]">Con errores: {r.errores.join(" · ")}</span>}
         </p>
       )}
     </div>
