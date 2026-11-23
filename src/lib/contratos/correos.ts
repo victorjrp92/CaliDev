@@ -90,15 +90,18 @@ export function correoCompleto(f: Firmante, contrato: Contrato): Correo {
  * humano con `contrato:enviar`, o al aprobarse si lo pidió un agente). El
  * código de verificación no va aquí: lo pide la persona al firmar.
  */
-export function correoEnlace(f: Firmante, contrato: Contrato, para: string, nombre: string | null): Correo {
+export function correoEnlace(f: Firmante, contrato: Contrato, para: string, nombre: string | null, nota?: string | null): Correo {
   const enlace = enlaceFirmante(f);
   const hola = nombre?.trim() ? `Hola ${nombre.trim()}.` : "Hola.";
+  // `nota`: para qué es el contrato, en palabras simples (Victor, 23 nov 2026).
+  const n = nota?.trim() ?? "";
   return {
     para,
     asunto: `Para firmar: ${contrato.titulo}`,
-    texto: `${hola}\n\nAquí está el contrato «${contrato.titulo}» para que lo leas y lo firmes: ${enlace}\n\nAl firmar te pedimos tus datos y un código que te llega a este correo. Es tu enlace personal: no lo reenvíes.\n\nCaliDev`,
+    texto: `${hola}\n\n${n ? `${n}\n\n` : ""}Aquí está el contrato «${contrato.titulo}» para que lo leas y lo firmes: ${enlace}\n\nAl firmar te pedimos tus datos y un código que te llega a este correo. Es tu enlace personal: no lo reenvíes.\n\nCaliDev`,
     html: envolver(
       `<p>${escapar(hola)}</p>
+       ${n ? parrafos(n) : ""}
        <p>Aquí está <b>${escapar(contrato.titulo)}</b> para que lo leas y lo firmes:</p>
        <p><a href="${enlace}" ${ENLACE}>Leer y firmar el contrato</a></p>
        <p>Al firmar te pedimos tus datos y un código que te llega a este correo. Es tu enlace personal: no lo reenvíes.</p>
@@ -124,14 +127,19 @@ export function correoAlFirmar(f: Firmante, contrato: Contrato): Correo | null {
   }
   const { asunto, texto } = (a ?? {}) as { asunto?: unknown; texto?: unknown };
   if (typeof asunto !== "string" || typeof texto !== "string" || !asunto.trim() || !texto.trim()) return null;
-  const parrafo = (p: string) =>
-    `<p>${escapar(p)
-      .replace(/https:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}" ${ENLACE}>${u}</a>`)
-      .replace(/\n/g, "<br>")}</p>`;
   return {
     para: f.correo,
     asunto: asunto.trim(),
     texto: texto.trim(),
-    html: envolver(texto.trim().split(/\n\s*\n/).map(parrafo).join("\n")),
+    html: envolver(parrafos(texto.trim())),
   };
+}
+
+/** Texto plano a párrafos HTML: línea en blanco separa párrafos y los enlaces https se vuelven clicables. */
+function parrafos(texto: string): string {
+  const parrafo = (p: string) =>
+    `<p>${escapar(p)
+      .replace(/https:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}" ${ENLACE}>${u}</a>`)
+      .replace(/\n/g, "<br>")}</p>`;
+  return texto.split(/\n\s*\n/).map(parrafo).join("\n");
 }

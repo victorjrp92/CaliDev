@@ -287,10 +287,10 @@ export async function borrarContratoCrm(actor: Actor, id: number): Promise<void>
 
 /* ── Enviar el enlace de firma ──────────────────────────────────────────── */
 
-type Envio = { contratoId: number; firmante: Firmante; correo: string; titulo: string; nombre: string | null };
+type Envio = { contratoId: number; firmante: Firmante; correo: string; titulo: string; nombre: string | null; nota: string | null };
 
 /** Valida contrato, firmante y correo. Se corre al pedir y otra vez al ejecutar (el payload pudo editarse). */
-async function prepararEnvio(contratoId: number, firmanteId: number | null, correo: string | null): Promise<Envio> {
+async function prepararEnvio(contratoId: number, firmanteId: number | null, correo: string | null, nota: string | null = null): Promise<Envio> {
   const contrato = await contratoPorId(contratoId);
   if (!contrato) throw new ErrorCrm(404, "no_existe", `No hay contrato ${contratoId}.`);
   const fs = await firmantesDe(contratoId);
@@ -309,12 +309,12 @@ async function prepararEnvio(contratoId: number, firmanteId: number | null, corr
   }
   if (!para) throw new ErrorCrm(400, "campo_requerido", `No sé a qué correo mandárselo a ${f.etiqueta}: pasa correo.`, "correo");
   if (!esCorreo(para)) throw new ErrorCrm(400, "campo_invalido", `«${para}» no parece un correo.`, "correo");
-  return { contratoId, firmante: f, correo: para.toLowerCase(), titulo: contrato.titulo, nombre };
+  return { contratoId, firmante: f, correo: para.toLowerCase(), titulo: contrato.titulo, nombre, nota: nota?.trim().slice(0, 1500) || null };
 }
 
 async function ejecutarEnvio(actor: Actor, e: Envio) {
   const contrato = (await contratoPorId(e.contratoId))!;
-  const ok = await enviador(correoEnlace(e.firmante, contrato, e.correo, e.nombre));
+  const ok = await enviador(correoEnlace(e.firmante, contrato, e.correo, e.nombre, e.nota));
   const r = await sql<{ id: number }>`
     INSERT INTO crm_contrato_envios (contrato_id, firmante_id, correo, enviado_por, ok)
     VALUES (${e.contratoId}, ${e.firmante.id}, ${e.correo}, ${actor.usuario.id}, ${ok}) RETURNING id`;
@@ -332,16 +332,16 @@ export type ResultadoEnvio =
  * ya; quien no (un agente) deja la aprobación con el correo exacto que saldrá.
  * Sirve también para reenviar: cada envío queda en `crm_contrato_envios`.
  */
-export async function enviarContrato(actor: Actor, contratoId: number, o: { firmanteId?: number | null; correo?: string | null } = {}): Promise<ResultadoEnvio> {
+export async function enviarContrato(actor: Actor, contratoId: number, o: { firmanteId?: number | null; correo?: string | null; nota?: string | null } = {}): Promise<ResultadoEnvio> {
   exigir(actor, "contratos:leer");
-  const e = await prepararEnvio(contratoId, o.firmanteId ?? null, o.correo ?? null);
+  const e = await prepararEnvio(contratoId, o.firmanteId ?? null, o.correo ?? null, o.nota ?? null);
   if (puede(actor, "contrato:enviar")) return { estado: "enviado", ...(await ejecutarEnvio(actor, e)) };
   const contrato = (await contratoPorId(contratoId))!;
   // La vista previa no lleva el enlace real: es un secreto y la cola la leen agentes.
-  const correo = correoEnlace({ ...e.firmante, token: "<enlace personal>" }, contrato, e.correo, e.nombre);
+  const correo = correoEnlace({ ...e.firmante, token: "<enlace personal>" }, contrato, e.correo, e.nombre, e.nota);
   const aprobacion = await solicitar(actor, {
     tipo: TIPO_ENVIO,
-    payload: { contrato_id: contratoId, firmante_id: e.firmante.id, correo: e.correo },
+    payload: { contrato_id: contratoId, firmante_id: e.firmante.id, correo: e.correo, nota: e.nota },
     vistaPrevia: `Para: ${e.correo} (${e.firmante.etiqueta})\nAsunto: ${correo.asunto}\n\n${correo.texto.replace("https://calidev.dev/contratos/<enlace personal>", "[enlace de firma de " + e.firmante.etiqueta + "]")}`,
     entidad: "contrato",
     entidadId: contratoId,
@@ -354,6 +354,6 @@ registrarEjecutor(TIPO_ENVIO, async (payload, aprobador) => {
   const id = Number(payload.contrato_id);
   if (!Number.isInteger(id) || id <= 0) throw new ErrorCrm(400, "campo_invalido", "contrato_id inválido.");
   const fid = payload.firmante_id == null ? null : Number(payload.firmante_id);
-  const e = await prepararEnvio(id, fid, typeof payload.correo === "string" ? payload.correo : null);
+  const e = await prepararEnvio(id, fid, typeof payload.correo === "string" ? payload.correo : null, typeof payload.nota === "string" ? payload.nota : null);
   return ejecutarEnvio(aprobador, e);
 });
