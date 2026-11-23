@@ -229,7 +229,7 @@ export async function borradorDesdeOportunidad(actor: Actor, oportunidadId: numb
 
 export type NuevoContrato =
   | { plantilla: "servinomic"; datos: unknown; oportunidadId?: number | null; personaId?: number | null; empresaId?: number | null }
-  | { plantilla: "libre"; titulo: string; html: string; firmantes: { rol: string; etiqueta: string }[]; oportunidadId?: number | null; personaId?: number | null; empresaId?: number | null };
+  | { plantilla: "libre"; titulo: string; html: string; firmantes: { rol: string; etiqueta: string }[]; alFirmar?: { asunto: string; texto: string }; oportunidadId?: number | null; personaId?: number | null; empresaId?: number | null };
 
 export async function crearContratoCrm(actor: Actor, n: NuevoContrato): Promise<ContratoCrm> {
   exigir(actor, "contratos:escribir");
@@ -257,7 +257,7 @@ export async function crearContratoCrm(actor: Actor, n: NuevoContrato): Promise<
     if (typeof n.html !== "string" || n.html.length < 200) throw new ErrorCrm(400, "campo_invalido", "html: el texto completo del contrato (200 caracteres o más).", "html");
     const fs = (n.firmantes ?? []).filter((f) => f.rol?.trim() && f.etiqueta?.trim()).map((f) => ({ rol: f.rol.trim().slice(0, 40), etiqueta: f.etiqueta.trim().slice(0, 80) }));
     if (!fs.length) throw new ErrorCrm(400, "campo_requerido", "firmantes: al menos uno, con rol y etiqueta.", "firmantes");
-    creado = await crearContrato(titulo, n.html, fs);
+    creado = await crearContrato(titulo, n.html, fs, n.alFirmar ? JSON.stringify({ alFirmar: n.alFirmar }) : null);
   }
 
   const id = creado.contrato.id;

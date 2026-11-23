@@ -28,7 +28,10 @@ export const POST = api(async (request) => {
     n = { plantilla, datos: b.datos, ...enlaces };
   } else if (plantilla === "libre") {
     const firmantes = Array.isArray(b.firmantes) ? b.firmantes.map((f) => ({ rol: String((f as Record<string, unknown>)?.rol ?? ""), etiqueta: String((f as Record<string, unknown>)?.etiqueta ?? "") })) : [];
-    n = { plantilla, titulo: textoReq(b, "titulo", 200), html: typeof b.html === "string" ? b.html : "", firmantes, ...enlaces };
+    // `al_firmar`: { asunto, texto } del correo que le llega a quien firma cuando firman todos (Victor, 23 nov 2026).
+    const af = b.al_firmar && typeof b.al_firmar === "object" ? (b.al_firmar as Record<string, unknown>) : null;
+    const alFirmar = af && typeof af.asunto === "string" && typeof af.texto === "string" ? { asunto: af.asunto.slice(0, 200), texto: af.texto.slice(0, 5000) } : undefined;
+    n = { plantilla, titulo: textoReq(b, "titulo", 200), html: typeof b.html === "string" ? b.html : "", firmantes, alFirmar, ...enlaces };
   } else throw new ErrorCrm(400, "campo_invalido", "plantilla: servinomic o libre.", "plantilla");
   return idempotente(a, request, async () => ({ estado: 201, cuerpo: { contrato: await crearContratoCrm(a, n) } }));
 });

@@ -106,3 +106,32 @@ export function correoEnlace(f: Firmante, contrato: Contrato, para: string, nomb
     ),
   };
 }
+
+/**
+ * Un correo propio del contrato para quien firma cuando ya firmaron todos
+ * (Victor, 23 nov 2026: al firmar el paso a producción de SeiriLegal le llega
+ * a la clienta la guía para subir sus documentos). Va en `datos.alFirmar`
+ * como `{ asunto, texto }`; el texto separa párrafos con una línea en blanco
+ * y sus enlaces se vuelven clicables. Sin `alFirmar`, nada.
+ */
+export function correoAlFirmar(f: Firmante, contrato: Contrato): Correo | null {
+  if (!f.correo || !contrato.datos) return null;
+  let a: unknown;
+  try {
+    a = (JSON.parse(contrato.datos) as { alFirmar?: unknown })?.alFirmar;
+  } catch {
+    return null;
+  }
+  const { asunto, texto } = (a ?? {}) as { asunto?: unknown; texto?: unknown };
+  if (typeof asunto !== "string" || typeof texto !== "string" || !asunto.trim() || !texto.trim()) return null;
+  const parrafo = (p: string) =>
+    `<p>${escapar(p)
+      .replace(/https:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}" ${ENLACE}>${u}</a>`)
+      .replace(/\n/g, "<br>")}</p>`;
+  return {
+    para: f.correo,
+    asunto: asunto.trim(),
+    texto: texto.trim(),
+    html: envolver(texto.trim().split(/\n\s*\n/).map(parrafo).join("\n")),
+  };
+}

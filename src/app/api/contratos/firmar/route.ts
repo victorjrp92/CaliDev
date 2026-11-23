@@ -1,6 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { contratoPorId, firmantePorToken, firmantesDe, firmar } from "@/lib/contratos/datos";
-import { correoAvisoFirma, correoCompleto, correoConstancia } from "@/lib/contratos/correos";
+import { correoAlFirmar, correoAvisoFirma, correoCompleto, correoConstancia } from "@/lib/contratos/correos";
 import { ipDe, leerFormulario } from "@/lib/contratos/validar";
 import { enviarCorreo } from "@/lib/delegar/correos/enviar";
 
@@ -46,7 +46,14 @@ export async function POST(request: Request) {
     await enviarCorreo(correoAvisoFirma(r.firmante, contrato, faltan));
     // Quien firma de último recibe directamente el aviso de contrato completo.
     if (faltan.length > 0) await enviarCorreo(correoConstancia(r.firmante, contrato));
-    else for (const f of todos) if (f.correo) await enviarCorreo(correoCompleto(f, contrato));
+    else {
+      for (const f of todos) if (f.correo) await enviarCorreo(correoCompleto(f, contrato));
+      // El correo propio del contrato, si lo trae, para quien no es CaliDev.
+      for (const f of todos) {
+        const c = f.rol !== "calidev" ? correoAlFirmar(f, contrato) : null;
+        if (c) await enviarCorreo(c);
+      }
+    }
   });
 
   return NextResponse.json({ ok: true });
