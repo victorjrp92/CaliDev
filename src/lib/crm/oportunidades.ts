@@ -152,6 +152,15 @@ export async function moverEtapa(actor: Actor | null, id: number, m: Movimiento)
   }
   const despues = (await oportunidadPorId(id))!;
   await auditar(actor, a !== antes.etapa ? "mover_etapa" : "proximo_paso", "oportunidad", id, antes, despues);
+  // Ganada con contrato firmado: nace la suscripción (spec §10). Sin contrato no pasa nada.
+  if (a === "ganado" && antes.etapa !== "ganado") {
+    try {
+      const { suscripcionDesdeGanada } = await import("./suscripciones");
+      await suscripcionDesdeGanada(actor, id);
+    } catch (e) {
+      console.error("CRM: no se creó la suscripción de la oportunidad", id, e);
+    }
+  }
   return despues;
 }
 

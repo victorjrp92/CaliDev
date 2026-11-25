@@ -15,9 +15,9 @@ function iniciales(nombre: string) {
 }
 
 /**
- * Menú de secciones a la izquierda. Contratos y Finanzas se anuncian sin
- * enlace hasta que existan (fases 1b y 1c). En el teléfono el menú se vuelve
- * una fila que se desplaza de lado.
+ * Menú de secciones a la izquierda. Un ítem con `pronto` se anuncia sin
+ * enlace hasta que la sección exista. En el teléfono el menú se vuelve una
+ * fila que se desplaza de lado.
  */
 export function MenuLateral({ nombre, rol, pendientes, agentes }: { nombre: string; rol: string; pendientes: number; agentes: boolean }) {
   const ruta = usePathname();
@@ -43,7 +43,8 @@ export function MenuLateral({ nombre, rol, pendientes, agentes }: { nombre: stri
         { href: "/crm/ventas", texto: "Ventas", icono: "barras" },
         { href: "/crm/contactos", texto: "Contactos", icono: "personas" },
         { href: "/crm/contratos", texto: "Contratos", icono: "documento" },
-        { href: "/crm/finanzas", texto: "Finanzas", icono: "billete", pronto: true },
+        { href: "/crm/finanzas", texto: "Finanzas", icono: "billete" },
+        { href: "/crm/productos", texto: "Productos", icono: "caja" },
       ],
     },
   ];

@@ -2,15 +2,18 @@ import { sql } from "@/lib/db";
 import type { Actor } from "./actor";
 import { type CitaAgenda, citasEntre, citasSinHora, diaColombia, semanaColombia } from "./agenda";
 import { type Aprobacion, listarAprobaciones } from "./aprobaciones";
+import { type Cobro, cobrosQueVencen } from "./cobros";
+import { resumen } from "./finanzas";
 import { listarOportunidades, type Oportunidad } from "./oportunidades";
 import { type Permiso, tienePermiso } from "./permisos";
 import { listarTareas, type Tarea } from "./tareas";
 
 /**
- * Pestaña Hoy (spec §3 y §8), sin plata en la entrega 1a: las llamadas del
- * día con su brief, lo vencido, lo que espera decisión y el embudo de la
- * semana contra la meta. Cada bloque sale solo si quien mira tiene permiso
- * de leerlo; si no, viene `null`.
+ * Pestaña Hoy (spec §3 y §8): las llamadas del día con su brief, lo vencido,
+ * lo que espera decisión, el embudo de la semana contra la meta y, desde la
+ * entrega 1c, la plata (MRR, ingreso del mes contra la meta y los cobros en
+ * mora o que vencen en 7 días). Cada bloque sale solo si quien mira tiene
+ * permiso de leerlo; si no, viene `null`.
  */
 
 /** Meta y línea base fijadas con Victor el 22-nov-2026 (spec §8). */
@@ -47,6 +50,19 @@ export type Hoy = {
   oportunidades_vencidas: Oportunidad[] | null;
   aprobaciones: { total: number; primeras: Aprobacion[] } | null;
   embudo: Embudo | null;
+  finanzas: FinanzasHoy | null;
+};
+
+export type FinanzasHoy = {
+  mrr_cop: number;
+  ingreso_mes_cop: number;
+  meta_cop: number;
+  avance: number;
+  meses_restantes: number;
+  mora_cobros: number;
+  mora_total_cop: number;
+  /** Pendientes vencidos o que vencen en los próximos 7 días, los vencidos primero. */
+  cobros_vencen: Cobro[];
 };
 
 const contar = async (q: Promise<{ rows: { n: string | number }[] }>) => Number((await q).rows[0]?.n ?? 0);
@@ -106,6 +122,15 @@ export async function hoy(actor: Actor, opciones: { dia?: string | null; ahora?:
     aprobaciones = { total, primeras: await listarAprobaciones("pendiente", 20) };
   }
   const e = puede("ventas:leer") ? await embudo(ahora) : null;
+  let finanzas: FinanzasHoy | null = null;
+  if (puede("finanzas:leer")) {
+    const r = await resumen(actor, {}, ahora);
+    finanzas = {
+      mrr_cop: r.mrr_cop, ingreso_mes_cop: r.ingreso_mes_cop, meta_cop: r.meta.ingreso_mes_cop, avance: r.meta.avance,
+      meses_restantes: r.meta.meses_restantes, mora_cobros: r.mora.cobros, mora_total_cop: r.mora.total_cop,
+      cobros_vencen: await cobrosQueVencen(7, ahora),
+    };
+  }
 
-  return { dia, ahora: ahora.toISOString(), citas, citas_sin_hora: sinHora, tareas, oportunidades_vencidas: vencidas, aprobaciones, embudo: e };
+  return { dia, ahora: ahora.toISOString(), citas, citas_sin_hora: sinHora, tareas, oportunidades_vencidas: vencidas, aprobaciones, embudo: e, finanzas };
 }

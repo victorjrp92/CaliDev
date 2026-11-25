@@ -35,7 +35,7 @@ export function dia(v: string | null | undefined): string {
 export function pesos(v: string | number | null | undefined, moneda = "COP"): string {
   if (v === null || v === undefined || v === "") return "—";
   const n = Number(v);
-  return Number.isFinite(n) ? `${moneda} ${n.toLocaleString("es-CO", { maximumFractionDigits: 0 })}` : String(v);
+  return Number.isFinite(n) ? `${moneda} ${n.toLocaleString("es-CO", { maximumFractionDigits: moneda === "COP" ? 0 : 2 })}` : String(v);
 }
 
 /** Tabla en columnas alineadas. Las celdas largas se recortan con «…». */

@@ -12,6 +12,8 @@ import * as api from "./comandos/api.ts";
 import * as aprobacion from "./comandos/aprobacion.ts";
 import * as auditoria from "./comandos/auditoria.ts";
 import * as cita from "./comandos/cita.ts";
+import * as cliente from "./comandos/cliente.ts";
+import * as cobro from "./comandos/cobro.ts";
 import * as hoy from "./comandos/hoy.ts";
 import * as login from "./comandos/login.ts";
 import * as nota from "./comandos/nota.ts";
@@ -34,6 +36,8 @@ const COMANDOS: Record<string, Comando> = {
   nota: { ayuda: nota.AYUDA, correr: nota.nota, conSub: true },
   cita: { ayuda: cita.AYUDA, correr: cita.cita, conSub: true },
   aprobacion: { ayuda: aprobacion.AYUDA, correr: aprobacion.aprobacion, conSub: true },
+  cobro: { ayuda: cobro.AYUDA, correr: cobro.cobro, conSub: true },
+  cliente: { ayuda: cliente.AYUDA, correr: cliente.cliente, conSub: true },
   auditoria: { ayuda: auditoria.AYUDA, correr: (_s, a) => auditoria.auditoria(a), conSub: false },
 };
 

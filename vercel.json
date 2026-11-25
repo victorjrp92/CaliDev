@@ -1,3 +1,6 @@
 {
-  "crons": [{ "path": "/api/citas/recordatorios", "schedule": "0 14 * * *" }]
+  "crons": [
+    { "path": "/api/citas/recordatorios", "schedule": "0 14 * * *" },
+    { "path": "/api/crm/agentes", "schedule": "0 12 * * *" }
+  ]
 }

@@ -14,7 +14,7 @@ export type Args = {
 export const BANDERAS_GLOBALES = ["json", "idempotency-key", "ayuda"];
 
 /** Banderas que nunca llevan valor. */
-const BOOLEANAS = new Set(["json", "ayuda", "mia", "semana", "abiertas", "vencidas", "cancelar"]);
+const BOOLEANAS = new Set(["json", "ayuda", "mia", "semana", "abiertas", "vencidas", "cancelar", "mora"]);
 
 export function leerArgs(argv: string[]): Args {
   const pos: string[] = [];
@@ -87,10 +87,13 @@ export function fecha(v: string, nombre = "fecha"): string {
   return v;
 }
 
-/** Monto entero en pesos: acepta 2.500.000, 2,500,000 o 2500000. */
+/**
+ * Monto entero en pesos: acepta 2.500.000, 2,500,000, 2 500 000 o 2500000. El separador
+ * solo vale en grupos de tres: «10.5» es un error, no 105 pesos.
+ */
 export function monto(v: string, nombre: string): number {
-  const limpio = v.replace(/[.,_\s]/g, "");
-  const n = Number(limpio);
-  if (!/^\d+$/.test(limpio) || !Number.isSafeInteger(n)) throw errorUso(`--${nombre} debe ser un monto entero (llegó «${v}»).`, nombre);
+  const t = v.trim();
+  const n = Number(t.replace(/[.,_\s]/g, ""));
+  if (!/^(\d+|\d{1,3}([.,_\s]\d{3})+)$/.test(t) || !Number.isSafeInteger(n)) throw errorUso(`--${nombre} debe ser un monto entero en pesos (llegó «${v}»).`, nombre);
   return n;
 }

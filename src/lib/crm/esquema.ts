@@ -245,4 +245,151 @@ async function crear() {
       at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
   await sql`CREATE INDEX IF NOT EXISTS crm_contrato_envios_contrato ON crm_contrato_envios (contrato_id, at)`;
+
+  await finanzas();
+}
+
+/**
+ * Finanzas y productos (1c). Convención de tasas en `crm_cobros` y
+ * `crm_gastos`: `tasa_eur` = pesos por 1 EUR ese día y `tasa_cop` = pesos por
+ * 1 unidad de la moneda del registro (1 si es COP). Así cualquier valor pasa
+ * a COP (valor × tasa_cop) o a EUR (valor × tasa_cop / tasa_eur) sin volver
+ * a pedir la tasa.
+ */
+async function finanzas() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_productos (
+      id SERIAL PRIMARY KEY,
+      nombre TEXT NOT NULL,
+      descripcion TEXT,
+      activo BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS crm_productos_nombre ON crm_productos (lower(nombre))`;
+  // El precio publicado. Cambiarlo cierra la vigencia del anterior: el historial no se pisa.
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_precios (
+      id SERIAL PRIMARY KEY,
+      producto_id INT NOT NULL REFERENCES crm_productos(id),
+      concepto TEXT NOT NULL CHECK (concepto IN ('arranque', 'mensualidad', 'persona_adicional')),
+      valor NUMERIC(14,2) NOT NULL CHECK (valor >= 0),
+      moneda TEXT NOT NULL CHECK (moneda IN ('COP', 'EUR', 'USD')),
+      incluye TEXT,
+      vigente_desde TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      vigente_hasta TIMESTAMPTZ,
+      creado_por INT REFERENCES crm_usuarios(id)
+    )`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS crm_precios_vigente ON crm_precios (producto_id, concepto) WHERE vigente_hasta IS NULL`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_promos (
+      id SERIAL PRIMARY KEY,
+      codigo TEXT NOT NULL,
+      descripcion TEXT NOT NULL,
+      producto_id INT REFERENCES crm_productos(id),
+      concepto TEXT NOT NULL CHECK (concepto IN ('arranque', 'mensualidad', 'persona_adicional')),
+      porcentaje NUMERIC(5,2) CHECK (porcentaje > 0 AND porcentaje <= 100),
+      valor NUMERIC(14,2) CHECK (valor > 0),
+      vigente_desde TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      vigente_hasta TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      CONSTRAINT crm_promo_una_forma CHECK ((porcentaje IS NULL) <> (valor IS NULL))
+    )`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS crm_promos_codigo ON crm_promos (lower(codigo))`;
+
+  // El precio pactado con el cliente, que puede no ser el publicado.
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_suscripciones (
+      id SERIAL PRIMARY KEY,
+      empresa_id INT NOT NULL REFERENCES crm_empresas(id),
+      persona_id INT REFERENCES crm_personas(id),
+      producto_id INT NOT NULL REFERENCES crm_productos(id),
+      oportunidad_id INT REFERENCES crm_oportunidades(id),
+      contrato_id INT,
+      valor_arranque NUMERIC(14,2),
+      valor_mensual NUMERIC(14,2) NOT NULL CHECK (valor_mensual >= 0),
+      moneda TEXT NOT NULL CHECK (moneda IN ('COP', 'EUR', 'USD')),
+      personas INT,
+      permanencia_hasta DATE,
+      inicio DATE NOT NULL,
+      estado TEXT NOT NULL DEFAULT 'activa' CHECK (estado IN ('activa', 'pausada', 'cancelada')),
+      creado_por INT REFERENCES crm_usuarios(id),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  // Ganar dos veces la misma oportunidad no crea dos suscripciones.
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS crm_suscripciones_oportunidad ON crm_suscripciones (oportunidad_id) WHERE oportunidad_id IS NOT NULL`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_suscripciones_empresa ON crm_suscripciones (empresa_id, estado)`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_cobros (
+      id SERIAL PRIMARY KEY,
+      empresa_id INT NOT NULL REFERENCES crm_empresas(id),
+      persona_id INT REFERENCES crm_personas(id),
+      suscripcion_id INT REFERENCES crm_suscripciones(id),
+      concepto TEXT NOT NULL CHECK (concepto IN ('arranque', 'cuota', 'mensualidad', 'otro')),
+      descripcion TEXT,
+      valor NUMERIC(14,2) NOT NULL CHECK (valor > 0),
+      moneda TEXT NOT NULL CHECK (moneda IN ('COP', 'EUR', 'USD')),
+      tasa_eur NUMERIC(14,4) NOT NULL CHECK (tasa_eur > 0),
+      tasa_cop NUMERIC(14,4) NOT NULL CHECK (tasa_cop > 0),
+      vence_at DATE NOT NULL,
+      pagado_at TIMESTAMPTZ,
+      metodo TEXT NOT NULL CHECK (metodo IN ('stripe', 'transferencia', 'efectivo')),
+      payment_link_id TEXT UNIQUE,
+      estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'pagado', 'anulado')),
+      motivo_anulacion TEXT,
+      creado_por INT REFERENCES crm_usuarios(id),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      CONSTRAINT crm_cobro_pagado CHECK ((estado = 'pagado') = (pagado_at IS NOT NULL)),
+      CONSTRAINT crm_cobro_stripe CHECK (metodo <> 'stripe' OR moneda <> 'COP')
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_cobros_estado ON crm_cobros (estado, vence_at)`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_cobros_empresa ON crm_cobros (empresa_id)`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_gastos (
+      id SERIAL PRIMARY KEY,
+      fecha DATE NOT NULL,
+      proveedor TEXT NOT NULL,
+      concepto TEXT NOT NULL,
+      valor NUMERIC(14,2) NOT NULL CHECK (valor > 0),
+      moneda TEXT NOT NULL CHECK (moneda IN ('COP', 'EUR', 'USD')),
+      tasa_eur NUMERIC(14,4) NOT NULL CHECK (tasa_eur > 0),
+      tasa_cop NUMERIC(14,4) NOT NULL CHECK (tasa_cop > 0),
+      empresa_id INT REFERENCES crm_empresas(id),
+      recurrente BOOLEAN NOT NULL DEFAULT FALSE,
+      creado_por INT REFERENCES crm_usuarios(id),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS crm_gastos_fecha ON crm_gastos (fecha)`;
+
+  // Caché de tasas por día: pesos por 1 unidad de `moneda`.
+  await sql`
+    CREATE TABLE IF NOT EXISTS crm_tasas (
+      dia DATE NOT NULL,
+      moneda TEXT NOT NULL CHECK (moneda IN ('EUR', 'USD')),
+      cop NUMERIC(14,4) NOT NULL CHECK (cop > 0),
+      fuente TEXT NOT NULL,
+      at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (dia, moneda)
+    )`;
+
+  // Catálogo inicial (spec §4): los precios publicados de ServiNomic y la promo de captura.
+  // Solo se siembra lo que falta; lo que Victor o Karen cambien después no se pisa.
+  const { rows } = await sql<{ id: number }>`
+    INSERT INTO crm_productos (nombre, descripcion)
+    VALUES ('ServiNomic', 'Sistema de operación para empresas de servicios: nómina, operación, clientes, pagos y sedes')
+    ON CONFLICT (lower(nombre)) DO UPDATE SET nombre = crm_productos.nombre
+    RETURNING id`;
+  const p = rows[0].id;
+  await sql`
+    INSERT INTO crm_precios (producto_id, concepto, valor, moneda, incluye)
+    SELECT ${p}, c.concepto, c.valor, 'COP', c.incluye
+    FROM (VALUES ('arranque', 2500000, 'Pago único'), ('mensualidad', 250000, 'Hasta 10 personas'), ('persona_adicional', 15000, 'Por persona al mes'))
+      AS c(concepto, valor, incluye)
+    WHERE NOT EXISTS (SELECT 1 FROM crm_precios x WHERE x.producto_id = ${p} AND x.concepto = c.concepto)`;
+  await sql`
+    INSERT INTO crm_promos (codigo, descripcion, producto_id, concepto, porcentaje)
+    VALUES ('captura', '15 % de descuento en el arranque de ServiNomic', ${p}, 'arranque', 15)
+    ON CONFLICT (lower(codigo)) DO NOTHING`;
 }

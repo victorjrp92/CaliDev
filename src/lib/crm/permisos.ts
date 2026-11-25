@@ -47,6 +47,7 @@ export const PROHIBIDOS_AGENTE: readonly Permiso[] = [
   "oportunidad:ganar",
   "contrato:enviar",
   "precio:fijar",
+  "cobros:crear",
   "usuarios:gestionar",
   "claves:gestionar",
   "claves:propias",

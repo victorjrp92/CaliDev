@@ -1,7 +1,10 @@
 import { ErrorCrm } from "@/lib/crm/actor";
 import { decidir } from "@/lib/crm/aprobaciones";
-// Registra el ejecutor `enviar_contrato` antes de decidir.
+// Registran los ejecutores (`enviar_contrato`, `crear_cobro`, `mover_etapa`, `recordar_cobro`) antes de decidir.
 import "@/lib/crm/contratos";
+import "@/lib/crm/cobros";
+import "@/lib/crm/agentes/resumen";
+import "@/lib/crm/agentes/cobros";
 import { api, cuerpo, idempotente, requerir } from "@/lib/crm/guardia";
 import { idDe, objeto, texto, textoReq } from "@/lib/crm/http";
 

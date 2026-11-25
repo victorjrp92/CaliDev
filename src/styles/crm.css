@@ -239,7 +239,11 @@
 
 /* ── Teléfono ────────────────────────────────────────────────────────── */
 @media (max-width: 760px) {
-  .crm .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px 6px; border-right: 0; border-bottom: 1px solid var(--linea); }
+  /* En columna: con flex-wrap, una página más corta que la pantalla repartía
+     el alto sobrante entre las dos filas y abría un hueco bajo el menú. */
+  .crm .marco { flex-direction: column; flex-wrap: nowrap; }
+  .crm .principal { flex: 1 0 auto; }
+  .crm .lateral { flex: none; align-self: stretch; min-width: 0; position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px 6px; border-right: 0; border-bottom: 1px solid var(--linea); }
   .crm .marca { flex: 1; }
   .crm .pie-lateral { order: 2; margin: 0; padding: 0; border: 0; }
   .crm .pie-lateral .quien, .crm .pie-lateral .avatar, .crm .buscador, .crm .nav .grupo { display: none; }
@@ -262,3 +266,21 @@
 
 .crm .capitalize-first { display: inline-block; }
 .crm .capitalize-first::first-letter { text-transform: uppercase; }
+
+/* ── Finanzas: tablas y filtros (entrega 1c) ─────────────────────────── */
+/* relative: el texto .oculto de las cabeceras (absoluto) queda dentro del
+   scroll lateral de la tabla y no ensancha la página en el teléfono. */
+.crm .tabla { position: relative; width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+.crm .tabla th { padding: 12px 14px 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); white-space: nowrap; }
+.crm .tabla td { padding: 11px 14px; border-top: 1px solid var(--linea); vertical-align: top; }
+.crm .tabla tbody tr:hover { background: var(--hover); }
+.crm .tabla .der { text-align: right; white-space: nowrap; }
+
+.crm .chip-filtro { min-height: 32px; padding: 5px 13px; font-size: 13px; transition: background-color 0.15s ease; }
+.crm a.chip-filtro:hover { background: var(--linea); color: var(--texto); }
+.crm .chip-filtro[aria-current="page"], .crm a.chip-filtro[aria-current="page"]:hover { background: var(--acento); color: var(--sobre-acento); }
+
+@media (max-width: 760px) {
+  .crm .chip-filtro { min-height: 44px; padding: 8px 16px; }
+  .crm .tabla th, .crm .tabla td { padding-left: 12px; padding-right: 12px; }
+}

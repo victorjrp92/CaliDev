@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/servinomic/leads", destination: "/crm/ventas", permanent: true },
       { source: "/servinomic/contratos", destination: "/crm/contratos", permanent: true },
+      { source: "/admin/payments", destination: "/crm/finanzas/cobros", permanent: true },
     ];
   },
 };

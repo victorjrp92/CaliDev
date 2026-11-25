@@ -44,7 +44,9 @@ test("Hoy: citas del día con brief, lo vencido, aprobaciones y permisos por blo
   assert.equal((await reservar(cita, inicio)).ok, true);
   await enlazar(p.id, "citas", cita.id);
   await agregarNota(karen, { entidad: "cita", entidadId: cita.id, tipo: "brief", cuerpo: "Qué hace la empresa…" });
-  const o = await crearOportunidad(karen, { titulo: "Vencida", personaId: p.id, proximoPaso: "Llamar", proximoPasoAt: new Date(ahora.getTime() - 864e5).toISOString() });
+  // Paso muy antiguo: Hoy ordena lo vencido del más viejo al más nuevo con tope de 100, y la base de
+  // pruebas acumula oportunidades abiertas de otras corridas; así esta siempre entra en el corte.
+  const o = await crearOportunidad(karen, { titulo: "Vencida", personaId: p.id, proximoPaso: "Llamar", proximoPasoAt: "2001-01-01T00:00:00Z" });
 
   const h = await hoy(karen, { dia, ahora });
   assert.equal(h.dia, dia);

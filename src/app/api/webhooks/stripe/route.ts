@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getPaymentLink, savePaymentLink } from '@/lib/payments';
+import { marcarPagadoPorLink } from '@/lib/crm/cobros';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -25,6 +26,12 @@ export async function POST(request: Request) {
         link.stripe_session_id = session.id;
         link.paid_at = new Date().toISOString();
         await savePaymentLink(link);
+      }
+      // Si el enlace salió de un cobro del CRM, queda pagado allí con la tasa del día.
+      try {
+        await marcarPagadoPorLink(paymentId);
+      } catch (e) {
+        console.error('CRM: no se pudo marcar el cobro pagado', paymentId, e);
       }
     }
   }

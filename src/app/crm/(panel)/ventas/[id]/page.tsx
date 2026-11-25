@@ -20,6 +20,7 @@ import { Seccion } from "../../seccion";
 import { SinPermiso } from "../../sin-permiso";
 import { EditarOportunidad } from "./editar-oportunidad";
 import { MoverEtapa } from "./mover-etapa";
+import { ResumirLlamada } from "./resumir-llamada";
 
 export const metadata: Metadata = { title: "Oportunidad" };
 
@@ -70,6 +71,13 @@ export default async function OportunidadPagina({ params }: { params: Promise<{ 
             <Seccion titulo="Etapa y próximo paso">
               <div className="bloque px-[18px] py-4">
                 <MoverEtapa id={o.id} etapa={o.etapa as Etapa} paso={o.proximo_paso} fecha={paraInputFecha(o.proximo_paso_at)} puedeGanar={tiene(a, "oportunidad:ganar")} />
+              </div>
+            </Seccion>
+          )}
+          {tiene(a, "notas:escribir") && (
+            <Seccion titulo="Resumir llamada">
+              <div className="bloque px-[18px] py-4">
+                <ResumirLlamada id={o.id} />
               </div>
             </Seccion>
           )}

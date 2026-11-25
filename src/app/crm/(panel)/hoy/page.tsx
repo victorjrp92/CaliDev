@@ -7,12 +7,13 @@ import { Cuerpo } from "../cuerpo";
 import { MetaSemana } from "./meta-semana";
 import { PanelAtencion } from "./panel-atencion";
 import { PanelCitas } from "./panel-citas";
+import { PanelFinanzas } from "./panel-finanzas";
 
 export const metadata: Metadata = { title: "Hoy" };
 
 type Props = { searchParams: Promise<{ vista?: string }> };
 
-/** El día: citas, lo que pide atención y el embudo de la semana. «Mi día» deja solo tus tareas y las sin asignar. */
+/** El día: citas, lo que pide atención, la plata y el embudo de la semana. «Mi día» deja solo tus tareas y las sin asignar. */
 export default async function Hoy({ searchParams }: Props) {
   const sp = await searchParams;
   const equipo = sp.vista === "equipo";
@@ -35,6 +36,7 @@ export default async function Hoy({ searchParams }: Props) {
           <PanelCitas citas={h.citas} sinHora={h.citas_sin_hora} />
           <PanelAtencion h={h} yo={yo} tareas={tareas} />
         </div>
+        {h.finanzas && <PanelFinanzas f={h.finanzas} />}
         {h.embudo && <MetaSemana e={h.embudo} />}
       </Cuerpo>
     </>
