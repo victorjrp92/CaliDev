@@ -9,8 +9,16 @@ import { useRouter } from "next/navigation";
  * cita ya reservada y le envía la confirmación con el enlace de Meet y la
  * invitación de calendario; a Víctor le llega el aviso.
  */
-const HORAS = Array.from({ length: 15 }, (_, i) => 6 + i);
-const etiquetaHora = (h: number) => `${h > 12 ? h - 12 : h}:00 ${h < 12 ? "a. m." : h === 12 ? "m." : "p. m."}`;
+/** De 6:00 a 20:00 en medias horas: 10.5 = 10:30. */
+const HORAS = Array.from({ length: 29 }, (_, i) => 6 + i / 2);
+const hh = (h: number) => String(Math.floor(h)).padStart(2, "0");
+const mm = (h: number) => (h % 1 ? "30" : "00");
+/** El id del horario: «…T10» en punto, «…T10:30» a la media hora. */
+const idHorario = (dia: string, h: number) => `${dia}T${hh(h)}${h % 1 ? ":30" : ""}`;
+const etiquetaHora = (h: number) => {
+  const entera = Math.floor(h);
+  return `${entera > 12 ? entera - 12 : entera}:${mm(h)} ${entera < 12 ? "a. m." : entera === 12 ? "m." : "p. m."}`;
+};
 const FRANKFURT = new Intl.DateTimeFormat("es-CO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" });
 
 export function AgendarNueva({ ocupados }: { ocupados: string[] }) {
@@ -24,8 +32,8 @@ export function AgendarNueva({ ocupados }: { ocupados: string[] }) {
   const [estado, setEstado] = useState<{ ok: boolean; texto: string } | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  const horario = dia ? `${dia}T${String(hora).padStart(2, "0")}` : "";
-  const enFrankfurt = horario ? FRANKFURT.format(new Date(`${horario}:00:00-05:00`)) : null;
+  const horario = dia ? idHorario(dia, hora) : "";
+  const enFrankfurt = horario ? FRANKFURT.format(new Date(`${dia}T${hh(hora)}:${mm(hora)}:00-05:00`)) : null;
   const ocupado = Boolean(horario) && ocupados.includes(horario);
 
   async function agendar(e: React.FormEvent) {

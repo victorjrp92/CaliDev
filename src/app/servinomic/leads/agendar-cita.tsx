@@ -8,8 +8,16 @@ import { useRouter } from "next/navigation";
  * día, hora en Colombia y un mensaje opcional que encabeza la confirmación.
  * Sirve también para mover una cita ya reservada.
  */
-const HORAS = Array.from({ length: 15 }, (_, i) => 6 + i);
-const etiquetaHora = (h: number) => `${h > 12 ? h - 12 : h}:00 ${h < 12 ? "a. m." : "p. m."}`;
+/** De 6:00 a 20:00 en medias horas: 10.5 = 10:30. */
+const HORAS = Array.from({ length: 29 }, (_, i) => 6 + i / 2);
+const hh = (h: number) => String(Math.floor(h)).padStart(2, "0");
+const mm = (h: number) => (h % 1 ? "30" : "00");
+/** El id del horario: «…T10» en punto, «…T10:30» a la media hora. */
+const idHorario = (dia: string, h: number) => `${dia}T${hh(h)}${h % 1 ? ":30" : ""}`;
+const etiquetaHora = (h: number) => {
+  const entera = Math.floor(h);
+  return `${entera > 12 ? entera - 12 : entera}:${mm(h)} ${entera < 12 ? "a. m." : "p. m."}`;
+};
 const FRANKFURT = new Intl.DateTimeFormat("es-CO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Berlin" });
 
 export function AgendarCita({ id, textoBoton }: { id: number; textoBoton: string }) {
@@ -21,8 +29,8 @@ export function AgendarCita({ id, textoBoton }: { id: number; textoBoton: string
   const [estado, setEstado] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  const horario = dia ? `${dia}T${String(hora).padStart(2, "0")}` : "";
-  const enFrankfurt = dia ? FRANKFURT.format(new Date(`${horario}:00:00-05:00`)) : null;
+  const horario = dia ? idHorario(dia, hora) : "";
+  const enFrankfurt = dia ? FRANKFURT.format(new Date(`${dia}T${hh(hora)}:${mm(hora)}:00-05:00`)) : null;
 
   async function agendar() {
     if (!horario) return setEstado("Elige el día.");
